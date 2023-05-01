@@ -217,14 +217,14 @@ class PresensiController extends Controller
             ];
         }
 
-        $update = DB::table('master_karyawan')->where('nik', $nik)->update($data);
-        if ($update) {
+        try {
+            DB::table('master_karyawan')->where('nik', $nik)->update($data);
             if ($request->hasFile('foto')) {
                 $folderPath = "public/uploads/karyawan/";
                 $request->file('foto')->storeAs($folderPath, $foto);
             }
             return Redirect::back()->with(['success' => 'Data Berhasil Di Update']);
-        } else {
+        } catch (\Exception $e) {
             return Redirect::back()->with(['error' => 'Data gagal Di Update']);
         }
     }
@@ -267,29 +267,52 @@ class PresensiController extends Controller
         return view('presensi.gethistori', compact('histori'));
     }
 
-    public function izin()
+    public function izin(Request $request)
     {
         $nik = Auth::guard('karyawan')->user()->nik;
-        $dataizin = DB::table('pengajuan_izin')->where('nik', $nik)->get();
-        return view('presensi.izin', compact('dataizin'));
+
+        $query = Pengajuanizin::query();
+        $query->where('nik', $nik);
+        if (!empty($request->bulan)) {
+            $query->whereRaw('MONTH(dari)="' . $request->bulan . '"');
+        }
+
+        if (!empty($request->tahun)) {
+            $query->whereRaw('YEAR(dari)="' . $request->tahun . '"');
+        }
+        $query->orderBy('dari', 'desc');
+
+        $query->leftJoin('hrd_mastercuti', 'pengajuan_izin.jenis_cuti', '=', 'hrd_mastercuti.kode_cuti');
+        if (empty($request->tahun) && empty($request->bulan)) {
+            $query->limit(7);
+            $dataizin = $query->get();
+        } else {
+            $dataizin = $query->get();
+        }
+
+        $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        return view('presensi.izin', compact('dataizin', 'namabulan'));
     }
 
     public function buatizin()
     {
 
-        return view('presensi.buatizin');
+        $mastercuti = DB::table('hrd_mastercuti')->get();
+        return view('presensi.buatizin', compact('mastercuti'));
     }
 
     public function storeizin(Request $request)
     {
         $nik = Auth::guard('karyawan')->user()->nik;
-        $dari = $request->dari;
-        $sampai = $request->sampai;
+        $dari = $request->jenis_izin == "PL" || $request->jenis_izin == "KL" ? date("Y-m-d") : $request->dari;
+        $sampai =  $request->jenis_izin == "PL" || $request->jenis_izin == "KL" ? date("Y-m-d") : $request->sampai;
         $jmlhari = $request->jmlhari;
         $status = $request->status;
         $keterangan = $request->keterangan;
-
-
+        $jenis_izin = $request->jenis_izin;
+        $jam_pulang = $request->jam_pulang;
+        $jam_keluar = $request->jam_keluar;
+        $jenis_cuti = $request->jenis_cuti;
         $tgl = explode("-", $dari);
         $tahun = substr($tgl[0], 2, 2);
         $izin = DB::table("pengajuan_izin")
@@ -312,7 +335,11 @@ class PresensiController extends Controller
             'jmlhari' => $jmlhari,
             'status' => $status,
             'keterangan' => $keterangan,
-            'sid' => $sid
+            'sid' => $sid,
+            'jenis_izin' => $jenis_izin,
+            'jam_pulang' => $jam_pulang,
+            'jam_keluar' => $jam_keluar,
+            'jenis_cuti' => $jenis_cuti
         ];
 
         try {
@@ -517,7 +544,14 @@ class PresensiController extends Controller
 
     public function showactizin($id)
     {
-        return view('presensi.showactizin', compact('id'));
+        $izin = DB::table('pengajuan_izin')->where('kode_izin', $id)->first();
+        return view('presensi.showactizin', compact('id', 'izin'));
+    }
+
+    public function showsid($id)
+    {
+        $izin = DB::table('pengajuan_izin')->where('kode_izin', $id)->first();
+        return view('presensi.showsid', compact('id', 'izin'));
     }
 
     public function editizin($id)

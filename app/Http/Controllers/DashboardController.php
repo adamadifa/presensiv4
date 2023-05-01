@@ -12,12 +12,14 @@ class DashboardController extends Controller
     {
 
         //dd(Auth::guard('karyawan')->user());
-        $hariini = date("Y-m-d");
+        // $hariini = date("Y-m-d");
+        $hariini = "2023-05-05";
         $bulanini = date("m") * 1; //1 atau Januari
         $tahunini = date("Y"); // 2023
         $nik = Auth::guard('karyawan')->user()->nik;
         $presensihariini = DB::table('presensi')->where('nik', $nik)->where('tgl_presensi', $hariini)->first();
         $historibulanini = DB::table('presensi')
+            ->select('presensi.*', 'nama_jadwal', 'jam_kerja.jam_masuk', 'jenis_izin', 'nama_cuti', 'sid')
             ->leftJoin(
                 DB::raw("(
             SELECT
@@ -32,17 +34,19 @@ class DashboardController extends Controller
                     $join->on('presensi.kode_jam_kerja', '=', 'jadwal.kode_jam_kerja');
                 }
             )
-            ->join('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-            ->where('nik', $nik)
-            ->whereRaw('MONTH(tgl_presensi)="' . $bulanini . '"')
-            ->whereRaw('YEAR(tgl_presensi)="' . $tahunini . '"')
-            ->orderBy('tgl_presensi')
+            ->leftjoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+            ->leftjoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
+            ->leftjoin('hrd_mastercuti', 'pengajuan_izin.jenis_cuti', '=', 'hrd_mastercuti.kode_cuti')
+            ->where('presensi.nik', $nik)
+            ->where('tgl_presensi', '<=', $hariini)
+            ->orderBy('tgl_presensi', 'desc')
+            ->limit(7)
             ->get();
 
 
         $rekappresensi = DB::table('presensi')
             ->selectRaw('SUM(IF(status="h",1,0)) as jmlhadir,SUM(IF(status="i",1,0)) as jmlizin,SUM(IF(status="s",1,0)) as jmlsakit, SUM(IF( DATE_FORMAT(jam_in,"%H:%i:%s") > jam_masuk,1,0)) as jmlterlambat')
-            ->join('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+            ->leftjoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->where('nik', $nik)
             ->whereRaw('MONTH(tgl_presensi)="' . $bulanini . '"')
             ->whereRaw('YEAR(tgl_presensi)="' . $tahunini . '"')
@@ -50,11 +54,12 @@ class DashboardController extends Controller
 
 
         $leaderboard = DB::table('presensi')
-            ->join('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+            ->leftjoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->join('master_karyawan', 'presensi.nik', '=', 'master_karyawan.nik')
             ->leftjoin('hrd_jabatan', 'master_karyawan.id_jabatan', '=', 'hrd_jabatan.id')
             ->where('tgl_presensi', $hariini)
             ->where('id_kantor', Auth::guard('karyawan')->user()->id_kantor)
+            ->where('presensi.status', 'h')
             ->orderBy('jam_in')
             ->get();
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Desember"];

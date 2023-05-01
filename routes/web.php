@@ -6,6 +6,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartemenController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KonfigurasiController;
+use App\Http\Controllers\PinjamanController;
+use App\Http\Controllers\PinjamnaController;
 use App\Http\Controllers\PresensiController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -67,6 +69,13 @@ Route::middleware(['auth:karyawan'])->group(function () {
     Route::get('/izin/{id}/editizin', [PresensiController::class, 'editizin']);
     Route::post('/izin/{id}/update', [PresensiController::class, 'updateizin']);
     Route::get('/izin/{id}/delete', [PresensiController::class, 'deleteizin']);
+    Route::get('/izin/{id}/showsid', [PresensiController::class, 'showsid']);
+
+
+    //Pinjaman
+
+    Route::get('/pinjaman', [PinjamanController::class, 'index']);
+    Route::get('/pinjaman/{no_pinjaman}/show', [PinjamanController::class, 'show']);
 });
 
 

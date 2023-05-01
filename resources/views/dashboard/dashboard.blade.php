@@ -64,7 +64,7 @@
             @php
             $path = Storage::url('uploads/karyawan/'.Auth::guard('karyawan')->user()->foto);
             @endphp
-            <img src="{{ url($path) }}" alt="avatar" class="imaged w64" style="height:60px">
+            <img src="{{ url($path) }}" alt="avatar" class="imaged w64" style="height:60px; object-fit:cover">
             @else
             <img src="assets/img/sample/avatar/avatar1.jpg" alt="avatar" class="imaged w64 rounded">
             @endif
@@ -103,12 +103,12 @@
                 </div>
                 <div class="item-menu text-center">
                     <div class="menu-icon">
-                        <a href="/presensi/histori" class="warning" style="font-size: 40px;">
-                            <ion-icon name="document-text"></ion-icon>
+                        <a href="/pinjaman" class="warning" style="font-size: 40px;">
+                            <ion-icon name="cash-outline"></ion-icon>
                         </a>
                     </div>
                     <div class="menu-name">
-                        <span class="text-center">Histori</span>
+                        <span class="text-center">Pinjaman</span>
                     </div>
                 </div>
                 <div class="item-menu text-center">
@@ -230,7 +230,7 @@
             <ul class="nav nav-tabs style1" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link active" data-toggle="tab" href="#home" role="tab">
-                        Bulan Ini
+                        7 Hari terakhir
                     </a>
                 </li>
                 <li class="nav-item">
@@ -247,6 +247,7 @@
                 {{-- @php
                     $path = Storage::url('uploads/absensi/'.$d->foto_in);
                     @endphp --}}
+                @if ($d->status=="h")
                 <div class="row mb-1">
                     <div class="col">
                         <div class="card historicard {{ $d->jam_out != null  ? 'historibordergreen' : 'historiborderred' }}">
@@ -254,7 +255,7 @@
                                 <div class="historicontent">
                                     <div class="historidetail1">
                                         <div class="iconpresence">
-                                            <ion-icon name="finger-print-outline" style="font-size: 48px"></ion-icon>
+                                            <ion-icon name="finger-print-outline" class="text-success" style="font-size: 48px"></ion-icon>
                                         </div>
                                         <div class="datepresence">
                                             <h4>{{ DateToIndo2($d->tgl_presensi) }}</h4>
@@ -269,6 +270,69 @@
                                     <div class="historidetail2">
                                         <h4>{{ $d->nama_jadwal }}</h4>
                                         <span class="timepresence">
+                                            @if (!empty($d->kode_izin))
+                                            @if ($d->jenis_izin=="PL")
+                                            <span class="text-danger">
+                                                Izin Pulang
+                                            </span>
+                                            @endif
+                                            @endif
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @else
+                <div class="row mb-1">
+                    <div class="col">
+                        <div class="card historicard historiborderred">
+                            <div class="card-body">
+                                <div class="historicontent">
+                                    <div class="historidetail1">
+                                        <div class="iconpresence">
+                                            <ion-icon name="finger-print-outline" class="text-danger" style="font-size: 48px"></ion-icon>
+                                        </div>
+                                        <div class="datepresence">
+                                            <h4>{{ DateToIndo2($d->tgl_presensi) }}</h4>
+                                            @if ($d->status=="i")
+                                            @php
+                                            $status = "Izin";
+                                            @endphp
+                                            @elseif($d->status=="c")
+                                            @php
+                                            $status = "Cuti";
+                                            @endphp
+                                            @elseif($d->status=="s")
+                                            @php
+                                            $status="Sakit";
+                                            @endphp
+                                            @endif
+
+
+                                            <span class="timepresence">{{ $status }} -
+                                                @if ($d->status=="i")
+                                                Tidak Masuk Kantor
+                                                @elseif($d->status=="c")
+                                                {{ $d->nama_cuti }}
+                                                @elseif($d->status=="s")
+                                                @if (empty($d->sid))
+                                                <span class="text-danger">
+                                                    Tanpa SID
+                                                </span>
+                                                @else
+                                                <span class="text-primary">
+                                                    <ion-icon name="document-attach-outline"></ion-icon> SID
+                                                </span>
+                                                @endif
+                                                @endif
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="historidetail2">
+                                        <h4>{{ $d->nama_jadwal }}</h4>
+                                        <span class="timepresence">
 
                                         </span>
                                     </div>
@@ -277,6 +341,8 @@
                         </div>
                     </div>
                 </div>
+                @endif
+
                 @endforeach
 
             </div>

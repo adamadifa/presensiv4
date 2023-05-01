@@ -45,7 +45,7 @@
                 <div class="historicontent">
                     <div class="historidetail1">
                         <div class="iconpresence">
-                            <ion-icon name="finger-print-outline" style="font-size:48px"></ion-icon>
+                            <ion-icon name="finger-print-outline" style="font-size:48px" class="text-primary"></ion-icon>
                         </div>
                         <div class="datepresence">
                             <h4>{{ DateToIndo2($d->tgl_presensi) }}</h4>

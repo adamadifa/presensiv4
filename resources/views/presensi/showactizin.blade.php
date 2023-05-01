@@ -8,14 +8,23 @@
         </a>
     </li>
     <li>
-        <a href="#" id="deletebutton" class="btn btn-list" data-dismiss="modal" data-toggle="modal" data-target="#DialogBasic">
+        <a href="#" id="deletebutton" class="btn btn-list text-danger" data-dismiss="modal" data-toggle="modal" data-target="#DialogBasic">
             <span>
                 <ion-icon name="trash-outline"></ion-icon>
                 Delete
             </span>
         </a>
     </li>
-
+    @if (!empty($izin->sid))
+    <li>
+        <a href="/izin/{{ $id }}/showsid" class="btn btn-list text-primary">
+            <span>
+                <ion-icon name="document-attach-outline"></ion-icon>
+                Lihat SID
+            </span>
+        </a>
+    </li>
+    @endif
     <li class="action-divider"></li>
     <li>
         <a href="#" class="btn btn-list text-danger" data-dismiss="modal">
