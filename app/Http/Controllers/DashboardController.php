@@ -28,7 +28,7 @@ class DashboardController extends Controller
                 jadwal_kerja_detail
             INNER JOIN jadwal_kerja ON jadwal_kerja_detail.kode_jadwal = jadwal_kerja.kode_jadwal
             GROUP BY
-                jadwal_kerja_detail.kode_jadwal,kode_jam_kerja
+            jadwal_kerja_detail.kode_jadwal,nama_jadwal,kode_jam_kerja
             ) jadwal"),
                 function ($join) {
                     $join->on('presensi.kode_jam_kerja', '=', 'jadwal.kode_jam_kerja');
@@ -45,7 +45,10 @@ class DashboardController extends Controller
 
 
         $rekappresensi = DB::table('presensi')
-            ->selectRaw('SUM(IF(status="h",1,0)) as jmlhadir,SUM(IF(status="i",1,0)) as jmlizin,SUM(IF(status="s",1,0)) as jmlsakit, SUM(IF( DATE_FORMAT(jam_in,"%H:%i:%s") > jam_masuk,1,0)) as jmlterlambat')
+            ->selectRaw('SUM(IF(status="h",1,0)) as jmlhadir,
+            SUM(IF(status="i",1,0)) as jmlizin,
+            SUM(IF(status="s",1,0)) as jmlsakit,
+            SUM(IF( DATE_FORMAT(jam_in,"%H:%i:%s") > jam_masuk,1,0)) as jmlterlambat')
             ->leftjoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->where('nik', $nik)
             ->whereRaw('MONTH(tgl_presensi)="' . $bulanini . '"')
