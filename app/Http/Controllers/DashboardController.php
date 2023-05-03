@@ -12,8 +12,8 @@ class DashboardController extends Controller
     {
 
         //dd(Auth::guard('karyawan')->user());
-        // $hariini = date("Y-m-d");
-        $hariini = "2023-05-05";
+        $hariini = date("Y-m-d");
+        // $hariini = "2023-05-05";
         $bulanini = date("m") * 1; //1 atau Januari
         $tahunini = date("Y"); // 2023
         $nik = Auth::guard('karyawan')->user()->nik;

@@ -174,13 +174,13 @@
             <div class="row">
                 <div class="col-12">
                     <div class="form-group">
-                        <textarea autocomplete="off" name="keterangan" id="keterangan" cols="30" rows="5" placeholder="Keterangan"></textarea>
+                        <textarea autocomplete="off" name="keterangan" id="keterangan" cols="30" rows="4" placeholder="Keterangan" placeholder="Keterangan"></textarea>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12">
-                    <div class="form-group">
+                    <div class="form-group" style="margin-top: 50px !important">
                         <button class="btn btn-danger w-100">Kirim</button>
                     </div>
                 </div>

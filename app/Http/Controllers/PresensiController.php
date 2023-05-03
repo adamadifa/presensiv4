@@ -242,7 +242,30 @@ class PresensiController extends Controller
         $tahun = $request->tahun;
         $nik = Auth::guard('karyawan')->user()->nik;
 
+        // $histori = DB::table('presensi')
+        //     ->leftJoin(
+        //         DB::raw("(
+        //         SELECT
+        //             jadwal_kerja_detail.kode_jadwal,nama_jadwal,kode_jam_kerja
+        //         FROM
+        //             jadwal_kerja_detail
+        //         INNER JOIN jadwal_kerja ON jadwal_kerja_detail.kode_jadwal = jadwal_kerja.kode_jadwal
+        //         GROUP BY
+        //             jadwal_kerja_detail.kode_jadwal,kode_jam_kerja
+        //         ) jadwal"),
+        //         function ($join) {
+        //             $join->on('presensi.kode_jam_kerja', '=', 'jadwal.kode_jam_kerja');
+        //         }
+        //     )
+        //     ->join('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+        //     ->whereRaw('MONTH(tgl_presensi)="' . $bulan . '"')
+        //     ->whereRaw('YEAR(tgl_presensi)="' . $tahun . '"')
+        //     ->where('nik', $nik)
+        //     ->orderBy('tgl_presensi')
+        //     ->get();
+
         $histori = DB::table('presensi')
+            ->select('presensi.*', 'nama_jadwal', 'jam_kerja.jam_masuk', 'jenis_izin', 'nama_cuti', 'sid')
             ->leftJoin(
                 DB::raw("(
                 SELECT
@@ -251,18 +274,20 @@ class PresensiController extends Controller
                     jadwal_kerja_detail
                 INNER JOIN jadwal_kerja ON jadwal_kerja_detail.kode_jadwal = jadwal_kerja.kode_jadwal
                 GROUP BY
-                    jadwal_kerja_detail.kode_jadwal,kode_jam_kerja
+                jadwal_kerja_detail.kode_jadwal,nama_jadwal,kode_jam_kerja
                 ) jadwal"),
                 function ($join) {
                     $join->on('presensi.kode_jam_kerja', '=', 'jadwal.kode_jam_kerja');
                 }
             )
-            ->join('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+            ->leftjoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+            ->leftjoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
+            ->leftjoin('hrd_mastercuti', 'pengajuan_izin.jenis_cuti', '=', 'hrd_mastercuti.kode_cuti')
             ->whereRaw('MONTH(tgl_presensi)="' . $bulan . '"')
             ->whereRaw('YEAR(tgl_presensi)="' . $tahun . '"')
-            ->where('nik', $nik)
-            ->orderBy('tgl_presensi')
+            ->where('presensi.nik', $nik)
             ->get();
+        //dd($histori);
 
         return view('presensi.gethistori', compact('histori'));
     }
