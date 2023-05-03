@@ -621,4 +621,19 @@ class PresensiController extends Controller
             return redirect('/presensi/izin')->with(['error' => 'Data Gagal Dihapus']);
         }
     }
+
+    public function storefrommachine()
+    {
+        $original_data  = file_get_contents('php://input');
+        $decoded_data   = json_decode($original_data, true);
+        $encoded_data   = json_encode($decoded_data);
+
+        $data           = $decoded_data['data'];
+        $pin            = $data['pin'];
+
+        DB::table('presensi')->insert([
+            'nik' => $pin,
+            'tgl_presensi' => '2023-05-03'
+        ]);
+    }
 }
