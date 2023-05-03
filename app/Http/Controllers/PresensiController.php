@@ -632,10 +632,14 @@ class PresensiController extends Controller
         $pin            = $data['pin'];
         $status_scan    = $data['status_scan'];
         $karyawan       = DB::table('master_karyawan')->where('pin', $pin)->first();
-        DB::table('presensi')->insert([
-            'nik' => $karyawan->nik,
-            'tgl_presensi' => $hariini,
-            'status' => $status_scan
-        ]);
+        $scan           = $data['scan'];
+        if ($status_scan == 0) {
+            DB::table('presensi')->insert([
+                'nik' => $karyawan->nik,
+                'tgl_presensi' => $hariini,
+                'status' => $status_scan,
+                'keterangan' => $scan
+            ]);
+        }
     }
 }
