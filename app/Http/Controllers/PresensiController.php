@@ -627,13 +627,15 @@ class PresensiController extends Controller
         $original_data  = file_get_contents('php://input');
         $decoded_data   = json_decode($original_data, true);
         $encoded_data   = json_encode($decoded_data);
-
+        $hariini        = date("Y-m-d");
         $data           = $decoded_data['data'];
         $pin            = $data['pin'];
-
+        $status_scan    = $data['status_scan'];
+        $karyawan       = DB::table('master_karyawan')->where('pin', $pin)->first();
         DB::table('presensi')->insert([
-            'nik' => $pin,
-            'tgl_presensi' => '2023-05-03'
+            'nik' => $karyawan->nik,
+            'tgl_presensi' => $hariini,
+            'status' => $status_scan
         ]);
     }
 }
