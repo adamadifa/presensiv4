@@ -633,12 +633,21 @@ class PresensiController extends Controller
         $status_scan    = $data['status_scan'];
         $karyawan       = DB::table('master_karyawan')->where('pin', $pin)->first();
         $scan           = $data['scan'];
+
+        $kode_jadwal    = $karyawan->kode_jadwal;
+        $hariini        = $this->hari_ini();
+        $jadwal = DB::table('jadwal_kerja_detail')
+            ->join('jadwal_kerja', 'jadwal_kerja_detail.kode_jadwal', '=', 'jadwal_kerja.kode_jadwal')
+            ->where('hari', $hariini)->where('jadwal_kerja_detail.kode_jadwal', $kode_jadwal)->first();
+        $jam_kerja = DB::table('jam_kerja')->where('kode_jam_kerja', $jadwal->kode_jam_kerja)->first();
         if ($status_scan == 0) {
             DB::table('presensi')->insert([
                 'nik' => $karyawan->nik,
                 'tgl_presensi' => $hariini,
                 'status' => $status_scan,
-                'keterangan' => $scan
+                'keterangan' => $scan,
+                'jam_in' => $scan,
+                'kode_jam_kerja' => $jadwal->kode_jam_kerja
             ]);
         }
     }
