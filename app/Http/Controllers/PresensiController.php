@@ -624,32 +624,32 @@ class PresensiController extends Controller
 
     public function storefrommachine()
     {
-        // $original_data  = file_get_contents('php://input');
-        // $decoded_data   = json_decode($original_data, true);
-        // $encoded_data   = json_encode($decoded_data);
-        // $hariini        = date("Y-m-d");
-        // $data           = $decoded_data['data'];
-        // $pin            = $data['pin'];
-        // $status_scan    = $data['status_scan'];
-        // $scan           = $data['scan'];
-        $nik            = '21.02.232';
-        $karyawan       = DB::table('master_karyawan')->where('nik', $nik)->first();
+        $original_data  = file_get_contents('php://input');
+        $decoded_data   = json_decode($original_data, true);
+        $encoded_data   = json_encode($decoded_data);
+        $hariini        = date("Y-m-d");
+        $data           = $decoded_data['data'];
+        $pin            = $data['pin'];
+        $status_scan    = $data['status_scan'];
+        $scan           = $data['scan'];
+        // $nik            = '21.02.232';
+        $karyawan       = DB::table('master_karyawan')->where('pin', $pin)->first();
         $kode_jadwal    = $karyawan->kode_jadwal;
         $hariini        = $this->hari_ini();
         $jadwal = DB::table('jadwal_kerja_detail')
             ->join('jadwal_kerja', 'jadwal_kerja_detail.kode_jadwal', '=', 'jadwal_kerja.kode_jadwal')
             ->where('hari', $hariini)->where('jadwal_kerja_detail.kode_jadwal', $kode_jadwal)->first();
 
-        dd($jadwal->kode_jam_kerja);
-        // if ($status_scan == 0) {
-        //     DB::table('presensi')->insert([
-        //         'nik' => $karyawan->nik,
-        //         'tgl_presensi' => $hariini,
-        //         'status' => $status_scan,
-        //         'keterangan' => $scan,
-        //         'jam_in' => $scan,
-        //         'kode_jam_kerja' => $jadwal->kode_jam_kerja
-        //     ]);
-        // }
+
+        if ($status_scan == 0) {
+            DB::table('presensi')->insert([
+                'nik' => $karyawan->nik,
+                'tgl_presensi' => $hariini,
+                'status' => $status_scan,
+                'keterangan' => $scan,
+                'jam_in' => $scan,
+                'kode_jam_kerja' => $jadwal->kode_jam_kerja
+            ]);
+        }
     }
 }
