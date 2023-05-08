@@ -641,15 +641,14 @@ class PresensiController extends Controller
             ->where('hari', $hariini)->where('jadwal_kerja_detail.kode_jadwal', $kode_jadwal)->first();
 
 
-        if ($status_scan == 0) {
-            DB::table('presensi')->insert([
-                'nik' => $karyawan->nik,
-                'tgl_presensi' => $tglhariini,
-                'status' => $status_scan,
-                'keterangan' => $scan,
-                'jam_in' => $scan,
-                'kode_jam_kerja' => $jadwal->kode_jam_kerja
-            ]);
-        }
+
+        DB::table('presensi')->insert([
+            'nik' => $karyawan->nik,
+            'tgl_presensi' => $tglhariini,
+            'status' => $status_scan,
+            'keterangan' => $scan,
+            'jam_in' => $scan,
+            'kode_jam_kerja' => $jadwal->kode_jam_kerja
+        ]);
     }
 }
