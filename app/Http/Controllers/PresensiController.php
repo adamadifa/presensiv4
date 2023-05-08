@@ -642,14 +642,16 @@ class PresensiController extends Controller
 
 
         if ($status_scan == 0) {
-            DB::table('presensi')->insert([
-                'nik' => $karyawan->nik,
-                'tgl_presensi' => $tglhariini,
-                'status' => $status_scan,
-                'keterangan' => $scan,
-                'jam_in' => $scan,
-                'kode_jam_kerja' => $jadwal->kode_jam_kerja
-            ]);
+            $cek = DB::table('presensi')->where('nik', $karyawan->nik)->where('tgl_presensi', $tglhariini)->count();
+            if ($cek == 0) {
+                DB::table('presensi')->insert([
+                    'nik' => $karyawan->nik,
+                    'tgl_presensi' => $tglhariini,
+                    'status' => $status_scan,
+                    'jam_in' => $scan,
+                    'kode_jam_kerja' => $jadwal->kode_jam_kerja
+                ]);
+            }
         } else if ($status_scan == 1) {
             DB::table('presensi')
                 ->where('nik', $karyawan->nik)
