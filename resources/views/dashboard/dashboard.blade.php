@@ -308,6 +308,10 @@
                                             @php
                                             $status="Sakit";
                                             @endphp
+                                            @else
+                                            @php
+                                            $status = "";
+                                            @endphp
                                             @endif
 
 
