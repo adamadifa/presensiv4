@@ -125,6 +125,13 @@ class PresensiController extends Controller
 
         $jam_sekarang = date("H:i:s");
 
+
+        //cek Izin Terlambat
+
+        $cekizinterlambat = DB::table('pengajuan_izin')->where('nik', $nik)->where('dari', $tgl_presensi)->where('jenis_izin', 'TL')->where('status_approved', 1)->first();
+
+        $kode_izin = $cekizinterlambat != null  ? $cekizinterlambat->kode_izin : NULL;
+
         if ($radius > $lok_kantor->radius_cabang) {
             echo "error|Maaf Anda Berada Diluar Radius, Jarak Anda " . $radius . " meter dari Kantor|radius";
         } else {
@@ -151,7 +158,8 @@ class PresensiController extends Controller
                     'jam_in' => $jam,
                     'lokasi_in' => $lokasi,
                     'kode_jam_kerja' => $jadwal->kode_jam_kerja,
-                    'status' => 'h'
+                    'status' => 'h',
+                    'kode_izin_terlambat' => $kode_izin
                 ];
                 if ($jam_sekarang <= $jam_kerja->awal_jam_masuk) {
                     echo "error|Belum Waktunya Melakukan Presensi Masuk !|error";
@@ -364,7 +372,8 @@ class PresensiController extends Controller
             'jenis_izin' => $jenis_izin,
             'jam_pulang' => $jam_pulang,
             'jam_keluar' => $jam_keluar,
-            'jenis_cuti' => $jenis_cuti
+            'jenis_cuti' => $jenis_cuti,
+            'created_by' => 'user'
         ];
 
         try {
