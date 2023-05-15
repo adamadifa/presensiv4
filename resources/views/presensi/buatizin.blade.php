@@ -197,9 +197,9 @@
     $(document).ready(function() {
 
 
-        $("#jam_pulang").datetimepicker({
-            format: "HH:mm:ss"
-        });
+        // $("#jam_pulang").datetimepicker({
+        //     format: "HH:mm:ss"
+        // });
 
         function hidesid() {
             $("#fileUpload1").hide();
