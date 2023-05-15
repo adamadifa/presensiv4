@@ -151,7 +151,7 @@ class PinjamanController extends Controller
                 $jumlah_pinjaman = $cekpinjaman->jumlah_pinjaman;
                 $minpembayar = (75 / 100) * $jumlah_pinjaman;
                 if ($cekpinjaman->totalpembayaran >= $minpembayar) {
-                    return view('pinjaman.create', compact('karyawan', 'gaji', 'jmk', 'kontrak'));
+                    return view('pinjaman.simulasi', compact('karyawan', 'gaji', 'jmk', 'kontrak'));
                 } else {
                     return view('pinjaman.notiftopup', compact('cekpinjaman'));
                 }
