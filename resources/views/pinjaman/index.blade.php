@@ -118,4 +118,9 @@
         @endforeach
     </div>
 </div>
+<div class="fab-button bottom-right" style="margin-bottom:70px">
+    <a href="/pinjaman/simulasi" class="fab bg-danger">
+        <ion-icon name="calculator-outline"></ion-icon>
+    </a>
+</div>
 @endsection

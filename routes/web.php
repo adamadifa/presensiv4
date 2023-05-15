@@ -76,6 +76,7 @@ Route::middleware(['auth:karyawan'])->group(function () {
 
     Route::get('/pinjaman', [PinjamanController::class, 'index']);
     Route::get('/pinjaman/{no_pinjaman}/show', [PinjamanController::class, 'show']);
+    Route::get('/pinjaman/simulasi', [PinjamanController::class, 'simulasi']);
 });
 
 
