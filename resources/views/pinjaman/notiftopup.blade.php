@@ -131,7 +131,7 @@ function rupiah($nilai)
             <h4 class="alert-title">Warning</h4>
             <p>Karyawan Tidak Dapat Mengajukan Pinjaman Karena Masih Memiliki Pinjaman Yang Belum Lunas, Untuk Melakukan Pinjaman Kembali Min. Sudah Membayar 75% dari Total Pinjaman Sebelumnya
                 <br>
-                <table class="table">
+                <table class="table" style="color:white !important">
                     <tr>
                         <th>No. Pinjaman</th>
                         <td>{{ $cekpinjaman->no_pinjaman }}</td>
