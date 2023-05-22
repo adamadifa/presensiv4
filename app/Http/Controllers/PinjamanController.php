@@ -136,29 +136,29 @@ class PinjamanController extends Controller
 
         $jenis_sp = $sp != null ? $sp->ket : '';
         $id_kantor = $karyawan->id_kantor;
-
+        return view('pinjaman.simulasi', compact('karyawan', 'gaji', 'jmk', 'kontrak'));
         //echo $jenis_sp . "-" . $id_kantor;
-        if (
-            $sp != null && $jenis_sp == "SP3" && $id_kantor == "PST"
-            || $sp != null && $jenis_sp == "SP2" && $id_kantor == "PST"
-            || $sp != null && $jenis_sp == "SP1" && $id_kantor != "PST"
-        ) {
-            return view('pinjaman.notifsp', compact('sp'));
-        } else if ($karyawan->status_karyawan == "K" && $cekmasakerja < 15) {
-            return view('pinjaman.notifmasakerjakurang', compact('cekmasakerja'));
-        } else {
-            if ($cekpinjaman != null) {
-                $jumlah_pinjaman = $cekpinjaman->jumlah_pinjaman;
-                $minpembayar = (75 / 100) * $jumlah_pinjaman;
-                if ($cekpinjaman->totalpembayaran >= $minpembayar) {
-                    return view('pinjaman.simulasi', compact('karyawan', 'gaji', 'jmk', 'kontrak'));
-                } else {
-                    return view('pinjaman.notiftopup', compact('cekpinjaman'));
-                }
-            } else {
-                return view('pinjaman.simulasi', compact('karyawan', 'gaji', 'jmk', 'kontrak'));
-                // return view('pinjaman.create2', compact('karyawan', 'gaji', 'jmk', 'kontrak'));
-            }
-        }
+        // if (
+        //     $sp != null && $jenis_sp == "SP3" && $id_kantor == "PST"
+        //     || $sp != null && $jenis_sp == "SP2" && $id_kantor == "PST"
+        //     || $sp != null && $jenis_sp == "SP1" && $id_kantor != "PST"
+        // ) {
+        //     return view('pinjaman.notifsp', compact('sp'));
+        // } else if ($karyawan->status_karyawan == "K" && $cekmasakerja < 15) {
+        //     return view('pinjaman.notifmasakerjakurang', compact('cekmasakerja'));
+        // } else {
+        //     if ($cekpinjaman != null) {
+        //         $jumlah_pinjaman = $cekpinjaman->jumlah_pinjaman;
+        //         $minpembayar = (75 / 100) * $jumlah_pinjaman;
+        //         if ($cekpinjaman->totalpembayaran >= $minpembayar) {
+        //             return view('pinjaman.simulasi', compact('karyawan', 'gaji', 'jmk', 'kontrak'));
+        //         } else {
+        //             return view('pinjaman.notiftopup', compact('cekpinjaman'));
+        //         }
+        //     } else {
+        //         return view('pinjaman.simulasi', compact('karyawan', 'gaji', 'jmk', 'kontrak'));
+        //         // return view('pinjaman.create2', compact('karyawan', 'gaji', 'jmk', 'kontrak'));
+        //     }
+        // }
     }
 }
