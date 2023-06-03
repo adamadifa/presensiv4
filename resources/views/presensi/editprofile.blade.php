@@ -32,6 +32,9 @@
             {{ $messageerror }}
         </div>
         @endif
+        @error('foto')
+        <div class="alert alert-danger">{{ $message }}</div>
+        @endif
         <div class="form-group boxed">
             <div class="input-wrapper">
                 <input type="text" class="form-control" value="{{ $karyawan->nama_karyawan }}" name="nama_lengkap" placeholder="Nama Lengkap" autocomplete="off">
