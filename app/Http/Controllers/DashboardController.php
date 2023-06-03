@@ -22,15 +22,16 @@ class DashboardController extends Controller
             ->select('presensi.*', 'nama_jadwal', 'jam_kerja.jam_masuk', 'jenis_izin', 'nama_cuti', 'sid')
             ->leftJoin(
                 DB::raw("(
-            SELECT
+                SELECT
+                    jadwal_kerja_detail.kode_jadwal,nama_jadwal,kode_jam_kerja
+                FROM
+                    jadwal_kerja_detail
+                INNER JOIN jadwal_kerja ON jadwal_kerja_detail.kode_jadwal = jadwal_kerja.kode_jadwal
+                GROUP BY
                 jadwal_kerja_detail.kode_jadwal,nama_jadwal,kode_jam_kerja
-            FROM
-                jadwal_kerja_detail
-            INNER JOIN jadwal_kerja ON jadwal_kerja_detail.kode_jadwal = jadwal_kerja.kode_jadwal
-            GROUP BY
-            jadwal_kerja_detail.kode_jadwal,nama_jadwal,kode_jam_kerja
-            ) jadwal"),
+                ) jadwal"),
                 function ($join) {
+                    $join->on('presensi.kode_jadwal', '=', 'jadwal.kode_jadwal');
                     $join->on('presensi.kode_jam_kerja', '=', 'jadwal.kode_jam_kerja');
                 }
             )
@@ -44,6 +45,7 @@ class DashboardController extends Controller
             ->get();
 
 
+        //dd($historibulanini);
         $rekappresensi = DB::table('presensi')
             ->selectRaw('SUM(IF(status="h",1,0)) as jmlhadir,
             SUM(IF(status="i",1,0)) as jmlizin,

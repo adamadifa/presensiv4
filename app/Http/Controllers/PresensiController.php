@@ -140,16 +140,23 @@ class PresensiController extends Controller
                     'jam_out' => $jam,
                     'lokasi_out' => $lokasi
                 ];
-                if ($jam_sekarang <= $jam_kerja->jam_pulang) {
-                    echo "error|Belum Waktunya Melakukan Presensi Pulang !|error";
+                // if ($jam_sekarang <= $jam_kerja->jam_pulang) {
+                //     echo "error|Belum Waktunya Melakukan Presensi Pulang !|error";
+                // } else {
+                //     $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->update($data_pulang);
+                //     if ($update) {
+                //         echo "success|Terimkasih, Hati Hati Di Jalan|out";
+                //         // Storage::put($file, $image_base64);
+                //     } else {
+                //         echo "error|Maaf Gagal absen, Hubungi Tim It|out";
+                //     }
+                // }
+                $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->update($data_pulang);
+                if ($update) {
+                    echo "success|Terimkasih, Hati Hati Di Jalan|out";
+                    // Storage::put($file, $image_base64);
                 } else {
-                    $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->update($data_pulang);
-                    if ($update) {
-                        echo "success|Terimkasih, Hati Hati Di Jalan|out";
-                        // Storage::put($file, $image_base64);
-                    } else {
-                        echo "error|Maaf Gagal absen, Hubungi Tim It|out";
-                    }
+                    echo "error|Maaf Gagal absen, Hubungi Tim It|out";
                 }
             } else {
                 $data = [
@@ -157,6 +164,7 @@ class PresensiController extends Controller
                     'tgl_presensi' => $tgl_presensi,
                     'jam_in' => $jam,
                     'lokasi_in' => $lokasi,
+                    'kode_jadwal' => $kode_jadwal,
                     'kode_jam_kerja' => $jadwal->kode_jam_kerja,
                     'status' => 'h',
                     'kode_izin_terlambat' => $kode_izin
@@ -203,6 +211,10 @@ class PresensiController extends Controller
         $nik = Auth::guard('karyawan')->user()->nik;
         $nama_lengkap = $request->nama_lengkap;
         $no_hp = $request->no_hp;
+        $this->validate($request, [
+            // check validtion for image or file
+            'foto' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:1024',
+        ]);
         $password = Hash::make($request->password);
         $karyawan = DB::table('master_karyawan')->where('nik', $nik)->first();
         if ($request->hasFile('foto')) {
