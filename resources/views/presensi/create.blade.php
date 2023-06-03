@@ -90,22 +90,7 @@ return ($result);
         <div id="map"></div>
     </div>
 </div>
-<div class="row mt-2">
-    <div class="col">
-        @if ($cek > 0)
-        <button id="takeabsen" class="btn btn-danger btn-block">
-            <ion-icon name="finger-print-outline"></ion-icon>
-            Scan Pulang
-        </button>
-        @else
-        <button id="takeabsen" class="btn btn-success btn-block">
-            <ion-icon name="finger-print-outline"></ion-icon>
-            Scan Masuk
-        </button>
-        @endif
 
-    </div>
-</div>
 
 <div class="row mt-2">
     <div class="col">
@@ -131,6 +116,22 @@ return ($result);
                 <td>{{ $jam_kerja->jam_pulang }}</td>
             </tr>
         </table>
+    </div>
+</div>
+<div class="row mt-2">
+    <div class="col">
+        @if ($cek > 0)
+        <button id="takeabsen" class="btn btn-danger btn-block">
+            <ion-icon name="finger-print-outline"></ion-icon>
+            Scan Pulang
+        </button>
+        @else
+        <button id="takeabsen" class="btn btn-success btn-block">
+            <ion-icon name="finger-print-outline"></ion-icon>
+            Scan Masuk
+        </button>
+        @endif
+
     </div>
 </div>
 
