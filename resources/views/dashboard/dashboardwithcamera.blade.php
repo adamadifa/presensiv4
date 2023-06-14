@@ -76,9 +76,16 @@
             @endif
         </div>
         <div id="user-info">
-            <h3 id="user-name">{{ Auth::guard('karyawan')->user()->nama_karyawan }}</h3>
+            @php
+            $nk =Auth::guard('karyawan')->user()->nama_karyawan;
+            $namakar = explode(" ",$nk);
+            $lastname = count($namakar) > 1 ? $namakar[1] : '';
+            $namakaryawan = $namakar[0]." ".$lastname;
+            @endphp
+            <h3 id="user-name">{{ $namakaryawan }}</h3>
             <span id="user-role">{{ $jabatan->nama_jabatan }}</span>
             <span id="user-role">({{ Auth::guard('karyawan')->user()->id_kantor }})</span>
+            <h3 id="user-name" style="margin-top:10px !important">{{ Auth::guard('karyawan')->user()->nik }}</h3>
         </div>
     </div>
 </div>
@@ -140,15 +147,21 @@
                     <div class="card-body">
                         <div class="presencecontent">
                             <div class="iconpresence">
-                                {{-- @if ($presensihariini != null)
+                                @if ($presensihariini != null && $presensihariini->jam_in != null)
                                 @php
                                 $path = Storage::url('uploads/absensi/'.$presensihariini->foto_in);
+                                $src = "uploads/absensi/".$presensihariini->foto_in;
+                                $cekimage = Storage::disk('public')->exists($src);
                                 @endphp
+                                @if ($cekimage)
                                 <img src="{{ url($path) }}" alt="" class="imaged w48">
                                 @else
                                 <ion-icon name="camera"></ion-icon>
-                                @endif --}}
-                                <ion-icon name="finger-print-outline"></ion-icon>
+                                @endif
+                                @else
+                                <ion-icon name="camera"></ion-icon>
+                                @endif
+                                {{-- <ion-icon name="finger-print-outline"></ion-icon> --}}
                             </div>
                             <div class="presencedetail">
                                 <h4 class="presencetitle">Masuk</h4>
@@ -163,15 +176,21 @@
                     <div class="card-body">
                         <div class="presencecontent">
                             <div class="iconpresence">
-                                {{-- @if ($presensihariini != null && $presensihariini->jam_out != null )
+                                @if ($presensihariini != null && $presensihariini->jam_out != null)
                                 @php
                                 $path = Storage::url('uploads/absensi/'.$presensihariini->foto_out);
+                                $src = "uploads/absensi/".$presensihariini->foto_out;
+                                $cekimage = Storage::disk('public')->exists($src);
                                 @endphp
+                                @if ($cekimage)
                                 <img src="{{ url($path) }}" alt="" class="imaged w48">
                                 @else
                                 <ion-icon name="camera"></ion-icon>
-                                @endif --}}
-                                <ion-icon name="finger-print-outline"></ion-icon>
+                                @endif
+                                @else
+                                <ion-icon name="camera"></ion-icon>
+                                @endif
+                                {{-- <ion-icon name="finger-print-outline"></ion-icon> --}}
                             </div>
                             <div class="presencedetail">
                                 <h4 class="presencetitle">Pulang</h4>
@@ -241,7 +260,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" data-toggle="tab" href="#profile" role="tab">
-                        Lembur/Overtime
+                        Lembur / Overtime
                     </a>
                 </li>
             </ul>
@@ -264,7 +283,6 @@
                                             <ion-icon name="finger-print-outline" class="text-success" style="font-size: 48px"></ion-icon>
                                         </div>
                                         <div class="datepresence">
-
                                             <h4>{{ DateToIndo2($d->tgl_presensi) }}</h4>
                                             <span class="timepresence">{!! $d->jam_in != null ? date("H:i",strtotime($d->jam_in)) : '<span class="danger">Belum Scan</span>' !!} {!! $d->jam_out != null ? "- ".date("H:i",strtotime($d->jam_out)) : '<span class="danger"> - Belum Scan</span>' !!}</span><br>
                                             {{-- @if (date("H:i:s",strtotime($d->jam_in)) <= $d->jam_masuk)
@@ -372,7 +390,7 @@
                                                     }
                                                 } else {
                                                     if ($jamterlambat < 1) {
-                                                    $denda = 0;
+                                                        $denda = 0;
                                                     }else{
                                                         $denda="pj";
                                                     }

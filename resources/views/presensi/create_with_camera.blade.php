@@ -23,7 +23,7 @@
     }
 
     #map {
-        height: 250px;
+        height: 130px;
     }
 
 </style>
@@ -32,7 +32,7 @@
 
         background-color: #27272783;
         position: absolute;
-        top: 60px;
+        top: 70px;
         right: 5px;
         z-index: 9999;
         width: 150px;
@@ -45,7 +45,7 @@
     .jam-digital-malasngoding p {
         color: #fff;
         font-size: 16px;
-        text-align: center;
+        text-align: left;
         margin-top: 0;
         margin-bottom: 0;
     }
@@ -75,12 +75,12 @@ return ($result);
 }
 @endphp
 <input type="hidden" id="lokasi">
-{{-- <div class="row" style="margin-top: 70px">
+<div class="row" style="margin-top: 60px">
     <div class="col">
 
         <div class="webcam-capture"></div>
     </div>
-</div> --}}
+</div>
 <div class="jam-digital-malasngoding">
     <p>{{ DateToIndo2(date('Y-m-d'))}}</p>
     <p id="jam"></p>
@@ -94,32 +94,12 @@ return ($result);
         <span>{{ date("H:i",strtotime($jam_kerja->jam_pulang)) }}</span>
     </p>
 </div>
-<div class="row" style="margin-top: 60px">
+<div class="row">
     <div class="col">
         <div id="map"></div>
     </div>
 </div>
 
-
-{{-- <div class="row mt-2">
-    <div class="col">
-        <table class="table table-striped">
-            <tr>
-                <th>Jadwal</th>
-                <td>{{ $jadwal->nama_jadwal }}</td>
-</tr>
-
-<tr>
-    <th>Jam Masuk</th>
-    <td>{{ $jam_kerja->jam_masuk }}</td>
-</tr>
-<tr>
-    <th>Jam Pulang</th>
-    <td>{{ $jam_kerja->jam_pulang }}</td>
-</tr>
-</table>
-</div>
-</div> --}}
 <div class="row mt-2">
     <div class="col d-flex justify-content-between">
         <button class="btn btn-success takeabsen" statuspresensi="masuk" style="height: 100px !important">
@@ -130,10 +110,6 @@ return ($result);
             <ion-icon name="finger-print-outline" style="font-size: 32px !important"></ion-icon>
             <span style="font-size:16px">Scan Pulang</span>
         </button>
-
-
-
-
     </div>
 </div>
 
@@ -177,14 +153,14 @@ return ($result);
     var notifikasi_in = document.getElementById('notifikasi_in');
     var notifikasi_out = document.getElementById('notifikasi_out');
     var radius_sound = document.getElementById('radius_sound');
-    // Webcam.set({
-    //     height: 480
-    //     , width: 640
-    //     , image_format: 'jpeg'
-    //     , jpeg_quality: 80
-    // });
+    Webcam.set({
+        height: 480
+        , width: 640
+        , image_format: 'jpeg'
+        , jpeg_quality: 80
+    });
 
-    // Webcam.attach('.webcam-capture');
+    Webcam.attach('.webcam-capture');
 
     var lokasi = document.getElementById('lokasi');
     if (navigator.geolocation) {
@@ -217,9 +193,9 @@ return ($result);
     }
 
     $(".takeabsen").click(function(e) {
-        // Webcam.snap(function(uri) {
-        //     image = uri;
-        // });
+        Webcam.snap(function(uri) {
+            image = uri;
+        });
         var lokasi = $("#lokasi").val();
         var statuspresensi = $(this).attr('statuspresensi');
         $.ajax({
@@ -229,6 +205,7 @@ return ($result);
                 _token: "{{ csrf_token() }}"
                 , lokasi: lokasi
                 , statuspresensi: statuspresensi
+                , image: image
             }
             , cache: false
             , success: function(respond) {

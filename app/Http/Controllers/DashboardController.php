@@ -19,11 +19,12 @@ class DashboardController extends Controller
         $nik = Auth::guard('karyawan')->user()->nik;
         $presensihariini = DB::table('presensi')->where('nik', $nik)->where('tgl_presensi', $hariini)->first();
         $historibulanini = DB::table('presensi')
-            ->select('presensi.*', 'nama_jadwal', 'jam_kerja.jam_masuk', 'jenis_izin', 'nama_cuti', 'sid')
+            ->select('presensi.*', 'nama_jadwal', 'jadwal.kode_cabang', 'jam_kerja.jam_masuk', 'jenis_izin', 'nama_cuti', 'sid', 'kode_dept', 'pengajuan_izin.jam_keluar', 'pengajuan_izin.jam_masuk as jam_masuk_kk', 'jam_kerja.jam_pulang', 'total_jam', 'master_karyawan.kode_dept')
+            ->join('master_karyawan', 'presensi.nik', '=', 'master_karyawan.nik')
             ->leftJoin(
                 DB::raw("(
                 SELECT
-                    jadwal_kerja_detail.kode_jadwal,nama_jadwal,kode_jam_kerja
+                    jadwal_kerja_detail.kode_jadwal,nama_jadwal,kode_jam_kerja,kode_cabang
                 FROM
                     jadwal_kerja_detail
                 INNER JOIN jadwal_kerja ON jadwal_kerja_detail.kode_jadwal = jadwal_kerja.kode_jadwal
@@ -45,7 +46,7 @@ class DashboardController extends Controller
             ->get();
 
 
-        //dd($historibulanini);
+
         $rekappresensi = DB::table('presensi')
             ->selectRaw('SUM(IF(status="h",1,0)) as jmlhadir,
             SUM(IF(status="i",1,0)) as jmlizin,
@@ -78,7 +79,13 @@ class DashboardController extends Controller
         //     ->first();
 
         $jabatan = DB::table('hrd_jabatan')->where('id', Auth::guard('karyawan')->user()->id_jabatan)->first();
-        return view('dashboard.dashboard', compact('presensihariini', 'historibulanini', 'namabulan', 'bulanini', 'tahunini', 'rekappresensi', 'leaderboard', 'jabatan'));
+        $kode_dept = Auth::guard('karyawan')->user()->kode_dept;
+        $id_kantor = Auth::guard('karyawan')->user()->id_kantor;
+        if ($kode_dept == "MKT" || $id_kantor != "PST") {
+            return view('dashboard.dashboardwithcamera', compact('presensihariini', 'historibulanini', 'namabulan', 'bulanini', 'tahunini', 'rekappresensi', 'leaderboard', 'jabatan'));
+        } else {
+            return view('dashboard.dashboard', compact('presensihariini', 'historibulanini', 'namabulan', 'bulanini', 'tahunini', 'rekappresensi', 'leaderboard', 'jabatan'));
+        }
     }
 
     public function dashboardadmin()
@@ -94,6 +101,8 @@ class DashboardController extends Controller
             ->where('tgl_izin', $hariini)
             ->where('status_approved', 1)
             ->first();
+
+
         return view('dashboard.dashboardadmin', compact('rekappresensi', 'rekapizin'));
     }
 }

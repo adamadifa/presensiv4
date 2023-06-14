@@ -69,24 +69,79 @@ class PresensiController extends Controller
     {
         $hariini = date("Y-m-d");
         $nik = Auth::guard('karyawan')->user()->nik;
-        $cek = DB::table('presensi')->where('tgl_presensi', $hariini)->where('nik', $nik)->count();
-        $kode_cabang = Auth::guard('karyawan')->user()->id_kantor;
+        $cekperjalanandinas = DB::table('pengajuan_izin')
+            ->where('status', 'p')
+            ->whereRaw('"' . $hariini . '" >= dari')
+            ->whereRaw('"' . $hariini . '" <= sampai')
+            ->where('nik', $nik)
+            ->first();
+        if ($cekperjalanandinas != null) {
+            $kode_cabang = $cekperjalanandinas->kode_cabang;
+        } else {
+            $kode_cabang = Auth::guard('karyawan')->user()->id_kantor;
+        }
+
+        //$kode_cabang = Auth::guard('karyawan')->user()->id_kantor;
         $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
-        $kode_jadwal = Auth::guard('karyawan')->user()->kode_jadwal;
+        //dd($lok_kantor);
+        $cek = DB::table('presensi')->where('tgl_presensi', $hariini)->where('nik', $nik)->count();
+
+        $cekjadwalshift = DB::table('konfigurasi_jadwalkerja_detail')
+            ->join('konfigurasi_jadwalkerja', 'konfigurasi_jadwalkerja_detail.kode_setjadwal', '=', 'konfigurasi_jadwalkerja.kode_setjadwal')
+            ->whereRaw('"' . $hariini . '" >= dari')
+            ->whereRaw('"' . $hariini . '" <= sampai')
+            ->where('nik', $nik)
+            ->first();
+
+        $cekgantishift = DB::table('konfigurasi_gantishift')->where('tanggal', $hariini)->where('nik', $nik)->first();
+        if ($cekgantishift != null) {
+            $kode_jadwal = $cekgantishift->kode_jadwal;
+        } else if ($cekjadwalshift != null) {
+            $kode_jadwal = $cekjadwalshift->kode_jadwal;
+        } else if ($cekperjalanandinas != null) {
+            $cekjadwaldinas = DB::table('jadwal_kerja')
+                ->where('nama_jadwal', 'NON SHIFT')
+                ->where('kode_cabang', $cekperjalanandinas->kode_cabang)->first();
+            $kode_jadwal = $cekjadwaldinas->kode_jadwal;
+        } else {
+            $kode_jadwal = Auth::guard('karyawan')->user()->kode_jadwal;
+        }
         $hariini = $this->hari_ini();
         $jadwal = DB::table('jadwal_kerja_detail')
             ->join('jadwal_kerja', 'jadwal_kerja_detail.kode_jadwal', '=', 'jadwal_kerja.kode_jadwal')
             ->where('hari', $hariini)->where('jadwal_kerja_detail.kode_jadwal', $kode_jadwal)->first();
+        if ($jadwal == null) {
+            return view('presensi.notifjadwal');
+        }
         $jam_kerja = DB::table('jam_kerja')->where('kode_jam_kerja', $jadwal->kode_jam_kerja)->first();
-        return view('presensi.create', compact('cek', 'lok_kantor', 'jam_kerja', 'jadwal'));
+
+        $kode_dept =  Auth::guard('karyawan')->user()->kode_dept;
+        $id_kantor =  Auth::guard('karyawan')->user()->id_kantor;
+        if ($kode_dept == "MKT" || $id_kantor != "PST" || $kode_dept == "ADT") {
+            return view('presensi.create_with_camera', compact('cek', 'lok_kantor', 'jam_kerja', 'jadwal'));
+        } else {
+            return view('presensi.create', compact('cek', 'lok_kantor', 'jam_kerja', 'jadwal'));
+        }
     }
 
     public function store(Request $request)
     {
 
         $nik = Auth::guard('karyawan')->user()->nik;
-        $kode_cabang = Auth::guard('karyawan')->user()->id_kantor;
         $tgl_presensi = date("Y-m-d");
+        $cekperjalanandinas = DB::table('pengajuan_izin')
+            ->where('status', 'p')
+            ->whereRaw('"' . $tgl_presensi . '" >= dari')
+            ->whereRaw('"' . $tgl_presensi . '" <= sampai')
+            ->where('nik', $nik)
+            ->first();
+        if ($cekperjalanandinas != null) {
+            $kode_cabang = $cekperjalanandinas->kode_cabang;
+        } else {
+            $kode_cabang = Auth::guard('karyawan')->user()->id_kantor;
+        }
+
+        $lastday = date('Y-m-d', strtotime('-1 day', strtotime($tgl_presensi)));
         $jam = date("Y-m-d H:i:s");
         $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
         $lok = explode(",", $lok_kantor->lokasi_cabang);
@@ -96,25 +151,62 @@ class PresensiController extends Controller
         $lokasiuser = explode(",", $lokasi);
         $latitudeuser = $lokasiuser[0];
         $longitudeuser = $lokasiuser[1];
+        $statuspresensi = $request->statuspresensi;
+        if ($statuspresensi == "masuk") {
+            $ket = "in";
+        } else {
+            $ket = "out";
+        }
+        if (isset($request->image)) {
+            $image = $request->image;
+            $folderPath = "public/uploads/absensi/";
+            $formatName = $nik . "-" . $tgl_presensi . "-" . $ket;
+            $image_parts = explode(";base64", $image);
+            $image_base64 = base64_decode($image_parts[1]);
+            $fileName = $formatName . ".png";
+            $file = $folderPath . $fileName;
+        } else {
+            $fileName = null;
+        }
+        $cekjadwalshift = DB::table('konfigurasi_jadwalkerja_detail')
+            ->join('konfigurasi_jadwalkerja', 'konfigurasi_jadwalkerja_detail.kode_setjadwal', '=', 'konfigurasi_jadwalkerja.kode_setjadwal')
+            ->whereRaw('"' . $tgl_presensi . '" >= dari')
+            ->whereRaw('"' . $tgl_presensi . '" <= sampai')
+            ->where('nik', $nik)
+            ->first();
 
-        $kode_jadwal = Auth::guard('karyawan')->user()->kode_jadwal;
+        $cekgantishift = DB::table('konfigurasi_gantishift')->where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
+        if ($cekgantishift != null) {
+            $kode_jadwal = $cekgantishift->kode_jadwal;
+        } else if ($cekjadwalshift != null) {
+            $kode_jadwal = $cekjadwalshift->kode_jadwal;
+        } else if ($cekperjalanandinas != null) {
+            $cekjadwaldinas = DB::table('jadwal_kerja')
+                ->where('nama_jadwal', 'NON SHIFT')
+                ->where('kode_cabang', $cekperjalanandinas->kode_cabang)->first();
+            $kode_jadwal = $cekjadwaldinas->kode_jadwal;
+        } else {
+            $kode_jadwal = Auth::guard('karyawan')->user()->kode_jadwal;
+        }
         $hariini = $this->hari_ini();
         $jadwal = DB::table('jadwal_kerja_detail')
             ->join('jadwal_kerja', 'jadwal_kerja_detail.kode_jadwal', '=', 'jadwal_kerja.kode_jadwal')
-            ->where('hari', $hariini)->where('jadwal_kerja_detail.kode_jadwal', $kode_jadwal)->first();
+            ->where('hari', $hariini)->where('jadwal_kerja_detail.kode_jadwal', $kode_jadwal)
+            ->first();
         $jam_kerja = DB::table('jam_kerja')->where('kode_jam_kerja', $jadwal->kode_jam_kerja)->first();
+        $lintashari  = $jam_kerja->lintashari;
 
 
         $jarak = $this->distance($latitudekantor, $longitudekantor, $latitudeuser, $longitudeuser);
         $radius = round($jarak["meters"]);
 
-        $cek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->count();
+        $cek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->first();
 
-        if ($cek > 0) {
-            $ket = "out";
-        } else {
-            $ket = "in";
-        }
+        // if ($statuspresensi == "pulang") {
+        //     $ket = "out";
+        // } else {
+        //     $ket = "in";
+        // }
         // $image = $request->image;
         // $folderPath = "public/uploads/absensi/";
         // $formatName = $nik . "-" . $tgl_presensi . "-" . $ket;
@@ -132,57 +224,102 @@ class PresensiController extends Controller
 
         $kode_izin = $cekizinterlambat != null  ? $cekizinterlambat->kode_izin : NULL;
 
-        if ($radius > $lok_kantor->radius_cabang) {
+        $kode_dept = Auth::guard('karyawan')->user()->kode_dept;
+        if ($radius > $lok_kantor->radius_cabang && $kode_dept != "MKT") {
             echo "error|Maaf Anda Berada Diluar Radius, Jarak Anda " . $radius . " meter dari Kantor|radius";
         } else {
-            if ($cek > 0) {
-                $data_pulang = [
-                    'jam_out' => $jam,
-                    'lokasi_out' => $lokasi
+            if ($statuspresensi == "masuk" && $cek != null && !empty($cek->jam_in)) {
+                echo "error|Maaf Gagal absen, Anda Sudah Melakukan Presensi Masuk|in";
+            } else if ($statuspresensi == "masuk" && $cek != null && empty($cek->jam_in)) {
+                $data_masuk = [
+                    'jam_in' => $jam,
+                    'foto_in' => $fileName,
+                    'lokasi_in' => $lokasi
                 ];
-                // if ($jam_sekarang <= $jam_kerja->jam_pulang) {
-                //     echo "error|Belum Waktunya Melakukan Presensi Pulang !|error";
-                // } else {
-                //     $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->update($data_pulang);
-                //     if ($update) {
-                //         echo "success|Terimkasih, Hati Hati Di Jalan|out";
-                //         // Storage::put($file, $image_base64);
-                //     } else {
-                //         echo "error|Maaf Gagal absen, Hubungi Tim It|out";
-                //     }
-                // }
-                $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->update($data_pulang);
+                $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->update($data_masuk);
                 if ($update) {
-                    echo "success|Terimkasih, Hati Hati Di Jalan|out";
+                    echo "success|Terimkasih, Selamat Bekerja|in";
+                    if (isset($request->image)) {
+                        Storage::put($file, $image_base64);
+                    }
                     // Storage::put($file, $image_base64);
                 } else {
-                    echo "error|Maaf Gagal absen, Hubungi Tim It|out";
+                    echo "error|Maaf Gagal absen, Hubungi Tim It|in";
                 }
-            } else {
+            } else if ($statuspresensi == "masuk" && $cek == null) {
                 $data = [
                     'nik' => $nik,
                     'tgl_presensi' => $tgl_presensi,
                     'jam_in' => $jam,
+                    'foto_in' => $fileName,
                     'lokasi_in' => $lokasi,
                     'kode_jadwal' => $kode_jadwal,
                     'kode_jam_kerja' => $jadwal->kode_jam_kerja,
                     'status' => 'h',
-                    'kode_izin_terlambat' => $kode_izin
                 ];
-                if ($jam_sekarang <= $jam_kerja->awal_jam_masuk) {
-                    echo "error|Belum Waktunya Melakukan Presensi Masuk !|error";
+
+                $simpan = DB::table('presensi')->insert($data);
+                if ($simpan) {
+                    echo "success|Terimkasih, Selamat Bekerja|in";
+                    if (isset($request->image)) {
+                        Storage::put($file, $image_base64);
+                    }
+                    // Storage::put($file, $image_base64);
                 } else {
+                    echo "error|Maaf Gagal absen, Hubungi Tim It|in";
+                }
+            } else if ($statuspresensi == "pulang") {
+                if (!empty($lintashari)) {
+                    $tgl_presensi = $lastday;
+                }
+                $cek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->first();
+                if ($cek == null) {
+                    $data = [
+                        'nik' => $nik,
+                        'tgl_presensi' => $tgl_presensi,
+                        'jam_out' => $jam,
+                        'foto_out' => $fileName,
+                        'lokasi_out' => $lokasi,
+                        'kode_jadwal' => $kode_jadwal,
+                        'kode_jam_kerja' => $jadwal->kode_jam_kerja,
+                        'status' => 'h',
+                    ];
+
                     $simpan = DB::table('presensi')->insert($data);
                     if ($simpan) {
-                        echo "success|Terimkasih, Selamat Bekerja|in";
+                        echo "success|Terimkasih, Hati Hati Di Jalan|out";
+                        if (isset($request->image)) {
+                            Storage::put($file, $image_base64);
+                        }
                         // Storage::put($file, $image_base64);
                     } else {
-                        echo "error|Maaf Gagal absen, Hubungi Tim It|in";
+                        echo "error|Maaf Gagal absen, Hubungi Tim It|out";
+                    }
+                } else if ($cek != null && !empty($cek->jam_out)) {
+                    echo "error|Maaf Gagal absen, Anda Sudah Melakukan Presensi Pulang|in";
+                } else if ($cek != null && empty($cek->jam_out)) {
+                    $data_masuk = [
+                        'jam_out' => $jam,
+                        'foto_out' => $fileName,
+                        'lokasi_out' => $lokasi
+                    ];
+                    $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->update($data_masuk);
+                    if ($update) {
+                        if (isset($request->image)) {
+                            Storage::put($file, $image_base64);
+                        }
+                        echo "success|Terimkasih, Hati Hati Di Jalan|out";
+                        // Storage::put($file, $image_base64);
+                    } else {
+                        echo "error|Maaf Gagal absen, Hubungi Tim It|out";
                     }
                 }
             }
         }
     }
+
+
+
 
     //Menghitung Jarak
     function distance($lat1, $lon1, $lat2, $lon2)
