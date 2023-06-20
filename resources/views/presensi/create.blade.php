@@ -220,6 +220,7 @@ return ($result);
         // Webcam.snap(function(uri) {
         //     image = uri;
         // });
+        $(".takeabsen").prop('disabled', true);
         var lokasi = $("#lokasi").val();
         var statuspresensi = $(this).attr('statuspresensi');
         $.ajax({
@@ -256,6 +257,7 @@ return ($result);
                         , text: status[1]
                         , icon: 'error'
                     })
+                    $(".takeabsen").prop('disabled', false);
                 }
             }
         });

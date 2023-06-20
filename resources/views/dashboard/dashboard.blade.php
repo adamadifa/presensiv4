@@ -276,6 +276,7 @@
                                             <?php
                                                 $jam_in = date("H:i", strtotime($d->jam_in));
                                                 $jam_out = date("H:i", strtotime($d->jam_out));
+                                                $jam_pulang = date("H:i", strtotime($d->jam_pulang));
                                                 //$status = $d->status_presensi;
                                                 if (!empty($d->jam_in)) {
                                                     if ($jam_in > $d->jam_masuk) {
@@ -345,7 +346,7 @@
                                                 }
 
 
-                                                if(!empty($d->jam_out) && $jam_out < $d->jam_pulang){
+                                                if(!empty($d->jam_out) && $jam_out < $jam_pulang){
                                                     $pc = "Pulang Cepat";
                                                 }else{
                                                     $pc = "";

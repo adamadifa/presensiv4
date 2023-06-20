@@ -106,10 +106,19 @@ class PresensiController extends Controller
         } else {
             $kode_jadwal = Auth::guard('karyawan')->user()->kode_jadwal;
         }
-        $hariini = $this->hari_ini();
+
+        $ceklibur = DB::table('harilibur')
+            ->where('id_kantor', $kode_cabang)
+            ->where('tanggal_limajam', $hariini)->count();
+        if ($ceklibur > 0) {
+            $hariini = "Sabtu";
+        } else {
+            $hariini = $this->hari_ini();
+        }
         $jadwal = DB::table('jadwal_kerja_detail')
             ->join('jadwal_kerja', 'jadwal_kerja_detail.kode_jadwal', '=', 'jadwal_kerja.kode_jadwal')
             ->where('hari', $hariini)->where('jadwal_kerja_detail.kode_jadwal', $kode_jadwal)->first();
+
         if ($jadwal == null) {
             return view('presensi.notifjadwal');
         }
@@ -188,7 +197,14 @@ class PresensiController extends Controller
         } else {
             $kode_jadwal = Auth::guard('karyawan')->user()->kode_jadwal;
         }
-        $hariini = $this->hari_ini();
+        $ceklibur = DB::table('harilibur')
+            ->where('id_kantor', $kode_cabang)
+            ->where('tanggal_limajam', $tgl_presensi)->count();
+        if ($ceklibur > 0) {
+            $hariini = "Sabtu";
+        } else {
+            $hariini = $this->hari_ini();
+        }
         $jadwal = DB::table('jadwal_kerja_detail')
             ->join('jadwal_kerja', 'jadwal_kerja_detail.kode_jadwal', '=', 'jadwal_kerja.kode_jadwal')
             ->where('hari', $hariini)->where('jadwal_kerja_detail.kode_jadwal', $kode_jadwal)
