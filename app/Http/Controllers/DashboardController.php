@@ -29,7 +29,7 @@ class DashboardController extends Controller
                     jadwal_kerja_detail
                 INNER JOIN jadwal_kerja ON jadwal_kerja_detail.kode_jadwal = jadwal_kerja.kode_jadwal
                 GROUP BY
-                jadwal_kerja_detail.kode_jadwal,nama_jadwal,kode_jam_kerja
+                jadwal_kerja_detail.kode_jadwal,nama_jadwal,kode_jam_kerja,kode_cabang
                 ) jadwal"),
                 function ($join) {
                     $join->on('presensi.kode_jadwal', '=', 'jadwal.kode_jadwal');
