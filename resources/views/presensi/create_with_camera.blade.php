@@ -13,10 +13,9 @@
 <!-- * App Header -->
 <style>
     .webcam-capture {
-        display: inline-block;
         width: 100% !important;
         margin: auto;
-        height: 400px !important;
+        height: 200px !important;
         border-radius: 15px;
     }
 
