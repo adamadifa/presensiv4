@@ -13,6 +13,7 @@
 <!-- * App Header -->
 <style>
     .webcam-capture {
+        display: inline-block;
         width: 100% !important;
         margin: auto;
         height: 400px !important;
@@ -21,6 +22,7 @@
     }
 
     .webcam-capture video {
+        display: inline-block;
         width: 100% !important;
         margin: auto;
         height: auto !important;
@@ -82,7 +84,7 @@ return ($result);
 }
 @endphp
 <input type="hidden" id="lokasi">
-<div class="row" style="margin-top: 60px">
+<div class="row" style="margin-top: 65px">
     <div class="col">
         <div class="webcam-capture"></div>
     </div>
