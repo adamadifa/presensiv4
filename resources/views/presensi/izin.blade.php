@@ -114,7 +114,7 @@
 
                                     <small class="text-muted">
                                         {{ date("d-m-Y",strtotime($d->dari)) }}
-                                        @if ($d->jenis_izin != "PL" && $d->jenis_izin != "KL")
+                                        @if ($d->jenis_izin != "PL" && $d->jenis_izin != "KL" && $d->jenis_izin != "TL")
                                         s/d {{ date("d-m-Y",strtotime($d->sampai)) }}
                                         @else
                                         @if ($d->jenis_izin=="PL")
@@ -134,6 +134,8 @@
                                             Keluar Kantor
                                             @elseif($d->jenis_izin=="TM")
                                             Tidak Masuk Kantor
+                                            @elseif($d->jenis_izin=="TL")
+                                            Terlambat
                                             @endif
                                         </span><br>
                                     </small>
@@ -173,7 +175,7 @@
                                 <span class="timepresence">
 
                                 </span>
-                                @if ($d->jenis_izin != "PL" && $d->jenis_izin != "KL")
+                                @if ($d->jenis_izin != "PL" && $d->jenis_izin != "KL" && $d->jenis_izin != "TL")
                                 <h4 class="mt-1">{{ $d->jmlhari }} Hari</h4>
                                 @endif
                             </div>
@@ -186,10 +188,42 @@
         @endforeach
     </div>
 </div>
-<div class="fab-button bottom-right" style="margin-bottom:70px">
+{{-- <div class="fab-button bottom-right" style="margin-bottom:70px">
     <a href="/presensi/buatizin" class="fab bg-danger">
         <ion-icon name="add-outline"></ion-icon>
     </a>
+</div> --}}
+
+<div class="fab-button animate bottom-right dropdown" style="margin-bottom:70px">
+    <a href="#" class="fab bg-danger" data-toggle="dropdown">
+        <ion-icon name="add-outline" role="img" class="md hydrated" aria-label="add outline"></ion-icon>
+    </a>
+    <div class="dropdown-menu">
+        <a class="dropdown-item bg-danger" href="/pengajuanizin/createizinterlambat">
+            <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="musical notes outline"></ion-icon>
+            <p>Izin Terlambat</p>
+        </a>
+        <a class="dropdown-item bg-danger" href="/pengajuanizin/createizinabsen">
+            <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="image outline"></ion-icon>
+            <p>Izin Absen</p>
+        </a>
+        <a class="dropdown-item bg-danger" href="/pengajuanizin/createizinkeluar">
+            <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="videocam outline"></ion-icon>
+            <p>Izin Keluar Kantor</p>
+        </a>
+        <a class="dropdown-item bg-danger" href="/pengajuanizin/createizinpulang">
+            <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="videocam outline"></ion-icon>
+            <p>Izin Pulang</p>
+        </a>
+        <a class="dropdown-item bg-danger" href="/pengajuanizin/createsakit">
+            <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="videocam outline"></ion-icon>
+            <p>Sakit</p>
+        </a>
+        <a class="dropdown-item bg-danger" href="/pengajuanizin/createcuti">
+            <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="videocam outline"></ion-icon>
+            <p>Cuti</p>
+        </a>
+    </div>
 </div>
 
 <div class="modal fade action-sheet" id="actionSheetIconed" tabindex="-1" role="dialog">

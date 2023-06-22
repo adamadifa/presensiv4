@@ -102,6 +102,7 @@
                     <div class="form-group">
                         <select name="jenis_izin" id="jenis_izin" class="selectmaterialize">
                             <option value="">Jenis Izin</option>
+                            <option value="TL">Terlambat</option>
                             <option value="TM">Tidak Masuk Kantor</option>
                             <option value="PL">Pulang</option>
                             <option value="KL">Keluar Kantor</option>

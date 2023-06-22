@@ -51,7 +51,7 @@ class DashboardController extends Controller
             ->selectRaw('SUM(IF(status="h",1,0)) as jmlhadir,
             SUM(IF(status="i",1,0)) as jmlizin,
             SUM(IF(status="s",1,0)) as jmlsakit,
-            SUM(IF( DATE_FORMAT(jam_in,"%H:%i:%s") > jam_masuk,1,0)) as jmlterlambat')
+            SUM(IF( DATE_FORMAT(jam_in,"%H:%i") > DATE_FORMAT(jam_masuk,"%H:%i"),1,0)) as jmlterlambat')
             ->leftjoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->where('nik', $nik)
             ->whereRaw('MONTH(tgl_presensi)="' . $bulanini . '"')

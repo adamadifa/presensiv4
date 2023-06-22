@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartemenController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\KonfigurasiController;
+use App\Http\Controllers\PengajuanizinController;
 use App\Http\Controllers\PinjamanController;
 use App\Http\Controllers\PinjamnaController;
 use App\Http\Controllers\PresensiController;
@@ -78,6 +79,15 @@ Route::middleware(['auth:karyawan'])->group(function () {
     Route::get('/pinjaman', [PinjamanController::class, 'index']);
     Route::get('/pinjaman/{no_pinjaman}/show', [PinjamanController::class, 'show']);
     Route::get('/pinjaman/simulasi', [PinjamanController::class, 'simulasi']);
+
+
+    Route::get('/pengajuanizin/createizinterlambat', [PengajuanizinController::class, 'createizinterlambat']);
+    Route::get('/pengajuanizin/createizinabsen', [PengajuanizinController::class, 'createizinabsen']);
+    Route::get('/pengajuanizin/createizinkeluar', [PengajuanizinController::class, 'createizinkeluar']);
+    Route::get('/pengajuanizin/createizinpulang', [PengajuanizinController::class, 'createizinpulang']);
+    Route::get('/pengajuanizin/createsakit', [PengajuanizinController::class, 'createsakit']);
+    Route::get('/pengajuanizin/createcuti', [PengajuanizinController::class, 'createcuti']);
+    Route::post('/pengajuanizin/store', [PengajuanizinController::class, 'store']);
 });
 
 
