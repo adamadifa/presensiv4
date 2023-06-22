@@ -84,7 +84,7 @@ return ($result);
 }
 @endphp
 <input type="hidden" id="lokasi">
-<div class="row" style="margin-top: 65px">
+<div class="row" style="margin-top: 60px">
     <div class="col">
         <div class="webcam-capture"></div>
     </div>
