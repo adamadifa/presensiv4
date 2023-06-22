@@ -17,7 +17,8 @@
         display: inline-block;
         width: 100% !important;
         margin: auto;
-        height: 300px !important;
+        height: auto !important;
+        overflow: hidden;
         border-radius: 15px;
 
     }
