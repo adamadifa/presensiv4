@@ -16,7 +16,7 @@
         display: inline-block;
         width: 100% !important;
         margin: auto;
-        height: 400px !important;
+        height: 350px !important;
         border-radius: 15px;
         overflow: hidden;
     }
