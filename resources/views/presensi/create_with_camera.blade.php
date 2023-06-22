@@ -53,7 +53,7 @@
 
     .jam-digital-malasngoding p {
         color: #fff;
-        font-size: 16px;
+        font-size: 14px;
         text-align: left;
         margin-top: 0;
         margin-bottom: 0;
