@@ -201,6 +201,7 @@ return ($result);
     }
 
     $(".takeabsen").click(function(e) {
+        $(".takeabsen").prop('disabled', true);
         Webcam.snap(function(uri) {
             image = uri;
         });
@@ -241,6 +242,7 @@ return ($result);
                         , text: status[1]
                         , icon: 'error'
                     })
+                    $(".takeabsen").prop('disabled', false);
                 }
             }
         });
