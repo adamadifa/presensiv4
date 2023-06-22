@@ -12,7 +12,14 @@
 </div>
 <!-- * App Header -->
 <style>
-    .webcam-capture,
+    .webcam-capture {
+        display: inline-block;
+        width: 100% !important;
+        margin: auto;
+        height: 400px !important;
+        border-radius: 15px;
+    }
+
     .webcam-capture video {
         display: inline-block;
         width: 100% !important;
