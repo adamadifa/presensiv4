@@ -13,20 +13,19 @@
 <!-- * App Header -->
 <style>
     .webcam-capture {
-        display: inline-block;
         width: 100% !important;
         margin: auto;
-        height: 200px !important;
+        height: 400px !important;
         border-radius: 15px;
+        overflow: hidden;
     }
 
     .webcam-capture video {
-        display: inline-block;
         width: 100% !important;
         margin: auto;
         height: auto !important;
-        overflow: hidden;
         border-radius: 15px;
+        object-fit: fill;
 
     }
 
