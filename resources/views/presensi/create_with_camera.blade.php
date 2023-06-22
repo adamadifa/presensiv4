@@ -17,7 +17,7 @@
         display: inline-block;
         width: 100% !important;
         margin: auto;
-        height: auto !important;
+        height: 300px !important;
         border-radius: 15px;
 
     }
@@ -77,7 +77,6 @@ return ($result);
 <input type="hidden" id="lokasi">
 <div class="row" style="margin-top: 60px">
     <div class="col">
-
         <div class="webcam-capture"></div>
     </div>
 </div>
