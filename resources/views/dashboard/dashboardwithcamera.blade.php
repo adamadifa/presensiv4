@@ -268,6 +268,9 @@
         <div class="tab-content mt-2" style="margin-bottom:100px;">
             <div class="tab-pane fade show active" id="home" role="tabpanel">
                 {{-- {{ dd($historibulanini) }} --}}
+                @php
+                $denda = 0;
+                @endphp
                 @foreach ($historibulanini as $d)
                 {{-- @php
                     $path = Storage::url('uploads/absensi/'.$d->foto_in);
@@ -292,6 +295,7 @@
                                             @endif --}}
 
                                             <?php
+
                                                 $jam_in = date("H:i", strtotime($d->jam_in));
                                                 $jam_out = date("H:i", strtotime($d->jam_out));
                                                 $jam_pulang = date("H:i", strtotime($d->jam_pulang));
