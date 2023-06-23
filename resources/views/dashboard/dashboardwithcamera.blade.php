@@ -382,6 +382,8 @@
                                                                 $denda = 10000;
                                                             }else if($menitterlambat >= 15 AND $menitterlambat <= 59){
                                                                 $denda = 15000;
+                                                            }else{
+                                                                $denda = 0;
                                                             }
                                                         }else{
                                                             $denda = "pj";
