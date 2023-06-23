@@ -10,10 +10,10 @@
     <title>E-Presensi Geolocation</title>
     <meta name="description" content="Mobilekit HTML Mobile UI Kit">
     <meta name="keywords" content="bootstrap 4, mobile template, cordova, phonegap, mobile, html" />
-    <link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}" sizes="32x32">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/img/icon/192x192.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}" sizes="32x32">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-    <link rel="manifest" href="__manifest.json">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
 </head>
 
 <body class="bg-white">
@@ -81,7 +81,23 @@
     </div>
     <!-- * App Capsule -->
 
+    <script>
+        var BASE_URL = "{{ url('/') }}/";
+        //alert(BASE_URL);
+        document.addEventListener('DOMContentLoaded', init, false);
 
+        function init() {
+            if ('serviceWorker' in navigator && navigator.onLine) {
+                navigator.serviceWorker.register(BASE_URL + 'service-worker.js')
+                    .then((reg) => {
+                        console.log('Registrasi service worker Berhasil', reg);
+                    }, (err) => {
+                        console.error('Registrasi service worker Gagal', err);
+                    });
+            }
+        }
+
+    </script>
 
     <!-- ///////////// Js Files ////////////////////  -->
     <!-- Jquery -->
