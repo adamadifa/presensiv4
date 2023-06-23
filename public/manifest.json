@@ -3,8 +3,8 @@
     "short_name": "E-Presensi",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#6777ef",
-    "theme_color": "#6777ef",
+    "background_color": "#AF0000",
+    "theme_color": "#AF0000",
     "orientation": "portrait-primary",
     "icons": [
         {
