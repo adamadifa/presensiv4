@@ -65,6 +65,50 @@ class PresensiController extends Controller
 
         return $hari_ini;
     }
+
+
+    public function hari_tanggal($tgl)
+    {
+        $hari = date("D", strtotime($tgl));
+
+        switch ($hari) {
+            case 'Sun':
+                $hari_ini = "Minggu";
+                break;
+
+            case 'Mon':
+                $hari_ini = "Senin";
+                break;
+
+            case 'Tue':
+                $hari_ini = "Selasa";
+                break;
+
+            case 'Wed':
+                $hari_ini = "Rabu";
+                break;
+
+            case 'Thu':
+                $hari_ini = "Kamis";
+                break;
+
+            case 'Fri':
+                $hari_ini = "Jumat";
+                break;
+
+            case 'Sat':
+                $hari_ini = "Sabtu";
+                break;
+
+            default:
+                $hari_ini = "Tidak di ketahui";
+                break;
+        }
+
+        return $hari_ini;
+    }
+
+
     public function create()
     {
         $hariini = date("Y-m-d");
@@ -107,29 +151,137 @@ class PresensiController extends Controller
             $kode_jadwal = Auth::guard('karyawan')->user()->kode_jadwal;
         }
 
-        $ceklibur = DB::table('harilibur')
+        $ceklibur = DB::table('harilibur_karyawan')
+            ->leftJoin('harilibur', 'harilibur_karyawan.kode_libur', '=', 'harilibur.kode_libur')
+            ->where('nik', $nik)
             ->where('id_kantor', $kode_cabang)
-            ->where('tanggal_limajam', $hariini)->count();
+            ->where('tanggal_limajam', $hariini)
+            ->where('kategori', 1)->count();
+        if (empty($ceklibur)) {
+            $ceklbr = DB::table('harilibur')
+                ->where('id_kantor', $kode_cabang)
+                ->where('tanggal_limajam', $hariini)
+                ->where('kategori', 1)->first();
+            $kode_libur = $ceklbr != null ? $ceklbr->kode_libur : "";
+            $ceklbrkaryawan = DB::table('harilibur_karyawan')->where('kode_libur', $kode_libur)->count();
+
+            if ($ceklbr != null && empty($ceklbrkaryawan)) {
+                $ceklibur = 1;
+            } else {
+                $ceklibur = 0;
+            }
+        }
+
+        $cekliburhariini = DB::table('harilibur_karyawan')
+            ->leftJoin('harilibur', 'harilibur_karyawan.kode_libur', '=', 'harilibur.kode_libur')
+            ->where('nik', $nik)
+            ->where('id_kantor', $kode_cabang)
+            ->where('tanggal_libur', $hariini)
+            ->where('kategori', 1)
+            ->first();
+        if (empty($cekliburhariini)) {
+            $ceklbrhariini = DB::table('harilibur')
+                ->where('id_kantor', $kode_cabang)
+                ->where('tanggal_libur', $hariini)
+                ->where('kategori', 1)->first();
+            //dd($ceklbrhariini);
+            $kode_libur = $ceklbrhariini != null ? $ceklbrhariini->kode_libur : "";
+            $ceklbrhariinikaryawan = DB::table('harilibur_karyawan')->where('kode_libur', $kode_libur)->count();
+
+            if ($ceklbrhariini != null && empty($ceklbrhariinikaryawan)) {
+                $cekliburhariini = $ceklbrhariini;
+            } else {
+                $cekliburhariini = null;
+            }
+        }
+
+
+        $cekwfhhariini = DB::table('harilibur_karyawan')
+            ->leftJoin('harilibur', 'harilibur_karyawan.kode_libur', '=', 'harilibur.kode_libur')
+            ->where('nik', $nik)
+            ->where('id_kantor', $kode_cabang)
+            ->where('tanggal_libur', $hariini)
+            ->where('kategori', 3)
+            ->first();
+        if (empty($cekwfhhariini)) {
+            $cekwfhomehariini = DB::table('harilibur')
+                ->where('id_kantor', $kode_cabang)
+                ->where('tanggal_libur', $hariini)
+                ->where('kategori', 3)->first();
+            //dd($ceklbrhariini);
+            $kode_libur = $cekwfhomehariini != null ? $cekwfhomehariini->kode_libur : "";
+            $cekwfhkaryawan = DB::table('harilibur_karyawan')->where('kode_libur', $kode_libur)->count();
+
+            if ($cekwfhomehariini != null && empty($cekwfhkaryawan)) {
+                $cekwfhhariini = $cekwfhomehariini;
+            } else {
+                $cekwfhhariini = null;
+            }
+        }
+
+
+        $cekliburpenggantiminggu = DB::table('harilibur_karyawan')
+            ->leftJoin('harilibur', 'harilibur_karyawan.kode_libur', '=', 'harilibur.kode_libur')
+            ->where('nik', $nik)
+            ->where('id_kantor', $kode_cabang)
+            ->where('tanggal_libur', $hariini)
+            ->where('kategori', 2)
+            ->first();
+
+        $cekminggumasuk = DB::table('harilibur_karyawan')
+            ->leftJoin('harilibur', 'harilibur_karyawan.kode_libur', '=', 'harilibur.kode_libur')
+            ->where('nik', $nik)
+            ->where('id_kantor', $kode_cabang)
+            ->where('tanggal_minggu', $hariini)
+            ->where('kategori', 2)
+            ->first();
+
+
+
+
+
+
+
+
+
+
+        //dd($ceklibur);
         if ($ceklibur > 0) {
             $hariini = "Sabtu";
+        } elseif ($cekminggumasuk != null) {
+            $hari_ini = $this->hari_tanggal($cekminggumasuk->tanggal_libur);
         } else {
             $hariini = $this->hari_ini();
         }
+
+
+
+
+
         $jadwal = DB::table('jadwal_kerja_detail')
             ->join('jadwal_kerja', 'jadwal_kerja_detail.kode_jadwal', '=', 'jadwal_kerja.kode_jadwal')
             ->where('hari', $hariini)->where('jadwal_kerja_detail.kode_jadwal', $kode_jadwal)->first();
 
-        if ($jadwal == null) {
+        if ($jadwal == null && empty($cekminggumasuk)) {
             return view('presensi.notifjadwal');
         }
         $jam_kerja = DB::table('jam_kerja')->where('kode_jam_kerja', $jadwal->kode_jam_kerja)->first();
 
         $kode_dept =  Auth::guard('karyawan')->user()->kode_dept;
         $id_kantor =  Auth::guard('karyawan')->user()->id_kantor;
-        if ($kode_dept == "MKT" || $id_kantor != "PST" || $kode_dept == "ADT") {
-            return view('presensi.create_with_camera', compact('cek', 'lok_kantor', 'jam_kerja', 'jadwal'));
+
+        if ($cekliburhariini != null) {
+            return view('presensi.libur', compact('cekliburhariini'));
+        } else if ($cekwfhhariini != null) {
+            return view('presensi.wfh', compact('cekwfhhariini'));
+        } elseif ($cekliburpenggantiminggu != null) {
+            return view('presensi.liburpenggantiminggu', compact('cekliburpenggantiminggu'));
         } else {
-            return view('presensi.create', compact('cek', 'lok_kantor', 'jam_kerja', 'jadwal'));
+            if ($kode_dept == "MKT" || $id_kantor != "PST" || $kode_dept == "ADT") {
+                return view('presensi.create_with_camera', compact('cek', 'lok_kantor', 'jam_kerja', 'jadwal'));
+            } else {
+                return view('presensi.create', compact('cek', 'lok_kantor', 'jam_kerja', 'jadwal'));
+            }
         }
     }
 
