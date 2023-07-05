@@ -446,13 +446,25 @@ class PresensiController extends Controller
                     }
                 }
             } else if ($statuspresensi == "pulang") {
-                if (!empty($lintashari)) {
+
+
+                $ceklastpresensi = DB::table('presensi')
+                    ->join('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+                    ->where('nik', $nik)->where('tgl_presensi', $lastday)->first();
+                // $last_kode_jadwal = $ceklastpresensi->kode_jadwal;
+                // $last_kode_jam_kerja = $ceklastpresensi->kode_jam_kerja;
+                $last_lintashari = $ceklastpresensi != null  ? $ceklastpresensi->lintashari : "";
+
+                if (!empty($last_lintashari)) {
                     $tgl_presensi = $lastday;
                     $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                    $jam_pulang = $tgl_pulang . " " . $ceklastpresensi->jam_pulang;
                 } else {
                     $tgl_pulang = $tgl_presensi;
+                    $jam_pulang = $tgl_pulang . " " . $jam_kerja->jam_pulang;
                 }
-                $jam_pulang = $tgl_pulang . " " . $jam_kerja->jam_pulang;
+
+
                 $jamabsen = $jam;
                 if ($jamabsen < $jam_pulang) {
                     echo "error|Maaf Belum Waktunya Absen Pulang, Absen Pulang di Mulai Pada Pukul " . $jam_pulang . " |out";
@@ -1007,10 +1019,12 @@ class PresensiController extends Controller
         $pin            = $data['pin'];
         $status_scan    = $data['status_scan'];
         $scan           = $data['scan'];
+
+
         // $nik               = '21.02.232';
 
 
-        $tgl_presensi   = date("Y-m-d");
+        $tgl_presensi   = date("Y-m-d", strtotime($scan));
         $karyawan       = DB::table('master_karyawan')->where('pin', $pin)->first();
         if ($karyawan == null) {
             echo "PIN Tidak Ditemukan";
@@ -1075,68 +1089,93 @@ class PresensiController extends Controller
 
         $cek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->first();
 
-
-
-        if ($status_scan == 0 && $cek != null && !empty($cek->jam_in)) {
-            echo "error|Maaf Gagal absen, Anda Sudah Melakukan Presensi Masuk|in";
-        } else if ($status_scan == 0 && $cek != null && empty($cek->jam_in)) {
-            $data_masuk = [
-                'jam_in' => $jam
-            ];
-            $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->update($data_masuk);
-            if ($update) {
-                echo "success|Terimkasih, Selamat Bekerja|in";
+        if ($status_scan == 0) {
+            $jam_masuk = $tgl_presensi . " " . "13:00";
+            $jamabsen = $jam;
+            if ($kode_jadwal == "JD004" && $jamabsen <= $jam_masuk  || $kode_jadwal == "JD003" && $jamabsen <= $jam_masuk) {
+                echo "error|Maaf Belum Waktunya Absen Masuk|in";
             } else {
-                echo "error|Maaf Gagal absen, Hubungi Tim It|in";
-            }
-        } else if ($status_scan == 0 && $cek == null) {
-            $data = [
-                'nik' => $nik,
-                'tgl_presensi' => $tgl_presensi,
-                'jam_in' => $jam,
-                'kode_jadwal' => $kode_jadwal,
-                'kode_jam_kerja' => $jadwal->kode_jam_kerja,
-                'status' => 'h',
-            ];
+                if ($cek != null && !empty($cek->jam_in)) {
+                    echo "error|Maaf Gagal absen, Anda Sudah Melakukan Presensi Masuk|in";
+                } else if ($cek != null && empty($cek->jam_in)) {
+                    $data_masuk = [
+                        'jam_in' => $jam
+                    ];
+                    $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->update($data_masuk);
+                    if ($update) {
+                        echo "success|Terimkasih, Selamat Bekerja|in";
+                    } else {
+                        echo "error|Maaf Gagal absen, Hubungi Tim It|in";
+                    }
+                } else if ($cek == null) {
+                    $data = [
+                        'nik' => $nik,
+                        'tgl_presensi' => $tgl_presensi,
+                        'jam_in' => $jam,
+                        'kode_jadwal' => $kode_jadwal,
+                        'kode_jam_kerja' => $jadwal->kode_jam_kerja,
+                        'status' => 'h',
+                    ];
 
-            $simpan = DB::table('presensi')->insert($data);
-            if ($simpan) {
-                echo "success|Terimkasih, Selamat Bekerja|in";
-            } else {
-                echo "error|Maaf Gagal absen, Hubungi Tim It|in";
+                    $simpan = DB::table('presensi')->insert($data);
+                    if ($simpan) {
+                        echo "success|Terimkasih, Selamat Bekerja|in";
+                    } else {
+                        echo "error|Maaf Gagal absen, Hubungi Tim It|in";
+                    }
+                }
             }
         } else if ($status_scan == 1) {
-            if (!empty($lintashari)) {
-                $tgl_presensi = $lastday;
-            }
-            $cek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->first();
-            if ($cek == null) {
-                $data = [
-                    'nik' => $nik,
-                    'tgl_presensi' => $tgl_presensi,
-                    'jam_out' => $jam,
-                    'kode_jadwal' => $kode_jadwal,
-                    'kode_jam_kerja' => $jadwal->kode_jam_kerja,
-                    'status' => 'h',
-                ];
 
-                $simpan = DB::table('presensi')->insert($data);
-                if ($simpan) {
-                    echo "success|Terimkasih, Hati Hati Di Jalan|out";
-                } else {
-                    echo "error|Maaf Gagal absen, Hubungi Tim It|out";
-                }
-            } else if ($cek != null && !empty($cek->jam_out)) {
-                echo "error|Maaf Gagal absen, Anda Sudah Melakukan Presensi Pulang|in";
-            } else if ($cek != null && empty($cek->jam_out)) {
-                $data_masuk = [
-                    'jam_out' => $jam
-                ];
-                $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->update($data_masuk);
-                if ($update) {
-                    echo "success|Terimkasih, Hati Hati Di Jalan|out";
-                } else {
-                    echo "error|Maaf Gagal absen, Hubungi Tim It|out";
+            $ceklastpresensi = DB::table('presensi')
+                ->join('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+                ->where('nik', $nik)->where('tgl_presensi', $lastday)->first();
+            // $last_kode_jadwal = $ceklastpresensi->kode_jadwal;
+            // $last_kode_jam_kerja = $ceklastpresensi->kode_jam_kerja;
+
+            $last_lintashari = $ceklastpresensi != null  ? $ceklastpresensi->lintashari : "";
+
+            if (!empty($last_lintashari)) {
+                $tgl_presensi = $lastday;
+                $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                $jam_pulang = $tgl_pulang . " " . $ceklastpresensi->jam_pulang;
+            } else {
+                $tgl_pulang = $tgl_presensi;
+                $jam_pulang = $tgl_pulang . " " . $jam_kerja->jam_pulang;
+            }
+            $jamabsen = $jam;
+            if ($jamabsen < $jam_pulang) {
+                echo "error|Maaf Belum Waktunya Absen Pulang, Absen Pulang di Mulai Pada Pukul " . $jam_pulang . " |out";
+            } else {
+                $cek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->first();
+                if ($cek == null) {
+                    $data = [
+                        'nik' => $nik,
+                        'tgl_presensi' => $tgl_presensi,
+                        'jam_out' => $jam,
+                        'kode_jadwal' => $kode_jadwal,
+                        'kode_jam_kerja' => $jadwal->kode_jam_kerja,
+                        'status' => 'h',
+                    ];
+
+                    $simpan = DB::table('presensi')->insert($data);
+                    if ($simpan) {
+                        echo "success|Terimkasih, Hati Hati Di Jalan|out";
+                    } else {
+                        echo "error|Maaf Gagal absen, Hubungi Tim It|out";
+                    }
+                } else if ($cek != null && !empty($cek->jam_out)) {
+                    echo "error|Maaf Gagal absen, Anda Sudah Melakukan Presensi Pulang|in";
+                } else if ($cek != null && empty($cek->jam_out)) {
+                    $data_masuk = [
+                        'jam_out' => $jam
+                    ];
+                    $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->update($data_masuk);
+                    if ($update) {
+                        echo "success|Terimkasih, Hati Hati Di Jalan|out";
+                    } else {
+                        echo "error|Maaf Gagal absen, Hubungi Tim It|out";
+                    }
                 }
             }
         }
