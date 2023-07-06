@@ -194,6 +194,10 @@ return ($result);
             , fillOpacity: 0.5
             , radius: radius
         }).addTo(map);
+
+        setInterval(function() {
+            map.invalidateSize();
+        }, 100);
     }
 
     function errorCallback() {
