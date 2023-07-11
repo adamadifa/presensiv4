@@ -462,7 +462,7 @@ class PresensiController extends Controller
                 if (!empty($last_lintashari)) {
                     $tgl_presensi = $lastday;
                     $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
-                    $jam_pulang = $tgl_pulang . " " . $ceklastpresensi->jam_pulang;
+                    $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($ceklastpresensi->jam_pulang));
                 } else {
                     if ($tgl_pulang_shift_3 <= "08:00") {
                         $tgl_presensi = $lastday;
@@ -472,7 +472,7 @@ class PresensiController extends Controller
                         $kode_jadwal = "JD004";
                     } else {
                         $tgl_pulang = $tgl_presensi;
-                        $jam_pulang = $tgl_pulang . " " . $jam_kerja->jam_pulang;
+                        $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($jam_kerja->jam_pulang));
                     }
                 }
 
