@@ -1148,7 +1148,7 @@ class PresensiController extends Controller
             $last_lintashari = $ceklastpresensi != null  ? $ceklastpresensi->lintashari : "";
             $tgl_pulang_shift_3 = date("H:i", strtotime(($jam)));
             $kode_jam_kerja = $jadwal->kode_jam_kerja;
-            if (!empty($last_lintashari)) {
+            if (!empty($last_lintashari) && $tgl_pulang_shift_3 <= "10:00") {
                 $tgl_presensi = $lastday;
                 $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
                 $jam_pulang = $tgl_pulang . " " . $ceklastpresensi->jam_pulang;
