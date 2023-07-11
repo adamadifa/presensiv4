@@ -454,14 +454,26 @@ class PresensiController extends Controller
                 // $last_kode_jadwal = $ceklastpresensi->kode_jadwal;
                 // $last_kode_jam_kerja = $ceklastpresensi->kode_jam_kerja;
                 $last_lintashari = $ceklastpresensi != null  ? $ceklastpresensi->lintashari : "";
+                $tgl_pulang_shift_3 = date("H:i", strtotime(($jam)));
 
+
+                // /echo $tgl_pulang_shift_3;
+                $kode_jam_kerja = $jadwal->kode_jam_kerja;
                 if (!empty($last_lintashari)) {
                     $tgl_presensi = $lastday;
                     $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
                     $jam_pulang = $tgl_pulang . " " . $ceklastpresensi->jam_pulang;
                 } else {
-                    $tgl_pulang = $tgl_presensi;
-                    $jam_pulang = $tgl_pulang . " " . $jam_kerja->jam_pulang;
+                    if ($tgl_pulang_shift_3 <= "08:00") {
+                        $tgl_presensi = $lastday;
+                        $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                        $jam_pulang = $tgl_pulang . " 07:00";
+                        $kode_jam_kerja = "JK08";
+                        $kode_jadwal = "JD004";
+                    } else {
+                        $tgl_pulang = $tgl_presensi;
+                        $jam_pulang = $tgl_pulang . " " . $jam_kerja->jam_pulang;
+                    }
                 }
 
 
@@ -479,7 +491,7 @@ class PresensiController extends Controller
                             'foto_out' => $fileName,
                             'lokasi_out' => $lokasi,
                             'kode_jadwal' => $kode_jadwal,
-                            'kode_jam_kerja' => $jadwal->kode_jam_kerja,
+                            'kode_jam_kerja' => $kode_jam_kerja,
                             'status' => 'h',
                         ];
 
@@ -1134,14 +1146,25 @@ class PresensiController extends Controller
             // $last_kode_jam_kerja = $ceklastpresensi->kode_jam_kerja;
 
             $last_lintashari = $ceklastpresensi != null  ? $ceklastpresensi->lintashari : "";
-
+            $tgl_pulang_shift_3 = date("H:i", strtotime(($jam)));
+            $kode_jam_kerja = $jadwal->kode_jam_kerja;
             if (!empty($last_lintashari)) {
                 $tgl_presensi = $lastday;
                 $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
                 $jam_pulang = $tgl_pulang . " " . $ceklastpresensi->jam_pulang;
             } else {
-                $tgl_pulang = $tgl_presensi;
-                $jam_pulang = $tgl_pulang . " " . $jam_kerja->jam_pulang;
+                if ($tgl_pulang_shift_3 <= "08:00") {
+                    $tgl_presensi = $lastday;
+                    $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                    $jam_pulang = $tgl_pulang . " 07:00";
+                    $kode_jam_kerja = "JK08";
+                    $kode_jadwal = "JD004";
+                } else {
+                    $tgl_pulang = $tgl_presensi;
+                    $jam_pulang = $tgl_pulang . " " . $jam_kerja->jam_pulang;
+                }
+                // $tgl_pulang = $tgl_presensi;
+                // $jam_pulang = $tgl_pulang . " " . $jam_kerja->jam_pulang;
             }
             $jamabsen = $jam;
             if ($jamabsen < $jam_pulang) {
@@ -1154,7 +1177,7 @@ class PresensiController extends Controller
                         'tgl_presensi' => $tgl_presensi,
                         'jam_out' => $jam,
                         'kode_jadwal' => $kode_jadwal,
-                        'kode_jam_kerja' => $jadwal->kode_jam_kerja,
+                        'kode_jam_kerja' => $kode_jam_kerja,
                         'status' => 'h',
                     ];
 
