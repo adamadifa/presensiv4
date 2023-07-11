@@ -1168,7 +1168,7 @@ class PresensiController extends Controller
             }
             $jamabsen = $jam;
             if ($jamabsen < $jam_pulang) {
-                echo "error|Maaf Belum Waktunya Absen Pulang, Absen Pulang di Mulai Pada Pukul " . $jam_pulang . " |out";
+                echo "error|Maaf Belum Waktunya Absen Pulang, Absen Pulang di Mulai Pada Pukul " . $jamabsen . " " . $jam_pulang . " |out";
             } else {
                 $cek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->first();
                 if ($cek == null) {
