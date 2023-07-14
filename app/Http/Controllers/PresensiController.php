@@ -232,7 +232,7 @@ class PresensiController extends Controller
             ->leftJoin('harilibur', 'harilibur_karyawan.kode_libur', '=', 'harilibur.kode_libur')
             ->where('nik', $nik)
             ->where('id_kantor', $kode_cabang)
-            ->where('tanggal_minggu', $hariini)
+            ->where('tanggal_diganti', $hariini)
             ->where('kategori', 2)
             ->first();
 
