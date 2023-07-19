@@ -456,7 +456,14 @@ class PresensiController extends Controller
                 $last_lintashari = $ceklastpresensi != null  ? $ceklastpresensi->lintashari : "";
                 $tgl_pulang_shift_3 = date("H:i", strtotime(($jam)));
 
-
+                $cekjadwalshiftlast = DB::table('konfigurasi_jadwalkerja_detail')
+                    ->join('konfigurasi_jadwalkerja', 'konfigurasi_jadwalkerja_detail.kode_setjadwal', '=', 'konfigurasi_jadwalkerja.kode_setjadwal')
+                    ->whereRaw('"' . $lastday . '" >= dari')
+                    ->whereRaw('"' . $lastday . '" <= sampai')
+                    ->where('nik', $nik)
+                    ->first();
+                $kode_jadwal_last = $cekjadwalshiftlast != null ? $cekjadwalshiftlast->kode_jadwal : $kode_jadwal;
+                //dd($cekjadwalshiftlast);
                 // /echo $tgl_pulang_shift_3;
                 $kode_jam_kerja = $jadwal->kode_jam_kerja;
                 if (!empty($last_lintashari)) {
@@ -464,7 +471,7 @@ class PresensiController extends Controller
                     $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
                     $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($ceklastpresensi->jam_pulang));
                 } else {
-                    if ($tgl_pulang_shift_3 <= "08:00") {
+                    if ($tgl_pulang_shift_3 <= "08:00" && $kode_jadwal_last == "JD004") {
                         $tgl_presensi = $lastday;
                         $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
                         $jam_pulang = $tgl_pulang . " 07:00";
@@ -476,6 +483,14 @@ class PresensiController extends Controller
                     }
                 }
 
+
+                // echo $tgl_presensi;
+                // die;
+
+                $date_jampulang = date("Y-m-d", strtotime($jam_pulang));
+                $hour_jampulang = (date("H", strtotime($jam_pulang)) - 2);
+                $h_jampulang = $hour_jampulang < 9 ? "0" . $hour_jampulang : $hour_jampulang;
+                $jam_pulang = $date_jampulang . " " . $h_jampulang . ":00";
 
                 $jamabsen = $jam;
                 if ($jamabsen < $jam_pulang) {
@@ -1147,13 +1162,24 @@ class PresensiController extends Controller
 
             $last_lintashari = $ceklastpresensi != null  ? $ceklastpresensi->lintashari : "";
             $tgl_pulang_shift_3 = date("H:i", strtotime(($jam)));
+
+            $cekjadwalshiftlast = DB::table('konfigurasi_jadwalkerja_detail')
+                ->join('konfigurasi_jadwalkerja', 'konfigurasi_jadwalkerja_detail.kode_setjadwal', '=', 'konfigurasi_jadwalkerja.kode_setjadwal')
+                ->whereRaw('"' . $lastday . '" >= dari')
+                ->whereRaw('"' . $lastday . '" <= sampai')
+                ->where('nik', $nik)
+                ->first();
+            $kode_jadwal_last = $cekjadwalshiftlast != null ? $cekjadwalshiftlast->kode_jadwal : $kode_jadwal;
+
+
             $kode_jam_kerja = $jadwal->kode_jam_kerja;
+
             if (!empty($last_lintashari) && $tgl_pulang_shift_3 <= "10:00") {
                 $tgl_presensi = $lastday;
                 $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
                 $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($ceklastpresensi->jam_pulang));
             } else {
-                if ($tgl_pulang_shift_3 <= "08:00") {
+                if ($tgl_pulang_shift_3 <= "08:00" && $kode_jadwal_last == "JD004") {
                     $tgl_presensi = $lastday;
                     $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
                     $jam_pulang = $tgl_pulang . " 07:00";
@@ -1166,6 +1192,12 @@ class PresensiController extends Controller
                 // $tgl_pulang = $tgl_presensi;
                 // $jam_pulang = $tgl_pulang . " " . $jam_kerja->jam_pulang;
             }
+
+            $date_jampulang = date("Y-m-d", strtotime($jam_pulang));
+            $hour_jampulang = (date("H", strtotime($jam_pulang)) - 2);
+            $h_jampulang = $hour_jampulang < 9 ? "0" . $hour_jampulang : $hour_jampulang;
+            $jam_pulang = $date_jampulang . " " . $h_jampulang . ":00";
+
             $jamabsen = $jam;
             if ($jamabsen < $jam_pulang) {
                 echo "error|Maaf Belum Waktunya Absen Pulang, Absen Pulang di Mulai Pada Pukul " . $jamabsen . " " . $jam_pulang . " |out";
