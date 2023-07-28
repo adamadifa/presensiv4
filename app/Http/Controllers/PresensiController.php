@@ -255,8 +255,15 @@ class PresensiController extends Controller
         }
 
 
+        $id_jabatan = Auth::user()->id_jabatan;
+        $jabatan = DB::table('hrd_jabatan')->where('id', $id_jabatan)->first();
+        // dd($jabatan->nama_jabatan);
 
+        // dd($id_jabatan);
 
+        if ($jabatan->nama_jabatan == "SECURITY" && $hariini == "Sabtu") {
+            $hariini = "Senin";
+        }
 
         $jadwal = DB::table('jadwal_kerja_detail')
             ->join('jadwal_kerja', 'jadwal_kerja_detail.kode_jadwal', '=', 'jadwal_kerja.kode_jadwal')
@@ -1053,6 +1060,8 @@ class PresensiController extends Controller
 
         $tgl_presensi   = date("Y-m-d", strtotime($scan));
         $karyawan       = DB::table('master_karyawan')->where('pin', $pin)->first();
+        $jabatan        = DB::table('hrd_jabatan')->where('id', $karyawan->id_jabatan)->first();
+
         if ($karyawan == null) {
             echo "PIN Tidak Ditemukan";
             $nik = "";
@@ -1103,6 +1112,11 @@ class PresensiController extends Controller
             $hariini = "Sabtu";
         } else {
             $hariini = $this->hari_ini();
+        }
+
+
+        if ($jabatan->nama_jabatan == "SECURITY" && $hariini == "Sabtu") {
+            $hariini = "Senin";
         }
 
 
