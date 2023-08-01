@@ -72,13 +72,17 @@ class PengajuanizinController extends Controller
         $jenis_cuti = $request->jenis_cuti;
         $tgl = explode("-", $dari);
         $tahun = substr($tgl[0], 2, 2);
+        $bulan = $tgl[1];
         $izin = DB::table("pengajuan_izin")
             ->whereRaw('YEAR(dari)="' . $tgl[0] . '"')
+            ->whereRaw('MONTH(dari)="' . $tgl[1] . '"')
+            ->whereRaw('LENGTH(kode_izin)=9')
             ->orderBy("kode_izin", "desc")
             ->first();
 
         $last_kodeizin = $izin != null ? $izin->kode_izin : '';
-        $kode_izin  = $this->buatkode($last_kodeizin, "IZ" . $tahun, 3);
+        $kode_izin  = $this->buatkode($last_kodeizin, "IZ" . $tahun . $bulan, 3);
+
         if ($request->hasFile('sid')) {
             $sid = $kode_izin . "." . $request->file('sid')->getClientOriginalExtension();
         } else {
