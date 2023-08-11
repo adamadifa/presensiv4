@@ -297,16 +297,36 @@
                                             <?php
 
                                                 $jam_in = date("H:i", strtotime($d->jam_in));
+                                                $jam_in_tanggal = $d->tgl_presensi." ".$jam_in;
+
                                                 $jam_out = date("H:i", strtotime($d->jam_out));
-                                                $jam_pulang = date("H:i", strtotime($d->jam_pulang));
+                                                $jam_out_tanggal = $d->tgl_presensi." ".$jam_out;
+                                                $lintashari = $d->lintashari;
+                                                $tgl_presensi = $d->tgl_presensi;
+                                                if(!empty($lintashari)){ // Jika Jadwal Presesni Lintas Hari
+                                                    $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                                                    // Tanggal Pulang adalah Tanggal Berikutnya
+                                                }else{
+                                                    $tgl_pulang = $tgl_presensi; // Tanggal Pulang adalah Tanggal Presensi
+                                                }
+
+                                                if ($d->id_jabatan==24) {
+                                                    $jam_masuk = $jam_in;
+                                                    $jam_pulang = $jam_out;
+                                                }else{
+                                                    $jam_masuk = date("H:i",strtotime($d->jam_masuk));
+                                                    $jam_pulang = date("H:i", strtotime($d->jam_pulang));
+                                                }
+
+                                                $jam_masuk_tanggal = $tgl_presensi." ".$jam_masuk;
+                                                $jam_pulang_tanggal = $tgl_pulang." ".$jam_pulang;
+
                                                 //$status = $d->status_presensi;
                                                 if (!empty($d->jam_in)) {
-                                                    if ($jam_in > $d->jam_masuk) {
+                                                    if ($jam_in_tanggal > $jam_masuk_tanggal) {
 
-                                                        $jam_masuk = $d->tgl_presensi . " " . $d->jam_masuk;
-
-                                                        $j1 = strtotime($jam_masuk);
-                                                        $j2 = strtotime($d->jam_in);
+                                                        $j1 = strtotime($jam_masuk_tanggal);
+                                                        $j2 = strtotime($jam_in_tanggal);
 
                                                         $diffterlambat = $j2 - $j1;
 
@@ -334,15 +354,17 @@
                                                 }
 
                                                 if(!empty($d->jam_keluar)){
-                                                    $jamkeluar = $d->tgl_presensi." ".$d->jam_keluar;
+                                                    $jam_keluar = date("H:i",strtotime($d->jam_keluar));
+                                                    $jamkeluar_tanggal = $tgl_presensi." ".$jam_keluar;
                                                     if(!empty($d->jam_masuk_kk)){
-                                                        $jam_masuk_kk = $d->tgl_presensi." ".$d->jam_masuk_kk;
+                                                        $jam_masuk_kk = date("H:i",strtotime($d->jam_masuk_kk));
+                                                        $jam_masuk_kk_tanggal = $tgl_presensi." ".$jam_masuk_kk;
                                                     }else{
-                                                        $jam_masuk_kk = $d->tgl_presensi." ".$d->jam_pulang;
+                                                        $jam_masuk_kk = $tgl_presensi." ".$jam_pulang;
                                                     }
 
-                                                    $jk1 = strtotime($jamkeluar);
-                                                    $jk2 = strtotime($jam_masuk_kk);
+                                                    $jk1 = strtotime($jamkeluar_tanggal);
+                                                    $jk2 = strtotime($jam_masuk_kk_tanggal);
                                                     $difkeluarkantor = $jk2 - $jk1;
 
                                                     $jamkeluarkantor = floor($difkeluarkantor / (60 * 60));
@@ -368,13 +390,13 @@
                                                 }
 
 
-                                                if(!empty($d->jam_out) && $jam_out < $jam_pulang){
+                                                if(!empty($d->jam_out) && $jam_out_tanggal < $jam_pulang_tanggal){
                                                     $pc = "Pulang Cepat";
                                                 }else{
                                                     $pc = "";
                                                 }
                                                 if (!empty($d->jam_in) and $d->kode_dept != 'MKT') {
-                                                    if ($jam_in > $d->jam_masuk and empty($d->kode_izin_terlambat)) {
+                                                    if ($jam_in_tanggal > $jam_masuk_tanggal and empty($d->kode_izin_terlambat)) {
                                                         if ($jamterlambat < 1) {
                                                             if($menitterlambat >= 5 AND $menitterlambat < 10){
                                                                 $denda = 5000;
@@ -405,6 +427,7 @@
                                             ?>
 
                                             @if (!empty($d->jam_in))
+                                            {{ $jam_pulang_tanggal }} | {{ $jam_out_tanggal }}
                                             <span style="color:{{ $colorterlambat }}">{{ $terlambat }}
                                                 @if (!empty($denda) && $denda != "pj" && $denda != "si" )
                                                 - {{ rupiah($denda) }}

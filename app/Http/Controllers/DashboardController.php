@@ -19,7 +19,23 @@ class DashboardController extends Controller
         $nik = Auth::guard('karyawan')->user()->nik;
         $presensihariini = DB::table('presensi')->where('nik', $nik)->where('tgl_presensi', $hariini)->first();
         $historibulanini = DB::table('presensi')
-            ->select('presensi.*', 'nama_jadwal', 'jadwal.kode_cabang', 'jam_kerja.jam_masuk', 'jenis_izin', 'nama_cuti', 'sid', 'kode_dept', 'pengajuan_izin.jam_keluar', 'pengajuan_izin.jam_masuk as jam_masuk_kk', 'jam_kerja.jam_pulang', 'total_jam', 'master_karyawan.kode_dept')
+            ->select(
+                'presensi.*',
+                'nama_jadwal',
+                'jadwal.kode_cabang',
+                'jam_kerja.jam_masuk',
+                'jenis_izin',
+                'nama_cuti',
+                'sid',
+                'kode_dept',
+                'pengajuan_izin.jam_keluar',
+                'pengajuan_izin.jam_masuk as jam_masuk_kk',
+                'jam_kerja.jam_pulang',
+                'jam_kerja.lintashari',
+                'total_jam',
+                'master_karyawan.kode_dept',
+                'master_karyawan.id_jabatan'
+            )
             ->join('master_karyawan', 'presensi.nik', '=', 'master_karyawan.nik')
             ->leftJoin(
                 DB::raw("(

@@ -157,20 +157,20 @@ class PresensiController extends Controller
             ->where('id_kantor', $kode_cabang)
             ->where('tanggal_limajam', $hariini)
             ->where('kategori', 1)->count();
-        if (empty($ceklibur)) {
-            $ceklbr = DB::table('harilibur')
-                ->where('id_kantor', $kode_cabang)
-                ->where('tanggal_limajam', $hariini)
-                ->where('kategori', 1)->first();
-            $kode_libur = $ceklbr != null ? $ceklbr->kode_libur : "";
-            $ceklbrkaryawan = DB::table('harilibur_karyawan')->where('kode_libur', $kode_libur)->count();
+        // if (empty($ceklibur)) {
+        //     $ceklbr = DB::table('harilibur')
+        //         ->where('id_kantor', $kode_cabang)
+        //         ->where('tanggal_limajam', $hariini)
+        //         ->where('kategori', 1)->first();
+        //     $kode_libur = $ceklbr != null ? $ceklbr->kode_libur : "";
+        //     $ceklbrkaryawan = DB::table('harilibur_karyawan')->where('kode_libur', $kode_libur)->count();
 
-            if ($ceklbr != null && empty($ceklbrkaryawan)) {
-                $ceklibur = 1;
-            } else {
-                $ceklibur = 0;
-            }
-        }
+        //     if ($ceklbr != null && empty($ceklbrkaryawan)) {
+        //         $ceklibur = 1;
+        //     } else {
+        //         $ceklibur = 0;
+        //     }
+        // }
 
         $cekliburhariini = DB::table('harilibur_karyawan')
             ->leftJoin('harilibur', 'harilibur_karyawan.kode_libur', '=', 'harilibur.kode_libur')
@@ -179,21 +179,21 @@ class PresensiController extends Controller
             ->where('tanggal_libur', $hariini)
             ->where('kategori', 1)
             ->first();
-        if (empty($cekliburhariini)) {
-            $ceklbrhariini = DB::table('harilibur')
-                ->where('id_kantor', $kode_cabang)
-                ->where('tanggal_libur', $hariini)
-                ->where('kategori', 1)->first();
-            //dd($ceklbrhariini);
-            $kode_libur = $ceklbrhariini != null ? $ceklbrhariini->kode_libur : "";
-            $ceklbrhariinikaryawan = DB::table('harilibur_karyawan')->where('kode_libur', $kode_libur)->count();
+        // if (empty($cekliburhariini)) {
+        //     $ceklbrhariini = DB::table('harilibur')
+        //         ->where('id_kantor', $kode_cabang)
+        //         ->where('tanggal_libur', $hariini)
+        //         ->where('kategori', 1)->first();
+        //     //dd($ceklbrhariini);
+        //     $kode_libur = $ceklbrhariini != null ? $ceklbrhariini->kode_libur : "";
+        //     $ceklbrhariinikaryawan = DB::table('harilibur_karyawan')->where('kode_libur', $kode_libur)->count();
 
-            if ($ceklbrhariini != null && empty($ceklbrhariinikaryawan)) {
-                $cekliburhariini = $ceklbrhariini;
-            } else {
-                $cekliburhariini = null;
-            }
-        }
+        //     if ($ceklbrhariini != null && empty($ceklbrhariinikaryawan)) {
+        //         $cekliburhariini = $ceklbrhariini;
+        //     } else {
+        //         $cekliburhariini = null;
+        //     }
+        // }
 
 
         $cekwfhhariini = DB::table('harilibur_karyawan')
@@ -203,21 +203,21 @@ class PresensiController extends Controller
             ->where('tanggal_libur', $hariini)
             ->where('kategori', 3)
             ->first();
-        if (empty($cekwfhhariini)) {
-            $cekwfhomehariini = DB::table('harilibur')
-                ->where('id_kantor', $kode_cabang)
-                ->where('tanggal_libur', $hariini)
-                ->where('kategori', 3)->first();
-            //dd($ceklbrhariini);
-            $kode_libur = $cekwfhomehariini != null ? $cekwfhomehariini->kode_libur : "";
-            $cekwfhkaryawan = DB::table('harilibur_karyawan')->where('kode_libur', $kode_libur)->count();
+        // if (empty($cekwfhhariini)) {
+        //     $cekwfhomehariini = DB::table('harilibur')
+        //         ->where('id_kantor', $kode_cabang)
+        //         ->where('tanggal_libur', $hariini)
+        //         ->where('kategori', 3)->first();
+        //     //dd($ceklbrhariini);
+        //     $kode_libur = $cekwfhomehariini != null ? $cekwfhomehariini->kode_libur : "";
+        //     $cekwfhkaryawan = DB::table('harilibur_karyawan')->where('kode_libur', $kode_libur)->count();
 
-            if ($cekwfhomehariini != null && empty($cekwfhkaryawan)) {
-                $cekwfhhariini = $cekwfhomehariini;
-            } else {
-                $cekwfhhariini = null;
-            }
-        }
+        //     if ($cekwfhomehariini != null && empty($cekwfhkaryawan)) {
+        //         $cekwfhhariini = $cekwfhomehariini;
+        //     } else {
+        //         $cekwfhhariini = null;
+        //     }
+        // }
 
 
         $cekliburpenggantiminggu = DB::table('harilibur_karyawan')
