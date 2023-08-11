@@ -297,10 +297,10 @@
                                             <?php
 
                                                 $jam_in = date("H:i", strtotime($d->jam_in));
-                                                $jam_in_tanggal = $d->tgl_presensi." ".$jam_in;
+                                                $jam_in_tanggal =  date("Y-m-d H:i",strtotime($d->jam_in));
 
                                                 $jam_out = date("H:i", strtotime($d->jam_out));
-                                                $jam_out_tanggal = $d->tgl_presensi." ".$jam_out;
+                                                $jam_out_tanggal = date("Y-m-d H:i",strtotime($d->jam_out));
                                                 $lintashari = $d->lintashari;
                                                 $tgl_presensi = $d->tgl_presensi;
                                                 if(!empty($lintashari)){ // Jika Jadwal Presesni Lintas Hari
@@ -425,7 +425,7 @@
                                                     }
                                                 }
                                             ?>
-
+                                            {{-- {{ $jam_out_tanggal }} || {{ $jam_pulang_tanggal }} --}}
                                             @if (!empty($d->jam_in))
                                             {{ $jam_pulang_tanggal }} | {{ $jam_out_tanggal }}
                                             <span style="color:{{ $colorterlambat }}">{{ $terlambat }}
