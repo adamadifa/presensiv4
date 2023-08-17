@@ -277,7 +277,7 @@ class PresensiController extends Controller
         $kode_dept =  Auth::guard('karyawan')->user()->kode_dept;
         $id_kantor =  Auth::guard('karyawan')->user()->id_kantor;
 
-        if ($cekliburhariini != null) {
+        if ($cekliburhariini != null && $jabatan->nama_jabatan != "SECURITY") {
             return view('presensi.libur', compact('cekliburhariini'));
         } else if ($cekwfhhariini != null) {
             return view('presensi.wfh', compact('cekwfhhariini'));
