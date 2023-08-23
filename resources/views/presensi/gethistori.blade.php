@@ -44,7 +44,7 @@
     <p>Data Belum Aada</p>
 </div>
 @endif
-@foreach ($historibulanini as $d)
+@foreach ($histori as $d)
 {{-- @php
                     $path = Storage::url('uploads/absensi/'.$d->foto_in);
                     @endphp --}}
