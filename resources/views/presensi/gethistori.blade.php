@@ -17,6 +17,13 @@
         return ($result);
     }
 
+    function rupiah($nilai)
+    {
+
+        return number_format($nilai, '0', ',', '.');
+    }
+
+
     function selisih($jam_masuk, $jam_keluar)
     {
         list($h, $m, $s) = explode(":", $jam_masuk);
