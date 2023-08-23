@@ -44,7 +44,10 @@
     <p>Data Belum Aada</p>
 </div>
 @endif
-@foreach ($histori as $d)
+@foreach ($historibulanini as $d)
+{{-- @php
+                    $path = Storage::url('uploads/absensi/'.$d->foto_in);
+                    @endphp --}}
 @if ($d->status=="h")
 <div class="row mb-1">
     <div class="col">
@@ -66,112 +69,136 @@
                             @endif --}}
 
                             <?php
-                                $jam_in = date("H:i", strtotime($d->jam_in));
-                                $jam_out = date("H:i", strtotime($d->jam_out));
-                                $jam_pulang = date("H:i", strtotime($d->jam_pulang));
-                                //$status = $d->status_presensi;
-                                if (!empty($d->jam_in)) {
-                                    if ($jam_in > $d->jam_masuk) {
+                                                $jam_in = date("H:i", strtotime($d->jam_in));
+                                                $jam_in_tanggal =  date("Y-m-d H:i",strtotime($d->jam_in));
 
-                                        $jam_masuk = $d->tgl_presensi . " " . $d->jam_masuk;
+                                                $jam_out = date("H:i", strtotime($d->jam_out));
+                                                $jam_out_tanggal = date("Y-m-d H:i",strtotime($d->jam_out));
+                                                $lintashari = $d->lintashari;
+                                                $tgl_presensi = $d->tgl_presensi;
+                                                if(!empty($lintashari)){ // Jika Jadwal Presesni Lintas Hari
+                                                    $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                                                    // Tanggal Pulang adalah Tanggal Berikutnya
+                                                }else{
+                                                    $tgl_pulang = $tgl_presensi; // Tanggal Pulang adalah Tanggal Presensi
+                                                }
 
-                                        $j1 = strtotime($jam_masuk);
-                                        $j2 = strtotime($d->jam_in);
+                                                if ($d->id_jabatan==24) {
+                                                    $jam_masuk = $jam_in;
+                                                    $jam_pulang = $jam_out;
+                                                }else{
+                                                    $jam_masuk = date("H:i",strtotime($d->jam_masuk));
+                                                    $jam_pulang = date("H:i", strtotime($d->jam_pulang));
+                                                }
 
-                                        $diffterlambat = $j2 - $j1;
+                                                $jam_masuk_tanggal = $tgl_presensi." ".$jam_masuk;
+                                                $jam_pulang_tanggal = $tgl_pulang." ".$jam_pulang;
 
-                                        $jamterlambat = floor($diffterlambat / (60 * 60));
-                                        $menitterlambat = floor(($diffterlambat - ($jamterlambat * (60 * 60)))/60);
+                                                //$status = $d->status_presensi;
+                                                if (!empty($d->jam_in)) {
+                                                    if ($jam_in_tanggal > $jam_masuk_tanggal) {
 
-                                        $jterlambat = $jamterlambat <= 9 ? "0" . $jamterlambat : $jamterlambat;
-                                        $mterlambat = $menitterlambat <= 9 ? "0" . $menitterlambat : $menitterlambat;
+                                                        $j1 = strtotime($jam_masuk_tanggal);
+                                                        $j2 = strtotime($jam_in_tanggal);
 
+                                                        $diffterlambat = $j2 - $j1;
 
-                                        $terlambat = "Telat ".$jterlambat . ":" . $mterlambat;
-                                        $desimalterlambat = ROUND(($menitterlambat * 100) / 60);
-                                        $colorterlambat = "red";
-                                    } else {
-                                        $terlambat = "Tepat waktu";
-                                        $jamterlambat = 0;
-                                        $desimalterlambat = 0;
-                                        $colorterlambat = "green";
-                                    }
-                                } else {
-                                    $terlambat = "";
-                                    $jamterlambat = 0;
-                                    $desimalterlambat = 0;
-                                    $colorterlambat = "";
-                                }
+                                                        $jamterlambat = floor($diffterlambat / (60 * 60));
+                                                        $menitterlambat = floor(($diffterlambat - ($jamterlambat * (60 * 60)))/60);
 
-                                if(!empty($d->jam_keluar)){
-                                    $jamkeluar = $d->tgl_presensi." ".$d->jam_keluar;
-                                    if(!empty($d->jam_masuk_kk)){
-                                        $jam_masuk_kk = $d->tgl_presensi." ".$d->jam_masuk_kk;
-                                    }else{
-                                        $jam_masuk_kk = $d->tgl_presensi." ".$d->jam_pulang;
-                                    }
-
-                                    $jk1 = strtotime($jamkeluar);
-                                    $jk2 = strtotime($jam_masuk_kk);
-                                    $difkeluarkantor = $jk2 - $jk1;
-
-                                    $jamkeluarkantor = floor($difkeluarkantor / (60 * 60));
-                                    $menitkeluarkantor = floor(($difkeluarkantor - ($jamkeluarkantor * (60 * 60)))/60);
-
-                                    $jkeluarkantor = $jamkeluarkantor <= 9 ? "0" . $jamkeluarkantor : $jamkeluarkantor;
-                                    $mkeluarkantor = $menitkeluarkantor <= 9 ? "0" . $menitkeluarkantor : $menitkeluarkantor;
-
-                                    if(empty($d->jam_masuk_kk)){
-                                        if($d->total_jam == 7){
-                                            $totaljamkeluar = ($jkeluarkantor-1).":".$mkeluarkantor;
-                                        }else{
-                                            $totaljamkeluar = $jkeluarkantor.":".$mkeluarkantor;
-                                        }
-                                    }else{
-                                        $totaljamkeluar = $jkeluarkantor.":".$mkeluarkantor;
-                                    }
-                                    $desimaljamkeluar = ROUND(($menitkeluarkantor * 100) / 60);
-                                }else{
-                                    $totaljamkeluar = "";
-                                    $desimaljamkeluar = 0;
-                                    $jamkeluarkantor = 0;
-                                }
+                                                        $jterlambat = $jamterlambat <= 9 ? "0" . $jamterlambat : $jamterlambat;
+                                                        $mterlambat = $menitterlambat <= 9 ? "0" . $menitterlambat : $menitterlambat;
 
 
-                                if(!empty($d->jam_out) && $jam_out < $jam_pulang){
-                                    $pc = "Pulang Cepat";
-                                }else{
-                                    $pc = "";
-                                }
-                                if (!empty($d->jam_in) and $d->kode_dept != 'MKT') {
-                                    if ($jam_in > $d->jam_masuk and empty($d->kode_izin_terlambat)) {
-                                        if ($jamterlambat < 1) {
-                                            if($menitterlambat >= 5 AND $menitterlambat < 10){
-                                                $denda = 5000;
-                                            }else if($menitterlambat >= 10 AND $menitterlambat <15){
-                                                $denda = 10000;
-                                            }else if($menitterlambat >= 15 AND $menitterlambat <= 59){
-                                                $denda = 15000;
-                                            }
-                                        }else{
-                                            $denda = "pj";
-                                        }
-                                    } else {
-                                        if(!empty($d->kode_izin_terlambat)){
-                                            $denda = "si";
-                                        }else{
-                                            $denda = 0;
-                                        }
-                                    }
-                                } else {
-                                    if ($jamterlambat < 1) {
-                                    $denda = 0;
-                                    }else{
-                                        $denda="pj";
-                                    }
-                                }
-                            ?>
+                                                        $terlambat = "Telat ".$jterlambat . ":" . $mterlambat;
+                                                        $desimalterlambat = ROUND(($menitterlambat * 100) / 60);
+                                                        $colorterlambat = "red";
+                                                    } else {
+                                                        $terlambat = "Tepat waktu";
+                                                        $jamterlambat = 0;
+                                                        $desimalterlambat = 0;
+                                                        $colorterlambat = "green";
+                                                    }
+                                                } else {
+                                                    $terlambat = "";
+                                                    $jamterlambat = 0;
+                                                    $desimalterlambat = 0;
+                                                    $colorterlambat = "";
+                                                }
 
+                                                if(!empty($d->jam_keluar)){
+                                                    $jam_keluar = date("H:i",strtotime($d->jam_keluar));
+                                                    $jamkeluar_tanggal = $tgl_presensi." ".$jam_keluar;
+                                                    if(!empty($d->jam_masuk_kk)){
+                                                        $jam_masuk_kk = date("H:i",strtotime($d->jam_masuk_kk));
+                                                        $jam_masuk_kk_tanggal = $tgl_presensi." ".$jam_masuk_kk;
+                                                    }else{
+                                                        $jam_masuk_kk = $tgl_presensi." ".$jam_pulang;
+                                                    }
+
+                                                    $jk1 = strtotime($jamkeluar_tanggal);
+                                                    $jk2 = strtotime($jam_masuk_kk_tanggal);
+                                                    $difkeluarkantor = $jk2 - $jk1;
+
+                                                    $jamkeluarkantor = floor($difkeluarkantor / (60 * 60));
+                                                    $menitkeluarkantor = floor(($difkeluarkantor - ($jamkeluarkantor * (60 * 60)))/60);
+
+                                                    $jkeluarkantor = $jamkeluarkantor <= 9 ? "0" . $jamkeluarkantor : $jamkeluarkantor;
+                                                    $mkeluarkantor = $menitkeluarkantor <= 9 ? "0" . $menitkeluarkantor : $menitkeluarkantor;
+
+                                                    if(empty($d->jam_masuk_kk)){
+                                                        if($d->total_jam == 7){
+                                                            $totaljamkeluar = ($jkeluarkantor-1).":".$mkeluarkantor;
+                                                        }else{
+                                                            $totaljamkeluar = $jkeluarkantor.":".$mkeluarkantor;
+                                                        }
+                                                    }else{
+                                                        $totaljamkeluar = $jkeluarkantor.":".$mkeluarkantor;
+                                                    }
+                                                    $desimaljamkeluar = ROUND(($menitkeluarkantor * 100) / 60);
+                                                }else{
+                                                    $totaljamkeluar = "";
+                                                    $desimaljamkeluar = 0;
+                                                    $jamkeluarkantor = 0;
+                                                }
+
+
+                                                if(!empty($d->jam_out) && $jam_out_tanggal < $jam_pulang_tanggal){
+                                                    $pc = "Pulang Cepat";
+                                                }else{
+                                                    $pc = "";
+                                                }
+                                                if (!empty($d->jam_in) and $d->kode_dept != 'MKT') {
+                                                    if ($jam_in_tanggal > $jam_masuk_tanggal and empty($d->kode_izin_terlambat)) {
+                                                        if ($jamterlambat <= 1) {
+                                                            if($menitterlambat >= 5 AND $menitterlambat < 10){
+                                                                $denda = 5000;
+                                                            }else if($menitterlambat >= 10 AND $menitterlambat <15){
+                                                                $denda = 10000;
+                                                            }else if($menitterlambat >= 15 AND $menitterlambat <= 59){
+                                                                $denda = 15000;
+                                                            }else{
+                                                                $denda = 0;
+                                                            }
+                                                        }else{
+                                                            $denda = "pj";
+                                                        }
+                                                    } else {
+                                                        if(!empty($d->kode_izin_terlambat)){
+                                                            $denda = "si";
+                                                        }else{
+                                                            $denda = 0;
+                                                        }
+                                                    }
+                                                } else {
+                                                    if ($jamterlambat < 1) {
+                                                        $denda = 0;
+                                                    }else{
+                                                        $denda="pj";
+                                                    }
+                                                }
+                                            ?>
+                            {{-- {{ $jam_out_tanggal }} || {{ $jam_pulang_tanggal }} --}}
                             @if (!empty($d->jam_in))
                             <span style="color:{{ $colorterlambat }}">{{ $terlambat }}
                                 @if (!empty($denda) && $denda != "pj" && $denda != "si" )
@@ -281,4 +308,5 @@
     </div>
 </div>
 @endif
+
 @endforeach
