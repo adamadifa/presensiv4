@@ -110,6 +110,19 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row" style="margin-bottom: 0" id="kategori_cuti_khusus_form">
+                <div class="col-12">
+                    <div class="form-group">
+                        <select name="kat_cuti_khusus" id="kat_cuti_khusus" class="selectmaterialize">
+                            <option value="">Kategori Cuti</option>
+                            @foreach ($mastercutikhusus as $d)
+                            <option value="{{ $d->kode_cuti_khusus }}">{{ $d->nama_cuti_khusus }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
             <div class="row" style="margin-bottom: 0" id="jml_hari_frm">
                 <div class="col-12">
                     <div class="input-icons">
@@ -118,7 +131,17 @@
                     </div>
                 </div>
             </div>
-
+            <div class="custom-file-upload" id="fileUpload1" style="height: 100px !important">
+                <input type="file" name="doccuti" id="fileuploadInput" accept=".png, .jpg, .jpeg">
+                <label for="fileuploadInput">
+                    <span>
+                        <strong>
+                            <ion-icon name="cloud-upload-outline" role="img" class="md hydrated" aria-label="cloud upload outline"></ion-icon>
+                            <i>Tap to Upload Document</i>
+                        </strong>
+                    </span>
+                </label>
+            </div>
             <div class="row">
                 <div class="col-12">
                     <div class="form-group">
@@ -166,6 +189,58 @@
             loadjumlahhari();
         });
 
+        function loadcutikhusus() {
+            var jenis_cuti = $("#jenis_cuti").val();
+            if (jenis_cuti == "C03") {
+                $("#kategori_cuti_khusus_form").show();
+            } else {
+                $("#kategori_cuti_khusus_form").hide();
+            }
+        }
+
+        loadcutikhusus();
+
+        $("#jenis_cuti").click(function(e) {
+            loadcutikhusus();
+        });
+
+        $("#frmPengajuanizin").submit(function() {
+            var dari = $("#frmPengajuanizin").find("#dari").val();
+            var sampai = $("#frmPengajuanizin").find("#sampai").val();
+            var keterangan = $("#keterangan").val();
+            var jenis_cuti = $("#jenis_cuti").val();
+            var kat_cuti_khusus = $("#kat_cuti_khusus").val();
+            if (jenis_cuti == "") {
+                Swal.fire({
+                    title: 'Warning !'
+                    , text: 'Jenis Cuti Harus Dipilih'
+                    , icon: 'warning'
+                })
+                return false;
+            } else if (jenis_cuti == "C03" && kat_cuti_khusus == "") {
+                Swal.fire({
+                    title: 'Warning !'
+                    , text: 'Kategori Cuti Harus Dipilih'
+                    , icon: 'warning'
+                })
+
+                return false;
+            } else if (dari == "" || sampai == "") {
+                Swal.fire({
+                    title: 'Warning !'
+                    , text: 'Tanggal Cuti Harus Diisi'
+                    , icon: 'warning'
+                })
+                return false;
+            } else if (keterangan == "") {
+                Swal.fire({
+                    title: 'Warning !'
+                    , text: 'Keterangan Cuti Harus DIisi'
+                    , icon: 'warning'
+                })
+                return false;
+            }
+        });
     });
 
 </script>
