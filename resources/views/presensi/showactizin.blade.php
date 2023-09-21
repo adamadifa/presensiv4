@@ -1,12 +1,5 @@
 <ul class="action-button-list">
-    <li>
-        <a href="/izin/{{ $id }}/editizin" class="btn btn-list">
-            <span>
-                <ion-icon name="create-outline"></ion-icon>
-                Edit
-            </span>
-        </a>
-    </li>
+    @if (empty($izin->status_approved))
     <li>
         <a href="#" id="deletebutton" class="btn btn-list text-danger" data-dismiss="modal" data-toggle="modal" data-target="#DialogBasic">
             <span>
@@ -15,6 +8,8 @@
             </span>
         </a>
     </li>
+    @endif
+
     @if (!empty($izin->sid))
     <li>
         <a href="/izin/{{ $id }}/showsid" class="btn btn-list text-primary">
