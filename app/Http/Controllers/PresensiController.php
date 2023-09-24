@@ -249,11 +249,12 @@ class PresensiController extends Controller
         if ($ceklibur > 0) {
             $hariini = "Sabtu";
         } elseif ($cekminggumasuk != null) {
-            $hari_ini = $this->hari_tanggal($cekminggumasuk->tanggal_libur);
+            $hariini = $this->hari_tanggal($cekminggumasuk->tanggal_libur);
         } else {
             $hariini = $this->hari_ini();
         }
 
+        //dd($hariini);
 
         $id_jabatan = Auth::user()->id_jabatan;
         $jabatan = DB::table('hrd_jabatan')->where('id', $id_jabatan)->first();
