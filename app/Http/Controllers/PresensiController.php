@@ -476,7 +476,9 @@ class PresensiController extends Controller
                 // /echo $tgl_pulang_shift_3;
                 $kode_jam_kerja = $jadwal->kode_jam_kerja;
                 if (!empty($last_lintashari)) {
-                    $tgl_presensi = $lastday;
+                    if ($jam_sekarang > "00:00" && $jam_sekarang <= "07:00") {
+                        $tgl_presensi = $lastday;
+                    }
                     $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
                     $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($ceklastpresensi->jam_pulang));
                 } else {
@@ -487,13 +489,21 @@ class PresensiController extends Controller
                         $kode_jam_kerja = "JK08";
                         $kode_jadwal = "JD004";
                     } else {
-                        $tgl_pulang = $tgl_presensi;
+                        if ($kode_jadwal == "JD004") {
+                            if ($jam_sekarang > "00:00" && $jam_sekarang <= "07:00") {
+                                $tgl_pulang = $tgl_presensi;
+                            } else {
+                                $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                            }
+                        } else {
+                            $tgl_pulang = $tgl_presensi;
+                        }
                         $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($jam_kerja->jam_pulang));
                     }
                 }
 
 
-                // echo $tgl_presensi;
+                // echo $jam_pulang;
                 // die;
 
                 $date_jampulang = date("Y-m-d", strtotime($jam_pulang));
@@ -501,6 +511,9 @@ class PresensiController extends Controller
                 $h_jampulang = $hour_jampulang < 9 ? "0" . $hour_jampulang : $hour_jampulang;
                 $jam_pulang = $date_jampulang . " " . $h_jampulang . ":00";
 
+                // echo $tgl_presensi;
+                // echo $jam_pulang;
+                //die;
                 $jamabsen = $jam;
                 if ($jamabsen < $jam_pulang) {
                     echo "error|Maaf Belum Waktunya Absen Pulang, Absen Pulang di Mulai Pada Pukul " . $jam_pulang . " |out";
