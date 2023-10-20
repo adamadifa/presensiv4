@@ -84,7 +84,7 @@ class DashboardController extends Controller
             ->where('presensi.status', 'h')
             ->orderBy('jam_in')
             ->get();
-        $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Desember"];
+        $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
         // $rekapizin = DB::table('pengajuan_izin')
         //     ->selectRaw('SUM(IF(status="i",1,0)) as jmlizin,SUM(IF(status="s",1,0)) as jmlsakit')
