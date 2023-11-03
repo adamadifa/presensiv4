@@ -490,7 +490,7 @@ class PresensiController extends Controller
                         $kode_jadwal = "JD004";
                     } else {
                         if ($kode_jadwal == "JD004") {
-                            if ($jam_sekarang > "00:00" && $jam_sekarang <= "07:00") {
+                            if ($jam_sekarang > "00:00" && $jam_sekarang <= "07:40") {
                                 $tgl_pulang = $tgl_presensi;
                             } else {
                                 $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
@@ -1161,6 +1161,9 @@ class PresensiController extends Controller
 
         $cek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->first();
 
+        $jam_sekarang = date("H:i:s");
+
+
         if ($status_scan == 0) {
             $jam_masuk = $tgl_presensi . " " . "10:00";
             $jamabsen = $jam;
@@ -1219,7 +1222,7 @@ class PresensiController extends Controller
 
             $kode_jam_kerja = $jadwal->kode_jam_kerja;
 
-            if (!empty($last_lintashari) && $tgl_pulang_shift_3 <= "10:00") {
+            if (!empty($last_lintashari) && $tgl_pulang_shift_3 <= "07:00") {
                 $tgl_presensi = $lastday;
                 $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
                 $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($ceklastpresensi->jam_pulang));
@@ -1231,7 +1234,17 @@ class PresensiController extends Controller
                     $kode_jam_kerja = "JK08";
                     $kode_jadwal = "JD004";
                 } else {
-                    $tgl_pulang = $tgl_presensi;
+
+                    if ($kode_jadwal == "JD004") {
+                        if ($jam_sekarang > "00:00" && $jam_sekarang <= "07:40") {
+                            $tgl_pulang = $tgl_presensi;
+                        } else {
+                            $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                        }
+                    } else {
+                        $tgl_pulang = $tgl_presensi;
+                    }
+
                     $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($jam_kerja->jam_pulang));
                 }
                 // $tgl_pulang = $tgl_presensi;
@@ -1245,7 +1258,7 @@ class PresensiController extends Controller
 
             $jamabsen = $jam;
             if ($jamabsen < $jam_pulang) {
-                echo "error|Maaf Belum Waktunya Absen Pulang, Absen Pulang di Mulai Pada Pukul " . $jamabsen . " " . $jam_pulang . " |out";
+                echo "error|Maaf Belum Waktunya Absen Pulang, Absen Pulang di Mulai Pada Pukul "  . " " . $jam_pulang . " |out";
             } else {
                 $cek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->first();
                 if ($cek == null) {
