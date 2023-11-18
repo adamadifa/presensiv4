@@ -479,30 +479,50 @@ class PresensiController extends Controller
                     if ($jam_sekarang > "00:00" && $jam_sekarang <= "08:00") {
                         $tgl_presensi = $lastday;
                     }
-                    $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
-                    $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($ceklastpresensi->jam_pulang));
+
+                    if ($hariini != "Sabtu") {
+                        $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                        $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($ceklastpresensi->jam_pulang));
+                    } else {
+                        $tgl_pulang = $tgl_presensi;
+                        $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($jam_kerja->jam_pulang));
+                    }
                 } else {
                     if ($tgl_pulang_shift_3 <= "08:00" && $kode_jadwal_last == "JD004") {
                         $tgl_presensi = $lastday;
                         $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
-                        $jam_pulang = $tgl_pulang . " 07:00";
-                        $kode_jam_kerja = "JK08";
+                        if ($hariini != "Sabtu") {
+                            $jam_pulang = $tgl_pulang . " 07:00";
+                            $kode_jam_kerja = "JK08";
+                        } else {
+                            $jam_pulang = $tgl_pulang . " 22:00";
+                            $kode_jam_kerja = "JK15";
+                        }
+
                         $kode_jadwal = "JD004";
+
+                        //echo "A" . $jam_pulang;
                     } else {
                         if ($kode_jadwal == "JD004") {
-                            if ($jam_sekarang > "00:00" && $jam_sekarang <= "08:00") {
-                                $tgl_pulang = $tgl_presensi;
+                            if ($hariini != "Sabtu") {
+                                if ($jam_sekarang > "00:00" && $jam_sekarang <= "08:00") {
+                                    $tgl_pulang = $tgl_presensi;
+                                } else {
+                                    $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                                }
                             } else {
-                                $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                                $tgl_pulang = $tgl_presensi;
                             }
                         } else {
                             $tgl_pulang = $tgl_presensi;
                         }
                         $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($jam_kerja->jam_pulang));
+
+                        // echo "B" . $jam_pulang;
                     }
                 }
 
-
+                //die;
                 // echo $jam_pulang;
                 // die;
 
@@ -1222,10 +1242,20 @@ class PresensiController extends Controller
 
             $kode_jam_kerja = $jadwal->kode_jam_kerja;
 
-            if (!empty($last_lintashari) && $tgl_pulang_shift_3 <= "08:00") {
-                $tgl_presensi = $lastday;
-                $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
-                $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($ceklastpresensi->jam_pulang));
+            if (!empty($last_lintashari)) {
+                if ($jam_sekarang > "00:00" && $jam_sekarang <= "08:00") {
+                    $tgl_presensi = $lastday;
+                }
+
+                if ($hariini != "Sabtu") {
+                    $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                    $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($ceklastpresensi->jam_pulang));
+                } else {
+                    $tgl_pulang = $tgl_presensi;
+                    $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($jam_kerja->jam_pulang));
+                }
+
+                //echo "A" . $jam_pulang;
             } else {
                 if ($tgl_pulang_shift_3 <= "08:00" && $kode_jadwal_last == "JD004") {
                     $tgl_presensi = $lastday;
@@ -1233,22 +1263,29 @@ class PresensiController extends Controller
                     $jam_pulang = $tgl_pulang . " 07:00";
                     $kode_jam_kerja = "JK08";
                     $kode_jadwal = "JD004";
+                    //echo 'B';
                 } else {
 
                     if ($kode_jadwal == "JD004") {
-                        if ($jam_sekarang > "00:00" && $jam_sekarang <= "08:00") {
-                            $tgl_pulang = $tgl_presensi;
+                        if ($hariini != "Sabtu") {
+                            if ($jam_sekarang > "00:00" && $jam_sekarang <= "08:00") {
+                                $tgl_pulang = $tgl_presensi;
+                            } else {
+                                $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                            }
                         } else {
-                            $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
+                            $tgl_pulang = $tgl_presensi;
                         }
                     } else {
                         $tgl_pulang = $tgl_presensi;
                     }
 
+                    //echo 'C';
                     $jam_pulang = $tgl_pulang . " " . date("H:i", strtotime($jam_kerja->jam_pulang));
                 }
                 // $tgl_pulang = $tgl_presensi;
                 // $jam_pulang = $tgl_pulang . " " . $jam_kerja->jam_pulang;
+
             }
 
             $date_jampulang = date("Y-m-d", strtotime($jam_pulang));
