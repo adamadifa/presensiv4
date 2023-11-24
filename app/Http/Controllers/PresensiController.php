@@ -278,18 +278,24 @@ class PresensiController extends Controller
         $kode_dept =  Auth::guard('karyawan')->user()->kode_dept;
         $id_kantor =  Auth::guard('karyawan')->user()->id_kantor;
 
-        if ($cekliburhariini != null && $jabatan->nama_jabatan != "SECURITY") {
-            return view('presensi.libur', compact('cekliburhariini'));
-        } else if ($cekwfhhariini != null) {
-            return view('presensi.wfh', compact('cekwfhhariini'));
-        } elseif ($cekliburpenggantiminggu != null) {
-            return view('presensi.liburpenggantiminggu', compact('cekliburpenggantiminggu'));
+        // if ($cekliburhariini != null && $jabatan->nama_jabatan != "SECURITY") {
+        //     return view('presensi.libur', compact('cekliburhariini'));
+        // } else if ($cekwfhhariini != null) {
+        //     return view('presensi.wfh', compact('cekwfhhariini'));
+        // } elseif ($cekliburpenggantiminggu != null) {
+        //     return view('presensi.liburpenggantiminggu', compact('cekliburpenggantiminggu'));
+        // } else {
+        //     if ($kode_dept == "MKT" || $id_kantor != "PST" || $kode_dept == "ADT") {
+        //         return view('presensi.create_with_camera', compact('cek', 'lok_kantor', 'jam_kerja', 'jadwal'));
+        //     } else {
+        //         return view('presensi.create', compact('cek', 'lok_kantor', 'jam_kerja', 'jadwal'));
+        //     }
+        // }
+
+        if ($kode_dept == "MKT" || $id_kantor != "PST" || $kode_dept == "ADT") {
+            return view('presensi.create_with_camera', compact('cek', 'lok_kantor', 'jam_kerja', 'jadwal'));
         } else {
-            if ($kode_dept == "MKT" || $id_kantor != "PST" || $kode_dept == "ADT") {
-                return view('presensi.create_with_camera', compact('cek', 'lok_kantor', 'jam_kerja', 'jadwal'));
-            } else {
-                return view('presensi.create', compact('cek', 'lok_kantor', 'jam_kerja', 'jadwal'));
-            }
+            return view('presensi.create', compact('cek', 'lok_kantor', 'jam_kerja', 'jadwal'));
         }
     }
 
