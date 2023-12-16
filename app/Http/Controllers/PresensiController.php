@@ -242,6 +242,11 @@ class PresensiController extends Controller
 
 
 
+        $ceklembur = DB::table('lembur_karyawan')
+            ->join('lembur', 'lembur_karyawan.kode_lembur', '=', 'lembur.kode_lembur')
+            ->where('nik', $nik)
+            ->where('tanggal', $hariini)->count();
+
 
 
 
@@ -254,6 +259,9 @@ class PresensiController extends Controller
             $hariini = $this->hari_ini();
         }
 
+        if ($hariini == "Sabtu" && $ceklembur > 0) {
+            $hariini = "Jumat";
+        }
         //dd($hariini);
 
         $id_jabatan = Auth::user()->id_jabatan;
@@ -368,11 +376,32 @@ class PresensiController extends Controller
         $ceklibur = DB::table('harilibur')
             ->where('id_kantor', $kode_cabang)
             ->where('tanggal_limajam', $tgl_presensi)->count();
+
+        $ceklembur = DB::table('lembur_karyawan')
+            ->join('lembur', 'lembur_karyawan.kode_lembur', '=', 'lembur.kode_lembur')
+            ->where('nik', $nik)
+            ->where('tanggal', $tgl_presensi)->count();
+
         if ($ceklibur > 0) {
             $hariini = "Sabtu";
         } else {
             $hariini = $this->hari_ini();
         }
+
+        if ($ceklembur > 0 && $hariini == "Sabtu") {
+            $hariini = "Jumat";
+        }
+
+        $id_jabatan = Auth::user()->id_jabatan;
+        $jabatan = DB::table('hrd_jabatan')->where('id', $id_jabatan)->first();
+        // dd($jabatan->nama_jabatan);
+
+        // dd($id_jabatan);
+
+        if ($jabatan->nama_jabatan == "SECURITY" && $hariini == "Sabtu") {
+            $hariini = "Senin";
+        }
+
         $jadwal = DB::table('jadwal_kerja_detail')
             ->join('jadwal_kerja', 'jadwal_kerja_detail.kode_jadwal', '=', 'jadwal_kerja.kode_jadwal')
             ->where('hari', $hariini)->where('jadwal_kerja_detail.kode_jadwal', $kode_jadwal)
