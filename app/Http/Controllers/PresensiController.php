@@ -160,7 +160,7 @@ class PresensiController extends Controller
 
         $ceklibur = $libur->count();
         $datalibur = $libur->first();
-        $tanggal_libur = $datalibur->tanggal_libur;
+        $tanggal_libur = $datalibur != null ? $datalibur->tanggal_libur : '';
         // if (empty($ceklibur)) {
         //     $ceklbr = DB::table('harilibur')
         //         ->where('id_kantor', $kode_cabang)
@@ -382,7 +382,7 @@ class PresensiController extends Controller
             ->where('tanggal_limajam', $tgl_presensi);
         $ceklibur = $libur->count();
         $datalibur = $libur->first();
-        $tanggal_libur = $datalibur->tanggal_libur;
+        $tanggal_libur = $datalibur != null ? $datalibur->tanggal_libur : '';
 
 
         $ceklembur = DB::table('lembur_karyawan')
@@ -1205,7 +1205,7 @@ class PresensiController extends Controller
 
         $ceklibur = $libur->count();
         $datalibur = $libur->first();
-        $tanggal_libur = $datalibur->tanggal_libur;
+        $tanggal_libur = $datalibur != null ? $datalibur->tanggal_libur : '';
 
         $ceklembur = DB::table('lembur_karyawan')
             ->join('lembur', 'lembur_karyawan.kode_lembur', '=', 'lembur.kode_lembur')
