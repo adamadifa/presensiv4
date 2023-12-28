@@ -151,12 +151,16 @@ class PresensiController extends Controller
             $kode_jadwal = Auth::guard('karyawan')->user()->kode_jadwal;
         }
 
-        $ceklibur = DB::table('harilibur_karyawan')
+        $libur = DB::table('harilibur_karyawan')
             ->leftJoin('harilibur', 'harilibur_karyawan.kode_libur', '=', 'harilibur.kode_libur')
             ->where('nik', $nik)
             ->where('id_kantor', $kode_cabang)
             ->where('tanggal_limajam', $hariini)
-            ->where('kategori', 1)->count();
+            ->where('kategori', 1);
+
+        $ceklibur = $libur->count();
+        $datalibur = $libur->first();
+        $tanggal_libur = $datalibur->tanggal_libur;
         // if (empty($ceklibur)) {
         //     $ceklbr = DB::table('harilibur')
         //         ->where('id_kantor', $kode_cabang)
@@ -251,7 +255,7 @@ class PresensiController extends Controller
 
 
         //dd($ceklibur);
-        if ($ceklibur > 0) {
+        if ($ceklibur > 0 && $this->hari_tanggal($tanggal_libur) == "Sabtu") {
             $hariini = "Sabtu";
         } elseif ($cekminggumasuk != null) {
             $hariini = $this->hari_tanggal($cekminggumasuk->tanggal_libur);
@@ -373,16 +377,20 @@ class PresensiController extends Controller
         } else {
             $kode_jadwal = Auth::guard('karyawan')->user()->kode_jadwal;
         }
-        $ceklibur = DB::table('harilibur')
+        $libur = DB::table('harilibur')
             ->where('id_kantor', $kode_cabang)
-            ->where('tanggal_limajam', $tgl_presensi)->count();
+            ->where('tanggal_limajam', $tgl_presensi);
+        $ceklibur = $libur->count();
+        $datalibur = $libur->first();
+        $tanggal_libur = $datalibur->tanggal_libur;
+
 
         $ceklembur = DB::table('lembur_karyawan')
             ->join('lembur', 'lembur_karyawan.kode_lembur', '=', 'lembur.kode_lembur')
             ->where('nik', $nik)
             ->where('tanggal', $tgl_presensi)->count();
 
-        if ($ceklibur > 0) {
+        if ($ceklibur > 0 && $this->hari_tanggal($tanggal_libur) == "Sabtu") {
             $hariini = "Sabtu";
         } else {
             $hariini = $this->hari_ini();
@@ -1191,10 +1199,20 @@ class PresensiController extends Controller
             $kode_jadwal = $karyawan->kode_jadwal;
         }
 
-        $ceklibur = DB::table('harilibur')
+        $libur = DB::table('harilibur')
             ->where('id_kantor', $kode_cabang)
-            ->where('tanggal_limajam', $tgl_presensi)->count();
-        if ($ceklibur > 0) {
+            ->where('tanggal_limajam', $tgl_presensi);
+
+        $ceklibur = $libur->count();
+        $datalibur = $libur->first();
+        $tanggal_libur = $datalibur->tanggal_libur;
+
+        $ceklembur = DB::table('lembur_karyawan')
+            ->join('lembur', 'lembur_karyawan.kode_lembur', '=', 'lembur.kode_lembur')
+            ->where('nik', $nik)
+            ->where('tanggal', $tgl_presensi)->count();
+
+        if ($ceklibur > 0 && $this->hari_tanggal($tanggal_libur) == "Sabtu") {
             $hariini = "Sabtu";
         } else {
             $hariini = $this->hari_ini();
@@ -1203,6 +1221,10 @@ class PresensiController extends Controller
 
         if ($jabatan->nama_jabatan == "SECURITY" && $hariini == "Sabtu") {
             $hariini = "Senin";
+        }
+
+        if ($ceklembur > 0 && $hariini == "Sabtu") {
+            $hariini = "Jumat";
         }
 
 
