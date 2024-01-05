@@ -377,9 +377,13 @@ class PresensiController extends Controller
         } else {
             $kode_jadwal = Auth::guard('karyawan')->user()->kode_jadwal;
         }
-        $libur = DB::table('harilibur')
+        $libur = DB::table('harilibur_karyawan')
+            ->leftJoin('harilibur', 'harilibur_karyawan.kode_libur', '=', 'harilibur.kode_libur')
+            ->where('nik', $nik)
             ->where('id_kantor', $kode_cabang)
-            ->where('tanggal_limajam', $tgl_presensi);
+            ->where('tanggal_limajam', $tgl_presensi)
+            ->where('kategori', 1);
+
         $ceklibur = $libur->count();
         $datalibur = $libur->first();
         $tanggal_libur = $datalibur != null ? $datalibur->tanggal_libur : '';
@@ -1199,10 +1203,12 @@ class PresensiController extends Controller
             $kode_jadwal = $karyawan->kode_jadwal;
         }
 
-        $libur = DB::table('harilibur')
+        $libur = DB::table('harilibur_karyawan')
+            ->leftJoin('harilibur', 'harilibur_karyawan.kode_libur', '=', 'harilibur.kode_libur')
+            ->where('nik', $nik)
             ->where('id_kantor', $kode_cabang)
-            ->where('tanggal_limajam', $tgl_presensi);
-
+            ->where('tanggal_limajam', $tgl_presensi)
+            ->where('kategori', 1);
         $ceklibur = $libur->count();
         $datalibur = $libur->first();
         $tanggal_libur = $datalibur != null ? $datalibur->tanggal_libur : '';
