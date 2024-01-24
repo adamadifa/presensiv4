@@ -10,6 +10,7 @@ use App\Http\Controllers\PengajuanizinController;
 use App\Http\Controllers\PinjamanController;
 use App\Http\Controllers\PinjamnaController;
 use App\Http\Controllers\PresensiController;
+use App\Http\Controllers\SlipgajiController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Psy\VarDumper\Presenter;
@@ -80,6 +81,9 @@ Route::middleware(['auth:karyawan'])->group(function () {
     Route::get('/pinjaman/{no_pinjaman}/show', [PinjamanController::class, 'show']);
     Route::get('/pinjaman/simulasi', [PinjamanController::class, 'simulasi']);
 
+    //Slip Gaji
+    Route::get('/slipgaji',[SlipgajiController::class,'index']);
+    Route::get('/slipgaji/{bulan}/{tahun}/cetak',[SlipgajiController::class,'cetak']);
 
     Route::get('/pengajuanizin/createizinterlambat', [PengajuanizinController::class, 'createizinterlambat']);
     Route::get('/pengajuanizin/createizinabsen', [PengajuanizinController::class, 'createizinabsen']);
@@ -128,6 +132,8 @@ Route::middleware(['auth:user'])->group(function () {
     Route::post('/cabang/edit', [CabangController::class, 'edit']);
     Route::post('/cabang/update', [CabangController::class, 'update']);
     Route::post('/cabang/{kode_cabang}/delete', [CabangController::class, 'delete']);
+
+   
 
     //Konfigurasi
 

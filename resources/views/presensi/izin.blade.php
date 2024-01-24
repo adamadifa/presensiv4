@@ -26,8 +26,8 @@
         }
 
         /* .historicontent {
-                justify-content: left !important;
-            } */
+                                            justify-content: left !important;
+                                        } */
     </style>
     <!-- App Header -->
     <div class="appHeader bg-primary text-light">
@@ -42,7 +42,7 @@
     <!-- * App Header -->
 @endsection
 @section('content')
-    <div class="row">
+    <div class="row" style="margin-top: 70px">
         <div class="col">
             <form action="/presensi/izin" method="GET">
                 <div class="row">
@@ -87,7 +87,7 @@
             </form>
         </div>
     </div>
-    <div class="row" style="margin-top: 200px; overflow:scroll; height:100%; position:relative; bottom:10%">
+    <div class="row" style="overflow:scroll; height:100%; position:relative; bottom:10%">
         <div class="col">
             @foreach ($dataizin as $d)
                 <div class="row mb-1">
