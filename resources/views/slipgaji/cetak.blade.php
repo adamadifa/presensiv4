@@ -10,8 +10,8 @@
         }
 
         /* .historicontent {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        justify-content: left !important;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            justify-content: left !important;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        } */
     </style>
     <!-- App Header -->
     <div class="appHeader bg-primary text-light">
@@ -1229,7 +1229,7 @@
                         </tr>
                         <tr>
                             <th>PENEMPATAN</th>
-                            <td class="text-right">{{ rupiah($d->im_penampatan) }}</td>
+                            <td class="text-right">{{ rupiah($d->im_penempatan) }}</td>
                         </tr>
                         <tr>
                             <th>KINERJA</th>
