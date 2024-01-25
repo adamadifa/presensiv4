@@ -10,8 +10,8 @@
         }
 
         /* .historicontent {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        justify-content: left !important;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        justify-content: left !important;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    } */
     </style>
     <!-- App Header -->
     <div class="appHeader bg-primary text-light">
@@ -91,6 +91,7 @@
                 $total_all_kasbon = 0; // Total ALl Kasbon
                 $total_all_nonpjp = 0; // Total All Non PJP
                 $total_all_spip = 0; // Total ALl SPIP
+                $total_all_pengurang = 0; // Total ALl SPIP
 
                 $total_all_potongan = 0; // Total All Potongan
 
@@ -985,7 +986,7 @@
                     @endphp
                 @endif
                 @php
-                    $potongan = ROUND($bpjskesehatan + $bpjstenagakerja + $totaldenda + $d->cicilan_pjp + $d->jml_kasbon + $d->jml_nonpjp + $spip, 0); // Potongan Upah
+                    $potongan = ROUND($bpjskesehatan + $bpjstenagakerja + $totaldenda + $d->cicilan_pjp + $d->jml_kasbon + $d->jml_nonpjp + $d->jml_pengurang + $spip, 0); // Potongan Upah
                     $jmlbersih = $bruto - $potongan; // Jumlah Upah Bersih
 
                     //Total Gaji Pokok
@@ -1039,6 +1040,7 @@
 
                     $total_all_pjp += $d->cicilan_pjp;
                     $total_all_kasbon += $d->jml_kasbon;
+                    $total_all_pengurang += $d->jml_pengurang;
                     $total_all_nonpjp += $d->jml_nonpjp;
                     $total_all_spip += $spip;
 
@@ -1195,6 +1197,10 @@
                         <tr>
                             <th>SPIP</th>
                             <td class="text-right">{{ rupiah($spip) }}</td>
+                        </tr>
+                        <tr>
+                            <th>Pengurang</th>
+                            <td class="text-right">{{ rupiah($d->jml_pengurang) }}</td>
                         </tr>
                     </table>
                     <hr>

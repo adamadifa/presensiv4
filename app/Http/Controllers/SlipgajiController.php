@@ -9,15 +9,17 @@ use Illuminate\Support\Facades\DB;
 
 class SlipgajiController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        $slipgaji = DB::table('slip_gaji')->limit(5)->orderBy('tanggal','desc')->get();
-        return view('slipgaji.index',compact('slipgaji','namabulan'));
+        $slipgaji = DB::table('slip_gaji')->limit(5)->orderBy('tanggal', 'desc')->get();
+        return view('slipgaji.index', compact('slipgaji', 'namabulan'));
     }
 
 
-    public function cetak($bulan,$tahun){
-        
+    public function cetak($bulan, $tahun)
+    {
+
         $bl = $bulan;
         $kode_potongan = "GJ" . $bulan . $tahun;
         if ($bulan == 1) {
@@ -109,7 +111,7 @@ class SlipgajiController extends Controller
         $jmlrange = count($rangetanggal);
         $lastrange = $jmlrange - 1;
         $namabulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
-      
+
         // if ($jmlrange == 30) {
         //     array_push($rangetanggal, $rangetanggal[$lastrange]);
         // } else if ($jmlrange == 29) {
@@ -129,7 +131,7 @@ class SlipgajiController extends Controller
                 im_ruanglingkup, im_penempatan,im_kinerja,
                 gaji_pokok,
                 t_jabatan,t_masakerja,t_tanggungjawab,t_makan,t_istri,t_skill,
-                cicilan_pjp,jml_kasbon,jml_nonpjp,
+                cicilan_pjp,jml_kasbon,jml_nonpjp,jml_pengurang,
                 bpjs_kesehatan.perusahaan,bpjs_kesehatan.pekerja,bpjs_kesehatan.keluarga,iuran_kes,
                 bpjs_tenagakerja.k_jht,bpjs_tenagakerja.k_jp,iuran_tk
             ");
@@ -232,6 +234,18 @@ class SlipgajiController extends Controller
 
         $query->leftJoin(
             DB::raw("(
+                   SELECT nik, SUM(jumlah) as jml_pengurang
+                   FROM pengurang_gaji
+                   WHERE kode_gaji = '$kode_potongan'
+                   GROUP BY nik
+                ) penguranggaji"),
+            function ($join) {
+                $join->on('master_karyawan.nik', '=', 'penguranggaji.nik');
+            }
+        );
+
+        $query->leftJoin(
+            DB::raw("(
                    SELECT nik, SUM(jumlah) as jml_nonpjp
                    FROM pinjaman_nonpjp_historibayar
                    INNER JOIN pinjaman_nonpjp ON pinjaman_nonpjp_historibayar.no_pinjaman_nonpjp = pinjaman_nonpjp.no_pinjaman_nonpjp
@@ -242,31 +256,36 @@ class SlipgajiController extends Controller
                 $join->on('master_karyawan.nik', '=', 'pinjamannonpjp.nik');
             }
         );
-        
 
-        $query->where('master_karyawan.nik',Auth::guard('karyawan')->user()->nik);
+
+        $query->where('master_karyawan.nik', Auth::guard('karyawan')->user()->nik);
         $query->where('status_aktif', 1);
         $query->where('tgl_masuk', '<=', $sampai);
         $query->orWhere('status_aktif', 0);
         $query->where('tgl_off_gaji', '>=', $daribulangaji);
         $query->where('tgl_masuk', '<=', $sampai);
-        $query->where('master_karyawan.nik',Auth::guard('karyawan')->user()->nik);
+        $query->where('master_karyawan.nik', Auth::guard('karyawan')->user()->nik);
 
         $presensi = $query->get();
 
-       
-    
+
+
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        return view('slipgaji.cetak',compact('bulan',
-        'tahun',
-        'namabulan',
-        'jmlrange', 
-        'rangetanggal',
-        'presensi', 
-        'datalibur', 
-        'dataliburpenggantiminggu', 
-        'dataminggumasuk', 'datawfh', 
-        'datawfhfull', 'datalembur', 
-        'datalemburharilibur', 'sampai'));
+        return view('slipgaji.cetak', compact(
+            'bulan',
+            'tahun',
+            'namabulan',
+            'jmlrange',
+            'rangetanggal',
+            'presensi',
+            'datalibur',
+            'dataliburpenggantiminggu',
+            'dataminggumasuk',
+            'datawfh',
+            'datawfhfull',
+            'datalembur',
+            'datalemburharilibur',
+            'sampai'
+        ));
     }
 }
