@@ -10,8 +10,8 @@
         }
 
         /* .historicontent {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            justify-content: left !important;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                justify-content: left !important;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            } */
     </style>
     <!-- App Header -->
     <div class="appHeader bg-primary text-light">
@@ -155,28 +155,28 @@
                         //Parameter Pencarian Data Libur
                         $search_items = [
                             'nik' => $d->nik,
-                            'id_kantor' => $d->id_kantor,
+
                             'tanggal_libur' => $tgl_presensi,
                         ];
 
                         //Parameter Pencarian Data Lembur
                         $search_items_lembur = [
                             'nik' => $d->nik,
-                            'id_kantor' => $d->id_kantor,
+
                             'tanggal_lembur' => $tgl_presensi,
                         ];
 
                         //Parameter Penggantian Libur Minggu
                         $search_items_minggumasuk = [
                             'nik' => $d->nik,
-                            'id_kantor' => $d->id_kantor,
+
                             'tanggal_diganti' => $tgl_presensi,
                         ];
 
                         //Parameter Pencarian Data Libur
                         $search_items_all = [
                             'nik' => 'ALL',
-                            'id_kantor' => $d->id_kantor,
+
                             'tanggal_libur' => $tgl_presensi,
                         ];
 
@@ -892,7 +892,6 @@
                                 //Cek Jika Besok Libur
                                 $search_items_next = [
                                     'nik' => $d->nik,
-                                    'id_kantor' => $d->id_kantor,
                                     'tanggal_libur' => date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi))),
                                 ];
 
