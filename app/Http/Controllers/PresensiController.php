@@ -278,6 +278,14 @@ class PresensiController extends Controller
             $hariini = "Senin";
         }
 
+
+        $id_group = Auth::guard('karyawan')->user()->grup;
+        $group_saus =  [29, 26, 27];
+        if (date('Y-m-d') == '2024-02-10') {
+            if (in_array($id_group, $group_saus)) {
+                $hariini = "Senin";
+            }
+        }
         $jadwal = DB::table('jadwal_kerja_detail')
             ->join('jadwal_kerja', 'jadwal_kerja_detail.kode_jadwal', '=', 'jadwal_kerja.kode_jadwal')
             ->where('hari', $hariini)->where('jadwal_kerja_detail.kode_jadwal', $kode_jadwal)->first();
@@ -413,6 +421,16 @@ class PresensiController extends Controller
         if ($jabatan->nama_jabatan == "SECURITY" && $hariini == "Sabtu") {
             $hariini = "Senin";
         }
+
+        $id_group = Auth::guard('karyawan')->user()->grup;
+        $group_saus =  [29, 26, 27];
+        if (date('Y-m-d') == '2024-02-10') {
+            if (in_array($id_group, $group_saus)) {
+                $hariini = "Senin";
+            }
+        }
+
+
 
         $jadwal = DB::table('jadwal_kerja_detail')
             ->join('jadwal_kerja', 'jadwal_kerja_detail.kode_jadwal', '=', 'jadwal_kerja.kode_jadwal')
@@ -1233,11 +1251,19 @@ class PresensiController extends Controller
             $hariini = "Jumat";
         }
 
+        $id_group = $karyawan->grup;
+        $group_saus =  [29, 26, 27];
+        if (date('Y-m-d') == '2024-02-10') {
+            if (in_array($id_group, $group_saus)) {
+                $hariini = "Senin";
+            }
+        }
 
         $jadwal = DB::table('jadwal_kerja_detail')
             ->join('jadwal_kerja', 'jadwal_kerja_detail.kode_jadwal', '=', 'jadwal_kerja.kode_jadwal')
             ->where('hari', $hariini)->where('jadwal_kerja_detail.kode_jadwal', $kode_jadwal)
             ->first();
+
 
         $jam_kerja = DB::table('jam_kerja')->where('kode_jam_kerja', $jadwal->kode_jam_kerja)->first();
         $lintashari  = $jam_kerja->lintashari;
