@@ -12,7 +12,7 @@ class SlipgajiController extends Controller
     public function index()
     {
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        $slipgaji = DB::table('slip_gaji')->limit(5)->orderBy('tanggal', 'desc')->get();
+        $slipgaji = DB::table('slip_gaji')->where('status', 1)->limit(5)->orderBy('tanggal', 'desc')->get();
         return view('slipgaji.index', compact('slipgaji', 'namabulan'));
     }
 
