@@ -10,8 +10,8 @@
         }
 
         /* .historicontent {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    justify-content: left !important;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    justify-content: left !important;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
     </style>
     <!-- App Header -->
     <div class="appHeader bg-primary text-light">
@@ -67,6 +67,7 @@
 
                 // Total Overtim Libur
                 $total_all_overtime_libur = 0; // Total All Overtime Libur
+                $total_overtime_libur_nasional = 0; // Total Overtime Libur Nasional
                 $total_all_upah_overtime_libur = 0; // Total All Upah Overtime Libur
 
                 // Total All Upah Overtime
@@ -92,6 +93,7 @@
                 $total_all_nonpjp = 0; // Total All Non PJP
                 $total_all_spip = 0; // Total ALl SPIP
                 $total_all_pengurang = 0; // Total ALl SPIP
+                $total_all_penambah = 0; // Total ALl SPIP
 
                 $total_all_potongan = 0; // Total All Potongan
 
@@ -734,7 +736,14 @@
                                     $jmljam_lbr = hitungjamdesimal($tgl_lembur_dari, $tgl_lembur_sampai);
                                     $istirahatlbr = $ceklemburharilibur[0]['istirahat'] == 1 ? 1 : 0;
                                     $jmljam_lembur = $jmljam_lbr > 7 ? 7 : $jmljam_lbr - $istirahatlbr;
-                                    $jmljam_lembur = !empty($ceklibur) ? $jmljam_lembur * 2 : $jmljam_lembur;
+                                    if (!empty($ceklibur)) {
+                                        $jmljam_lembur_liburnasional = $jmljam_lembur * 2;
+                                        $jmljam_lembur_reguler = 0;
+                                    } else {
+                                        $jmljam_lembur_liburnasional = 0;
+                                        $jmljam_lembur_reguler = $jmljam_lembur;
+                                    }
+                                    // $jmljam_lembur = !empty($ceklibur) ? $jmljam_lembur * 2 : $jmljam_lembur;
                                     $kategori_lembur = $ceklemburharilibur[0]['kategori'];
                                 @endphp
                                 @if (empty($ceklibur) && empty($cekliburpenggantiminggu) && empty($cekwfhfull))
@@ -755,9 +764,11 @@
                                     @endif
                                 @endif
                                 @php
-                                    $overtime_libur_1 = $jmljam_lembur;
+                                    $overtime_libur_1 = $jmljam_lembur_reguler;
+                                    $overtime_libur_nasional = $jmljam_lembur_liburnasional;
                                     $overtime_libur_2 = 0;
                                     $total_overtime_libur_1 += $overtime_libur_1;
+                                    $total_overtime_libur_nasional += $overtime_libur_nasional;
                                     $total_overtime_libur_2 += $overtime_libur_2;
                                 @endphp
                             @else
@@ -954,22 +965,35 @@
 
                 @if ($d->nama_jabatan == 'SECURITY')
                     @php
-                        $upah_ot_1 = 8000 * $total_overtime_1;
-                        $upah_ot_2 = 8000 * $total_overtime_2;
-                        $upah_otl_1 = 13143 * $total_overtime_libur_1;
-                        $upah_otl_2 = 0;
+                        $tgl_berlaku = '2024-02-01';
+                        $tgl_gaji = $tahun . '-' . $bulan . '-01';
+
+                        if ($tgl_gaji >= $tgl_berlaku) {
+                            $upah_ot_1 = 1.5 * 6597 * $total_overtime_1;
+                            $upah_ot_2 = 1.5 * 6597 * $total_overtime_2;
+                            $upah_otl_1 = 13194 * $total_overtime_libur_1;
+                            $upah_otl_libur_nasional = 13143 * $total_overtime_libur_nasional;
+                            $upah_otl_2 = 0;
+                        } else {
+                            $upah_ot_1 = 8000 * $total_overtime_1;
+                            $upah_ot_2 = 8000 * $total_overtime_2;
+                            $upah_otl_1 = 13143 * $total_overtime_libur_1;
+                            $upah_otl_libur_nasional = 13143 * $total_overtime_libur_nasional;
+                            $upah_otl_2 = 0;
+                        }
                     @endphp
                 @else
                     @php
                         $upah_ot_1 = $upah_perjam * 1.5 * $total_overtime_1;
                         $upah_ot_2 = $upah_perjam * 2 * $total_overtime_2;
-                        $upah_otl_1 = floor($upah_perjam * 2 * $total_overtime_libur_1);
+                        $upah_otl_1 = floor($upah_perjam * 2 * ($total_overtime_libur_1 + $total_overtime_libur_nasional));
+                        $upah_otl_libur_nasional = 0;
                         $upah_otl_2 = $upah_perjam * 2 * $total_overtime_libur_2;
                     @endphp
                 @endif
 
                 @php
-                    $total_upah_overtime = $upah_ot_1 + $upah_ot_2 + $upah_otl_1 + $upah_otl_2; // Total Upah Overtime
+                    $total_upah_overtime = $upah_ot_1 + $upah_ot_2 + $upah_otl_1 + $upah_otl_libur_nasional + $upah_otl_2; // Total Upah Overtime
                     $bruto = $upah_perjam * $totaljamkerja + $total_upah_overtime + $totalpremiall_shift_2 + $totalpremiall_shift_3; // Total Upah Bruto
                     $bpjskesehatan = $d->iuran_kes; // BPJS Kesehatan
                     $bpjstenagakerja = $d->iuran_tk; // BPJS Tenaga Kerja
@@ -986,7 +1010,8 @@
                 @endif
                 @php
                     $potongan = ROUND($bpjskesehatan + $bpjstenagakerja + $totaldenda + $d->cicilan_pjp + $d->jml_kasbon + $d->jml_nonpjp + $d->jml_pengurang + $spip, 0); // Potongan Upah
-                    $jmlbersih = $bruto - $potongan; // Jumlah Upah Bersih
+                    $penambah = $d->jml_penambah;
+                    $jmlbersih = $bruto - $potongan + $penambah; // Jumlah Upah Bersih
 
                     //Total Gaji Pokok
                     $total_gajipokok += $d->gaji_pokok;
@@ -1018,8 +1043,8 @@
                     $total_all_overtime_2 += $total_overtime_2;
                     $total_all_upah_ot_2 += $upah_ot_2;
 
-                    $total_all_overtime_libur += $total_overtime_libur_1;
-                    $total_all_upah_overtime_libur += $upah_otl_1;
+                    $total_all_overtime_libur += $total_overtime_libur_1 + $total_overtime_libur_nasional;
+                    $total_all_upah_overtime_libur += $upah_otl_1 + $upah_otl_libur_nasional;
 
                     $total_all_upah_overtime += $total_upah_overtime;
 
@@ -1040,6 +1065,7 @@
                     $total_all_pjp += $d->cicilan_pjp;
                     $total_all_kasbon += $d->jml_kasbon;
                     $total_all_pengurang += $d->jml_pengurang;
+                    $total_all_penambah += $d->jml_penambah;
                     $total_all_nonpjp += $d->jml_nonpjp;
                     $total_all_spip += $spip;
 
@@ -1142,9 +1168,10 @@
                     </tr>
                     <tr>
                         <th>Lembur Hari Libur</th>
-                        <td class="text-center">{{ desimal($total_overtime_libur_1) }}</td>
+                        <td class="text-center">{{ desimal($total_overtime_libur_1 + $total_overtime_libur_nasional) }}
+                        </td>
                         <td>JAM</td>
-                        <td class="text-right">{{ rupiah($upah_otl_1) }}</td>
+                        <td class="text-right">{{ rupiah($upah_otl_1 + $upah_otl_libur_nasional) }}</td>
                     </tr>
                     <tr>
                         <th>Premi Shift 2</th>
@@ -1205,6 +1232,10 @@
                         <tr>
                             <th>Pengurang</th>
                             <td class="text-right">{{ rupiah($d->jml_pengurang) }}</td>
+                        </tr>
+                        <tr>
+                            <th>Penambah</th>
+                            <td class="text-right">{{ rupiah($d->jml_penambah) }}</td>
                         </tr>
                     </table>
                     <hr>

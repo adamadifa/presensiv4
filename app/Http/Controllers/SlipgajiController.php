@@ -131,7 +131,7 @@ class SlipgajiController extends Controller
                 im_ruanglingkup, im_penempatan,im_kinerja,
                 gaji_pokok,
                 t_jabatan,t_masakerja,t_tanggungjawab,t_makan,t_istri,t_skill,
-                cicilan_pjp,jml_kasbon,jml_nonpjp,jml_pengurang,
+                cicilan_pjp,jml_kasbon,jml_nonpjp,jml_pengurang,jml_penambah,
                 bpjs_kesehatan.perusahaan,bpjs_kesehatan.pekerja,bpjs_kesehatan.keluarga,iuran_kes,
                 bpjs_tenagakerja.k_jht,bpjs_tenagakerja.k_jp,iuran_tk
             ");
@@ -234,7 +234,7 @@ class SlipgajiController extends Controller
 
         $query->leftJoin(
             DB::raw("(
-                   SELECT nik, SUM(jumlah) as jml_pengurang
+                   SELECT nik, SUM(jumlah) as jml_pengurang, SUM(jumlah_penambah) as jml_penambah
                    FROM pengurang_gaji
                    WHERE kode_gaji = '$kode_potongan'
                    GROUP BY nik
