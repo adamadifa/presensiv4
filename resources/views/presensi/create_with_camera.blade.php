@@ -99,7 +99,16 @@
             </button>
         </div>
     </div>
-
+    <div class="row mt-1">
+        <div class="col">
+            <div class="alert alert-danger">
+                <p>Sistem Presensi Sudah Bisa Mendeteksi FAKE GPS, maka bagi Karyawan Yang Terdeteksi Menggunakan Fake GPS,
+                    ataupun Melakukan Presensi di Luar Lokasi Kantor, Maka akan dianggap tidak Hadir dan
+                    mendapatkan sanksi dari HRD
+                </p>
+            </div>
+        </div>
+    </div>
     <audio id="notifikasi_in">
         <source src="{{ asset('assets/sound/notifikasi_in.mp3') }}" type="audio/mpeg">
     </audio>
