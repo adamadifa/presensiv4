@@ -82,8 +82,9 @@ Route::middleware(['auth:karyawan'])->group(function () {
     Route::get('/pinjaman/simulasi', [PinjamanController::class, 'simulasi']);
 
     //Slip Gaji
-    Route::get('/slipgaji',[SlipgajiController::class,'index']);
-    Route::get('/slipgaji/{bulan}/{tahun}/cetak',[SlipgajiController::class,'cetak']);
+    Route::get('/slipgaji', [SlipgajiController::class, 'index']);
+    Route::get('/slipgaji/{bulan}/{tahun}/cetak', [SlipgajiController::class, 'cetak']);
+    Route::get('/slipgaji/{bulan}/{tahun}/cetakthr', [SlipgajiController::class, 'cetakthr']);
 
     Route::get('/pengajuanizin/createizinterlambat', [PengajuanizinController::class, 'createizinterlambat']);
     Route::get('/pengajuanizin/createizinabsen', [PengajuanizinController::class, 'createizinabsen']);
@@ -133,7 +134,7 @@ Route::middleware(['auth:user'])->group(function () {
     Route::post('/cabang/update', [CabangController::class, 'update']);
     Route::post('/cabang/{kode_cabang}/delete', [CabangController::class, 'delete']);
 
-   
+
 
     //Konfigurasi
 

@@ -12,7 +12,7 @@ class SlipgajiController extends Controller
     public function index()
     {
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        $slipgaji = DB::table('slip_gaji')->where('status', 1)->limit(5)->orderBy('tanggal', 'desc')->get();
+        $slipgaji = DB::table('slip_gaji')->where('status', 1)->limit(5)->orderBy('tanggal', 'asc')->get();
         return view('slipgaji.index', compact('slipgaji', 'namabulan'));
     }
 
@@ -287,5 +287,17 @@ class SlipgajiController extends Controller
             'datalemburharilibur',
             'sampai'
         ));
+    }
+
+
+    public function cetakthr($bulan, $tahun)
+    {
+        $akhir_periode = $tahun . "-" . $bulan . "-01";
+        $karyawan = DB::table('master_karyawan')
+            ->join('cabang', 'master_karyawan.id_kantor', '=', 'cabang.kode_cabang')
+            ->join('hrd_departemen', 'master_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
+            ->join('hrd_jabatan', 'master_karyawan.id_jabatan', '=', 'hrd_jabatan.id')
+            ->where('nik', Auth::guard('karyawan')->user()->nik)->first();
+        return view('slipgaji.cetak_thr', compact('tahun', 'karyawan'));
     }
 }
