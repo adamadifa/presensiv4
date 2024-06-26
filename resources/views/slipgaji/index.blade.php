@@ -10,8 +10,8 @@
         }
 
         /* .historicontent {
-                                                                                                                                                                    justify-content: left !important;
-                                                                                                                                                                } */
+                                                                                                                                                                        justify-content: left !important;
+                                                                                                                                                                    } */
     </style>
     <!-- App Header -->
     <div class="appHeader bg-primary text-light">
@@ -37,8 +37,7 @@
                                     <div class="historicontent">
                                         <div class="historidetail1">
                                             <div class="iconpresence">
-                                                <ion-icon name="document-text-outline" style="font-size: 64px;"
-                                                    class="text-danger"></ion-icon>
+                                                <ion-icon name="document-text-outline" style="font-size: 64px;" class="text-danger"></ion-icon>
                                             </div>
                                             <div class="datepresence">
                                                 <h4>{{ $namabulan[$d->bulan] }} {{ $d->tahun }}</h4>
@@ -79,8 +78,7 @@
                                         <div class="historicontent">
                                             <div class="historidetail1">
                                                 <div class="iconpresence">
-                                                    <ion-icon name="document-text-outline" style="font-size: 64px;"
-                                                        class="text-danger"></ion-icon>
+                                                    <ion-icon name="document-text-outline" style="font-size: 64px;" class="text-danger"></ion-icon>
                                                 </div>
                                                 <div class="datepresence">
                                                     <h4>THR {{ $d->tahun }}</h4>
