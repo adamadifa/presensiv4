@@ -148,4 +148,4 @@ Route::middleware(['auth:user'])->group(function () {
     Route::post('/konfigurasi/{kode_jam_kerja}/delete', [KonfigurasiController::class, 'deletejamkerja']);
 });
 
-Route::get('/storefrommachine', [PresensiController::class, 'storefrommachine']);
+Route::post('/storefrommachine', [PresensiController::class, 'storefrommachine']);
