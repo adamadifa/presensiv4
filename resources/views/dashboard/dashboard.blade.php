@@ -38,7 +38,7 @@
             <div id="user-info">
                 <h3 id="user-name">{{ Auth::guard('karyawan')->user()->nama_karyawan }}</h3>
                 <span id="user-role">{{ $jabatan->nama_jabatan }}</span>
-                <span id="user-role">({{ Auth::guard('karyawan')->user()->id_kantor }})</span>
+                <span id="user-role">({{ Auth::guard('karyawan')->user()->kode_cabang }})</span>
             </div>
         </div>
     </div>
@@ -100,19 +100,11 @@
                         <div class="card-body">
                             <div class="presencecontent">
                                 <div class="iconpresence">
-                                    {{-- @if ($presensihariini != null)
-                                @php
-                                $path = Storage::url('uploads/absensi/'.$presensihariini->foto_in);
-                                @endphp
-                                <img src="{{ url($path) }}" alt="" class="imaged w48">
-                                @else
-                                <ion-icon name="camera"></ion-icon>
-                                @endif --}}
                                     <ion-icon name="finger-print-outline"></ion-icon>
                                 </div>
                                 <div class="presencedetail">
                                     <h4 class="presencetitle">Masuk</h4>
-                                    <span>{{ $presensihariini != null && $presensihariini->jam_in != null ? date('H:i:s', strtotime($presensihariini->jam_in)) : 'Belum Scan' }}</span>
+                                    <span>{{ $presensi_hariini != null && $presensihariini->jam_in != null ? date('H:i:s', strtotime($presensihariini->jam_in)) : 'Belum Scan' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -123,19 +115,11 @@
                         <div class="card-body">
                             <div class="presencecontent">
                                 <div class="iconpresence">
-                                    {{-- @if ($presensihariini != null && $presensihariini->jam_out != null)
-                                @php
-                                $path = Storage::url('uploads/absensi/'.$presensihariini->foto_out);
-                                @endphp
-                                <img src="{{ url($path) }}" alt="" class="imaged w48">
-                                @else
-                                <ion-icon name="camera"></ion-icon>
-                                @endif --}}
                                     <ion-icon name="finger-print-outline"></ion-icon>
                                 </div>
                                 <div class="presencedetail">
                                     <h4 class="presencetitle">Pulang</h4>
-                                    <span>{{ $presensihariini != null && $presensihariini->jam_out != null ? date('H:i:s', strtotime($presensihariini->jam_out)) : 'Belum Scan' }}</span>
+                                    <span>{{ $presensi_hariini != null && $presensihariini->jam_out != null ? date('H:i:s', strtotime($presensihariini->jam_out)) : 'Belum Scan' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -143,7 +127,6 @@
                 </div>
             </div>
         </div>
-
         <div id="rekappresensi">
             <h3>Rekap Presensi Bulan {{ $namabulan[$bulanini] }} Tahun {{ $tahunini }}</h3>
             <div class="row">
@@ -151,9 +134,8 @@
                     <div class="card">
                         <div class="card-body text-center" style="padding: 12px 12px !important; line-height:0.8rem">
                             <span class="badge bg-danger"
-                                style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ $rekappresensi->jmlhadir }}</span>
-                            <ion-icon name="accessibility-outline" style="font-size: 1.6rem;"
-                                class="text-primary mb-1"></ion-icon>
+                                style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ $rekap_presensi->jmlhadir }}</span>
+                            <ion-icon name="accessibility-outline" style="font-size: 1.6rem;" class="text-primary mb-1"></ion-icon>
                             <br>
                             <span style="font-size: 0.8rem; font-weight:500">Hadir</span>
                         </div>
@@ -163,9 +145,8 @@
                     <div class="card">
                         <div class="card-body text-center" style="padding: 12px 12px !important; line-height:0.8rem">
                             <span class="badge bg-danger"
-                                style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ !empty($rekappresensi->jmlizin) ? $rekappresensi->jmlizin : '' }}</span>
-                            <ion-icon name="newspaper-outline" style="font-size: 1.6rem;"
-                                class="text-success mb-1"></ion-icon>
+                                style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ !empty($rekap_presensi->jmlizin) ? $rekap_presensi->jmlizin : '' }}</span>
+                            <ion-icon name="newspaper-outline" style="font-size: 1.6rem;" class="text-success mb-1"></ion-icon>
                             <br>
                             <span style="font-size: 0.8rem; font-weight:500">Izin</span>
                         </div>
@@ -175,9 +156,8 @@
                     <div class="card">
                         <div class="card-body text-center" style="padding: 12px 12px !important; line-height:0.8rem">
                             <span class="badge bg-danger"
-                                style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ !empty($rekappresensi->jmlsakit) ? $rekappresensi->jmlsakit : '' }}</span>
-                            <ion-icon name="medkit-outline" style="font-size: 1.6rem;"
-                                class="text-warning mb-1"></ion-icon>
+                                style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ !empty($rekap_presensi->jmlsakit) ? $rekap_presensi->jmlsakit : '' }}</span>
+                            <ion-icon name="medkit-outline" style="font-size: 1.6rem;" class="text-warning mb-1"></ion-icon>
                             <br>
                             <span style="font-size: 0.8rem; font-weight:500">Sakit</span>
                         </div>
@@ -186,12 +166,11 @@
                 <div class="col-3">
                     <div class="card">
                         <div class="card-body text-center" style="padding: 12px 12px !important; line-height:0.8rem">
-                            @if (!empty($rekappresensi->jmlterlambat))
+                            @if (!empty($rekap_presensi->jmlterlambat))
                                 <span class="badge bg-danger"
-                                    style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ $rekappresensi->jmlterlambat }}</span>
+                                    style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ $rekap_presensi->jmlterlambat }}</span>
                             @endif
-                            <ion-icon name="alarm-outline" style="font-size: 1.6rem;"
-                                class="text-danger mb-1"></ion-icon>
+                            <ion-icon name="alarm-outline" style="font-size: 1.6rem;" class="text-danger mb-1"></ion-icon>
                             <br>
                             <span style="font-size: 0.8rem; font-weight:500">Telat</span>
                         </div>
@@ -199,6 +178,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Histori Presensi -->
         <div class="presencetab mt-2">
             <div class="tab-pane fade show active" id="pilled" role="tabpanel">
                 <ul class="nav nav-tabs style1" role="tablist">
@@ -209,277 +190,62 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#profile" role="tab">
-                            Lembur/Overtime
+                            Lembur / Overtime
                         </a>
                     </li>
                 </ul>
             </div>
             <div class="tab-content mt-2" style="margin-bottom:100px;">
                 <div class="tab-pane fade show active" id="home" role="tabpanel">
-                    {{-- {{ dd($historibulanini) }} --}}
-                    @foreach ($historibulanini as $d)
-                        {{-- @php
-                    $path = Storage::url('uploads/absensi/'.$d->foto_in);
-                    @endphp --}}
+                    @foreach ($histori as $d)
                         @if ($d->status == 'h')
                             <div class="row mb-1">
                                 <div class="col">
-                                    <div
-                                        class="card historicard {{ $d->jam_out != null ? 'historibordergreen' : 'historiborderred' }}">
+                                    <div class="card historicard {{ $d->jam_out != null ? 'historibordergreen' : 'historiborderred' }}">
                                         <div class="card-body">
                                             <div class="historicontent">
                                                 <div class="historidetail1">
                                                     <div class="iconpresence">
-                                                        <ion-icon name="finger-print-outline" class="text-success"
-                                                            style="font-size: 48px"></ion-icon>
+                                                        <ion-icon name="finger-print-outline" class="text-success" style="font-size: 48px"></ion-icon>
                                                     </div>
                                                     <div class="datepresence">
+                                                        <h4>{{ DateToIndo2($d->tanggal) }}</h4>
+                                                        <span class="timepresence">
+                                                            {!! $d->jam_in != null ? date('H:i', strtotime($d->jam_in)) : '<span class="danger">Belum Scan</span>' !!}
+                                                            {!! $d->jam_out != null ? '- ' . date('H:i', strtotime($d->jam_out)) : '<span class="danger"> - Belum Scan</span>' !!}
+                                                            @php
 
-                                                        <h4>{{ DateToIndo2($d->tgl_presensi) }}</h4>
-                                                        <span class="timepresence">{!! $d->jam_in != null ? date('H:i', strtotime($d->jam_in)) : '<span class="danger">Belum Scan</span>' !!}
-                                                            {!! $d->jam_out != null
-                                                                ? '- ' . date('H:i', strtotime($d->jam_out))
-                                                                : '<span class="danger"> - Belum Scan</span>' !!}</span><br>
-                                                        {{-- @if (date('H:i:s', strtotime($d->jam_in)) <= $d->jam_masuk)
-                                                <span style="color:green">Tepat Waktu</span>
-                                                @else
-                                                <span style="color:red">Terlambat ({{ selisih($d->jam_masuk,date("H:i:s",strtotime($d->jam_in))) }}) </span>
-                                            @endif --}}
+                                                                //Tanggal Selesai Jam Kerja Jika Lintas Hari Maka Tanggal Presensi + 1 Hari
+                                                                $tanggal_selesai =
+                                                                    $d->lintashari == '1'
+                                                                        ? date('Y-m-d', strtotime('+1 day', strtotime($d->tanggal)))
+                                                                        : $d->tanggal;
+                                                                //Jika SPG Jam Mulai Kerja nya adalah Saat Dia Absen  Jika Tidak Sesuai Jadwal
 
-                                                        <?php
-                                                        $jam_in = date('H:i', strtotime($d->jam_in));
-                                                        $jam_in_tanggal = date('Y-m-d H:i', strtotime($d->jam_in));
-                                                        
-                                                        $jam_out = date('H:i', strtotime($d->jam_out));
-                                                        $jam_out_tanggal = date('Y-m-d H:i', strtotime($d->jam_out));
-                                                        $lintashari = $d->lintashari;
-                                                        $tgl_presensi = $d->tgl_presensi;
-                                                        if (!empty($lintashari)) {
-                                                            // Jika Jadwal Presesni Lintas Hari
-                                                            $tgl_pulang = date('Y-m-d', strtotime('+1 day', strtotime($tgl_presensi)));
-                                                            // Tanggal Pulang adalah Tanggal Berikutnya
-                                                        } else {
-                                                            $tgl_pulang = $tgl_presensi; // Tanggal Pulang adalah Tanggal Presensi
-                                                        }
-                                                        
-                                                        if ($d->id_jabatan == 24) {
-                                                            $jam_masuk = $jam_in;
-                                                            $jam_pulang = $jam_out;
-                                                        } else {
-                                                            $jam_masuk = date('H:i', strtotime($d->jam_masuk));
-                                                            $jam_pulang = date('H:i', strtotime($d->jam_pulang));
-                                                        }
-                                                        
-                                                        $jam_masuk_tanggal = $tgl_presensi . ' ' . $jam_masuk;
-                                                        $jam_pulang_tanggal = $tgl_pulang . ' ' . $jam_pulang;
-                                                        
-                                                        //$status = $d->status_presensi;
-                                                        if (!empty($d->jam_in)) {
-                                                            if ($jam_in_tanggal > $jam_masuk_tanggal) {
-                                                                $j1 = strtotime($jam_masuk_tanggal);
-                                                                $j2 = strtotime($jam_in_tanggal);
-                                                        
-                                                                $diffterlambat = $j2 - $j1;
-                                                        
-                                                                $jamterlambat = floor($diffterlambat / (60 * 60));
-                                                                $menitterlambat = floor(($diffterlambat - $jamterlambat * (60 * 60)) / 60);
-                                                        
-                                                                $jterlambat = $jamterlambat <= 9 ? '0' . $jamterlambat : $jamterlambat;
-                                                                $mterlambat = $menitterlambat <= 9 ? '0' . $menitterlambat : $menitterlambat;
-                                                        
-                                                                $terlambat = 'Telat ' . $jterlambat . ':' . $mterlambat;
-                                                                $desimalterlambat = ROUND(($menitterlambat * 100) / 60);
-                                                                $colorterlambat = 'red';
-                                                            } else {
-                                                                $terlambat = 'Tepat waktu';
-                                                                $jamterlambat = 0;
-                                                                $desimalterlambat = 0;
-                                                                $colorterlambat = 'green';
-                                                            }
-                                                        } else {
-                                                            $terlambat = '';
-                                                            $jamterlambat = 0;
-                                                            $desimalterlambat = 0;
-                                                            $colorterlambat = '';
-                                                        }
-                                                        
-                                                        if (!empty($d->jam_keluar)) {
-                                                            $jam_keluar = date('H:i', strtotime($d->jam_keluar));
-                                                            $jamkeluar_tanggal = $tgl_presensi . ' ' . $jam_keluar;
-                                                            if (!empty($d->jam_masuk_kk)) {
-                                                                $jam_masuk_kk = date('H:i', strtotime($d->jam_masuk_kk));
-                                                                $jam_masuk_kk_tanggal = $tgl_presensi . ' ' . $jam_masuk_kk;
-                                                            } else {
-                                                                $jam_masuk_kk = $tgl_presensi . ' ' . $jam_pulang;
-                                                            }
-                                                        
-                                                            $jk1 = strtotime($jamkeluar_tanggal);
-                                                            $jk2 = strtotime($jam_masuk_kk_tanggal);
-                                                            $difkeluarkantor = $jk2 - $jk1;
-                                                        
-                                                            $jamkeluarkantor = floor($difkeluarkantor / (60 * 60));
-                                                            $menitkeluarkantor = floor(($difkeluarkantor - $jamkeluarkantor * (60 * 60)) / 60);
-                                                        
-                                                            $jkeluarkantor = $jamkeluarkantor <= 9 ? '0' . $jamkeluarkantor : $jamkeluarkantor;
-                                                            $mkeluarkantor = $menitkeluarkantor <= 9 ? '0' . $menitkeluarkantor : $menitkeluarkantor;
-                                                        
-                                                            if (empty($d->jam_masuk_kk)) {
-                                                                if ($d->total_jam == 7) {
-                                                                    $totaljamkeluar = $jkeluarkantor - 1 . ':' . $mkeluarkantor;
-                                                                } else {
-                                                                    $totaljamkeluar = $jkeluarkantor . ':' . $mkeluarkantor;
-                                                                }
-                                                            } else {
-                                                                $totaljamkeluar = $jkeluarkantor . ':' . $mkeluarkantor;
-                                                            }
-                                                            $desimaljamkeluar = ROUND(($menitkeluarkantor * 100) / 60);
-                                                        } else {
-                                                            $totaljamkeluar = '';
-                                                            $desimaljamkeluar = 0;
-                                                            $jamkeluarkantor = 0;
-                                                        }
-                                                        
-                                                        if (!empty($d->jam_out) && $jam_out_tanggal < $jam_pulang_tanggal) {
-                                                            $pc = 'Pulang Cepat';
-                                                        } else {
-                                                            $pc = '';
-                                                        }
-                                                        if (!empty($d->jam_in) and $d->kode_dept != 'MKT') {
-                                                            if ($jam_in_tanggal > $jam_masuk_tanggal and empty($d->kode_izin_terlambat)) {
-                                                                if ($jamterlambat <= 1) {
-                                                                    if ($menitterlambat >= 5 and $menitterlambat < 10) {
-                                                                        $denda = 5000;
-                                                                    } elseif ($menitterlambat >= 10 and $menitterlambat < 15) {
-                                                                        $denda = 10000;
-                                                                    } elseif ($menitterlambat >= 15 and $menitterlambat <= 59) {
-                                                                        $denda = 15000;
-                                                                    } else {
-                                                                        $denda = 0;
-                                                                    }
-                                                                } else {
-                                                                    $denda = 'pj';
-                                                                }
-                                                            } else {
-                                                                if (!empty($d->kode_izin_terlambat)) {
-                                                                    $denda = 'si';
-                                                                } else {
-                                                                    $denda = 0;
-                                                                }
-                                                            }
-                                                        } else {
-                                                            if ($jamterlambat < 1) {
-                                                                $denda = 0;
-                                                            } else {
-                                                                $denda = 'pj';
-                                                            }
-                                                        }
-                                                        ?>
-                                                        {{-- {{ $jam_out_tanggal }} || {{ $jam_pulang_tanggal }} --}}
-                                                        @if (!empty($d->jam_in))
-                                                            <span style="color:{{ $colorterlambat }}">{{ $terlambat }}
-                                                                @if (!empty($denda) && $denda != 'pj' && $denda != 'si')
-                                                                    - {{ rupiah($denda) }}
-                                                                @else
-                                                                    @if ($denda == 'pj')
-                                                                        - Potong JK
-                                                                    @elseif($denda == 'si')
-                                                                        - Sudah Izin
-                                                                    @endif
-                                                                @endif
-                                                            </span>
+                                                                $j_mulai = $d->tanggal . ' ' . $d->jam_mulai;
+                                                                $j_selesai = $tanggal_selesai . ' ' . $d->jam_selesai;
+                                                                $jam_mulai = $d->kode_jabatan == 'J22' ? $d->jam_in : $j_mulai;
+                                                                $jam_selesai = $d->kode_jabatan == 'J22' ? $d->jam_out : $j_selesai;
 
+                                                                $terlambat = hitungjamterlambat($d->jam_in, $jam_mulai);
+                                                            @endphp
                                                             <br>
-                                                        @endif
-
-                                                        @if (!empty($pc))
-                                                            <span class="danger">{{ $pc }}</span>
-                                                            <br>
-                                                        @endif
-
-                                                        @if (!empty($jamkeluarkantor))
-                                                            @if ($jamkeluarkantor > 0)
-                                                                <span class="danger">Izin Keluar :
-                                                                    {{ $totaljamkeluar }}</span>
-                                                            @else
-                                                                <span>Izin Keluar : {{ $totaljamkeluar }}</span>
-                                                            @endif
-                                                        @endif
-
-
-                                                    </div>
-                                                </div>
-                                                <div class="historidetail2">
-                                                    <h4>{{ $d->nama_jadwal }} {{ $d->kode_cabang }}</h4>
-                                                    <span class="timepresence">
-                                                        @if (!empty($d->kode_izin_pulang))
-                                                            <span class="text-danger">
-                                                                Izin Pulang
-                                                            </span>
-                                                        @endif
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @else
-                            <div class="row mb-1">
-                                <div class="col">
-                                    <div class="card historicard historiborderred">
-                                        <div class="card-body">
-                                            <div class="historicontent">
-                                                <div class="historidetail1">
-                                                    <div class="iconpresence">
-                                                        <ion-icon name="finger-print-outline" class="text-danger"
-                                                            style="font-size: 48px"></ion-icon>
-                                                    </div>
-                                                    <div class="datepresence">
-                                                        <h4>{{ DateToIndo2($d->tgl_presensi) }}</h4>
-                                                        @if ($d->status == 'i')
-                                                            @php
-                                                                $status = 'Izin';
-                                                            @endphp
-                                                        @elseif($d->status == 'c')
-                                                            @php
-                                                                $status = 'Cuti';
-                                                            @endphp
-                                                        @elseif($d->status == 's')
-                                                            @php
-                                                                $status = 'Sakit';
-                                                            @endphp
-                                                        @else
-                                                            @php
-                                                                $status = '';
-                                                            @endphp
-                                                        @endif
-
-
-                                                        <span class="timepresence">{{ $status }} -
-                                                            @if ($d->status == 'i')
-                                                                Tidak Masuk Kantor
-                                                            @elseif($d->status == 'c')
-                                                                {{ $d->nama_cuti }}
-                                                            @elseif($d->status == 's')
-                                                                @if (empty($d->sid))
-                                                                    <span class="text-danger">
-                                                                        Tanpa SID
-                                                                    </span>
-                                                                @else
-                                                                    <span class="text-primary">
-                                                                        <ion-icon
-                                                                            name="document-attach-outline"></ion-icon> SID
-                                                                    </span>
-                                                                @endif
+                                                            @if (!empty($terlambat))
+                                                                <span
+                                                                    style="color:{{ $terlambat['color_terlambat'] }}">{{ $terlambat['keterangan_terlambat'] }}
+                                                                    {{-- @if (!empty($denda) && $denda != 'pj' && $denda != 'si')
+                                                                        - {{ rupiah($denda) }}
+                                                                    @else
+                                                                        @if ($denda == 'pj')
+                                                                            - Potong JK
+                                                                        @elseif($denda == 'si')
+                                                                            - Sudah Izin
+                                                                        @endif
+                                                                    @endif --}}
+                                                                </span>
                                                             @endif
                                                         </span>
                                                     </div>
-                                                </div>
-                                                <div class="historidetail2">
-                                                    <h4>{{ $d->nama_jadwal }}</h4>
-                                                    <span class="timepresence">
-
-                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -488,31 +254,7 @@
                             </div>
                         @endif
                     @endforeach
-
                 </div>
-                <div class="tab-pane fade" id="profile" role="tabpanel">
-                    {{-- <ul class="listview image-listview">
-                    @foreach ($leaderboard as $d)
-                    <li>
-                        <div class="item">
-                            <img src="assets/img/sample/avatar/avatar1.jpg" alt="image" class="image">
-                            <div class="in">
-                                <div>
-                                    <b>{{ $d->nama_karyawan }}</b><br>
-                <small class="text-muted">{{ $d->nama_jabatan }}</small>
-            </div>
-            <span class="badge {{ date("H:i:s",strtotime($d->jam_in)) < $d->jam_masuk ? "bg-success" : "bg-danger" }}">
-                {{ date("H:i:s",strtotime($d->jam_in)) }}
-            </span>
-        </div>
-    </div>
-    </li>
-
-    @endforeach
-
-    </ul> --}}
-                </div>
-
             </div>
         </div>
     </div>

@@ -329,3 +329,40 @@ function selisih($jam_masuk, $jam_keluar)
     $jml_jam = $jam[0];
     return $jml_jam . ':' . round($sisamenit2);
 }
+
+
+function hitungjamterlambat($jam_in, $jam_mulai)
+{
+    if (!empty($jam_in)) {
+        if ($jam_in > $jam_mulai) {
+            $j1 = strtotime($jam_mulai);
+            $j2 = strtotime($jam_in);
+
+            $diffterlambat = $j2 - $j1;
+
+            $jamterlambat = floor($diffterlambat / (60 * 60));
+            $menitterlambat = floor(($diffterlambat - $jamterlambat * (60 * 60)) / 60);
+
+            $jterlambat = $jamterlambat <= 9 ? '0' . $jamterlambat : $jamterlambat;
+            $mterlambat = $menitterlambat <= 9 ? '0' . $menitterlambat : $menitterlambat;
+
+            $keterangan_terlambat = 'Telat ' . $jterlambat . ':' . $mterlambat;
+            $desimal_terlambat = ROUND(($menitterlambat * 100) / 60);
+            $color_terlambat = 'red';
+        } else {
+            $keterangan_terlambat = 'Tepat waktu';
+            $jamterlambat = 0;
+            $desimal_terlambat = 0;
+            $color_terlambat = 'green';
+        }
+
+        return [
+            'keterangan_terlambat' => $keterangan_terlambat,
+            'jamterlambat' => $jamterlambat,
+            'desimal_terlambat' => $desimal_terlambat,
+            'color_terlambat' => $color_terlambat
+        ];
+    } else {
+        return [];
+    }
+}

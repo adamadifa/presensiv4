@@ -171,8 +171,7 @@
                         <div class="card-body text-center" style="padding: 12px 12px !important; line-height:0.8rem">
                             <span class="badge bg-danger"
                                 style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ $rekappresensi->jmlhadir }}</span>
-                            <ion-icon name="accessibility-outline" style="font-size: 1.6rem;"
-                                class="text-primary mb-1"></ion-icon>
+                            <ion-icon name="accessibility-outline" style="font-size: 1.6rem;" class="text-primary mb-1"></ion-icon>
                             <br>
                             <span style="font-size: 0.8rem; font-weight:500">Hadir</span>
                         </div>
@@ -183,8 +182,7 @@
                         <div class="card-body text-center" style="padding: 12px 12px !important; line-height:0.8rem">
                             <span class="badge bg-danger"
                                 style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ !empty($rekappresensi->jmlizin) ? $rekappresensi->jmlizin : '' }}</span>
-                            <ion-icon name="newspaper-outline" style="font-size: 1.6rem;"
-                                class="text-success mb-1"></ion-icon>
+                            <ion-icon name="newspaper-outline" style="font-size: 1.6rem;" class="text-success mb-1"></ion-icon>
                             <br>
                             <span style="font-size: 0.8rem; font-weight:500">Izin</span>
                         </div>
@@ -195,8 +193,7 @@
                         <div class="card-body text-center" style="padding: 12px 12px !important; line-height:0.8rem">
                             <span class="badge bg-danger"
                                 style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ !empty($rekappresensi->jmlsakit) ? $rekappresensi->jmlsakit : '' }}</span>
-                            <ion-icon name="medkit-outline" style="font-size: 1.6rem;"
-                                class="text-warning mb-1"></ion-icon>
+                            <ion-icon name="medkit-outline" style="font-size: 1.6rem;" class="text-warning mb-1"></ion-icon>
                             <br>
                             <span style="font-size: 0.8rem; font-weight:500">Sakit</span>
                         </div>
@@ -209,8 +206,7 @@
                                 <span class="badge bg-danger"
                                     style="position: absolute; top:3px; right:10px; font-size:0.6rem; z-index:999">{{ $rekappresensi->jmlterlambat }}</span>
                             @endif
-                            <ion-icon name="alarm-outline" style="font-size: 1.6rem;"
-                                class="text-danger mb-1"></ion-icon>
+                            <ion-icon name="alarm-outline" style="font-size: 1.6rem;" class="text-danger mb-1"></ion-icon>
                             <br>
                             <span style="font-size: 0.8rem; font-weight:500">Telat</span>
                         </div>
@@ -246,21 +242,17 @@
                         @if ($d->status == 'h')
                             <div class="row mb-1">
                                 <div class="col">
-                                    <div
-                                        class="card historicard {{ $d->jam_out != null ? 'historibordergreen' : 'historiborderred' }}">
+                                    <div class="card historicard {{ $d->jam_out != null ? 'historibordergreen' : 'historiborderred' }}">
                                         <div class="card-body">
                                             <div class="historicontent">
                                                 <div class="historidetail1">
                                                     <div class="iconpresence">
-                                                        <ion-icon name="finger-print-outline" class="text-success"
-                                                            style="font-size: 48px"></ion-icon>
+                                                        <ion-icon name="finger-print-outline" class="text-success" style="font-size: 48px"></ion-icon>
                                                     </div>
                                                     <div class="datepresence">
                                                         <h4>{{ DateToIndo2($d->tgl_presensi) }}</h4>
                                                         <span class="timepresence">{!! $d->jam_in != null ? date('H:i', strtotime($d->jam_in)) : '<span class="danger">Belum Scan</span>' !!}
-                                                            {!! $d->jam_out != null
-                                                                ? '- ' . date('H:i', strtotime($d->jam_out))
-                                                                : '<span class="danger"> - Belum Scan</span>' !!}</span><br>
+                                                            {!! $d->jam_out != null ? '- ' . date('H:i', strtotime($d->jam_out)) : '<span class="danger"> - Belum Scan</span>' !!}</span><br>
                                                         {{-- @if (date('H:i:s', strtotime($d->jam_in)) <= $d->jam_masuk)
                                                 <span style="color:green">Tepat Waktu</span>
                                                 @else
@@ -454,8 +446,7 @@
                                             <div class="historicontent">
                                                 <div class="historidetail1">
                                                     <div class="iconpresence">
-                                                        <ion-icon name="finger-print-outline" class="text-danger"
-                                                            style="font-size: 48px"></ion-icon>
+                                                        <ion-icon name="finger-print-outline" class="text-danger" style="font-size: 48px"></ion-icon>
                                                     </div>
                                                     <div class="datepresence">
                                                         <h4>{{ DateToIndo2($d->tgl_presensi) }}</h4>
@@ -490,8 +481,7 @@
                                                                     </span>
                                                                 @else
                                                                     <span class="text-primary">
-                                                                        <ion-icon
-                                                                            name="document-attach-outline"></ion-icon> SID
+                                                                        <ion-icon name="document-attach-outline"></ion-icon> SID
                                                                     </span>
                                                                 @endif
                                                             @endif
