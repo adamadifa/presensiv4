@@ -16,28 +16,28 @@ class PinjamanController extends Controller
         $nik = Auth::guard('karyawan')->user()->nik;
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         $query = Pinjaman::query();
-        $query->select('pinjaman.*', 'nama_karyawan', 'nama_jabatan', 'nama_dept', 'totalpembayaran');
-        $query->join('master_karyawan', 'pinjaman.nik', '=', 'master_karyawan.nik');
-        $query->join('hrd_jabatan', 'master_karyawan.id_jabatan', '=', 'hrd_jabatan.id');
-        $query->join('hrd_departemen', 'master_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+        $query->select('keuangan_pjp.*', 'nama_karyawan', 'nama_jabatan', 'nama_dept', 'totalpembayaran');
+        $query->join('hrd_karyawan', 'keuangan_pjp.nik', '=', 'hrd_karyawan.nik');
+        $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $query->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
         $query->leftJoin(
             DB::raw("(
-            SELECT no_pinjaman,SUM(jumlah) as totalpembayaran FROM pinjaman_historibayar GROUP BY no_pinjaman
+            SELECT no_pinjaman,SUM(jumlah) as totalpembayaran FROM keuangan_pjp_historibayar GROUP BY no_pinjaman
         ) hb"),
             function ($join) {
-                $join->on('pinjaman.no_pinjaman', '=', 'hb.no_pinjaman');
+                $join->on('keuangan_pjp.no_pinjaman', '=', 'hb.no_pinjaman');
             }
         );
         if (!empty($request->bulan)) {
-            $query->whereRaw('MONTH(tgl_pinjaman)="' . $request->bulan . '"');
+            $query->whereRaw('MONTH(tanggal)="' . $request->bulan . '"');
         }
 
         if (!empty($request->tahun)) {
-            $query->whereRaw('YEAR(tgl_pinjaman)="' . $request->tahun . '"');
+            $query->whereRaw('YEAR(tanggal)="' . $request->tahun . '"');
         }
 
 
-        $query->where('pinjaman.nik', $nik);
+        $query->where('keuangan_pjp.nik', $nik);
         $query->orderBy('no_pinjaman', 'desc');
         if (empty($request->tahun) && empty($request->bulan)) {
             $query->limit(7);
@@ -55,22 +55,22 @@ class PinjamanController extends Controller
     {
         $no_pinjaman = Crypt::decrypt($no_pinjaman);
         $query = Pinjaman::query();
-        $query->select('pinjaman.*', 'nama_karyawan', 'nama_jabatan', 'nama_dept', 'totalpembayaran');
-        $query->join('master_karyawan', 'pinjaman.nik', '=', 'master_karyawan.nik');
-        $query->join('hrd_jabatan', 'master_karyawan.id_jabatan', '=', 'hrd_jabatan.id');
-        $query->join('hrd_departemen', 'master_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+        $query->select('keuangan_pjp.*', 'nama_karyawan', 'nama_jabatan', 'nama_dept', 'totalpembayaran');
+        $query->join('hrd_karyawan', 'keuangan_pjp.nik', '=', 'hrd_karyawan.nik');
+        $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $query->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
         $query->leftJoin(
             DB::raw("(
-            SELECT no_pinjaman,SUM(jumlah) as totalpembayaran FROM pinjaman_historibayar GROUP BY no_pinjaman
+            SELECT no_pinjaman,SUM(jumlah) as totalpembayaran FROM keuangan_pjp_historibayar GROUP BY no_pinjaman
         ) hb"),
             function ($join) {
-                $join->on('pinjaman.no_pinjaman', '=', 'hb.no_pinjaman');
+                $join->on('keuangan_pjp.no_pinjaman', '=', 'hb.no_pinjaman');
             }
         );
-        $query->where('pinjaman.no_pinjaman', $no_pinjaman);
+        $query->where('keuangan_pjp.no_pinjaman', $no_pinjaman);
         $pinjaman = $query->first();
 
-        $historibayar = DB::table('pinjaman_historibayar')->where('no_pinjaman', $no_pinjaman)->get();
+        $historibayar = DB::table('keuangan_pjp_historibayar')->where('no_pinjaman', $no_pinjaman)->get();
         return view('pinjaman.show', compact('pinjaman', 'historibayar'));
     }
 
@@ -87,47 +87,60 @@ class PinjamanController extends Controller
     {
         $nik = Auth::guard('karyawan')->user()->nik;
         $query = Karyawan::query();
-        $query->select('nik', 'nama_karyawan', 'tgl_masuk', 'nama_dept', 'jenis_kelamin', 'nama_jabatan', 'id_perusahaan', 'id_kantor', 'klasifikasi', 'status_karyawan', 'nama_cabang');
-        $query->join('hrd_departemen', 'master_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
-        $query->join('hrd_jabatan', 'master_karyawan.id_jabatan', '=', 'hrd_jabatan.id');
-        $query->leftjoin('cabang', 'master_karyawan.id_kantor', '=', 'cabang.kode_cabang');
+        $query->select(
+            'nik',
+            'nama_karyawan',
+            'tanggal_masuk',
+            'nama_dept',
+            'jenis_kelamin',
+            'nama_jabatan',
+            'kode_perusahaan',
+            'hrd_karyawan.kode_cabang',
+            'kode_klasifikasi',
+            'status_karyawan',
+            'nama_cabang'
+        );
+        $query->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+        $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $query->leftjoin('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang');
         $query->where('nik', $nik);
         $karyawan = $query->first();
 
-        $gaji = DB::table('hrd_mastergaji')
+        $gaji = DB::table('hrd_gaji')
             ->selectRaw('IFNULL(gaji_pokok,0)+IFNULL(t_jabatan,0)+IFNULL(t_masakerja,0)+IFNULL(t_tanggungjawab,0)+IFNULL(t_makan,0)+IFNULL(t_istri,0)+IFNULL(t_skill,0) as gajitunjangan,gaji_pokok')
-            ->where('nik', $nik)->orderBy('tgl_berlaku', 'desc')->first();
+            ->where('nik', $nik)->orderBy('tanggal_berlaku', 'desc')->first();
 
-        $jmk = DB::table('hrd_bayarjmk')
-            ->selectRaw('SUM(jumlah) as jml_jmk')
+        $jmk = DB::table('hrd_jasamasakerja')
+            ->selectRaw('SUM(jumlah) as jumlah')
             ->where('nik', $nik)
             ->groupBy('nik')
             ->first();
+
         $hariini = date("Y-m-d");
-        $sp = DB::table('hrd_sp')->where('nik', $nik)->where('sampai', '>', $hariini)
+        $sp = DB::table('hrd_suratperingatan')->where('nik', $nik)->where('sampai', '>', $hariini)
             ->orderBy('dari', 'desc')
             ->first();
 
 
 
         $query = Pinjaman::query();
-        $query->select('pinjaman.*', 'nama_karyawan', 'nama_jabatan', 'nama_dept', 'totalpembayaran');
-        $query->join('master_karyawan', 'pinjaman.nik', '=', 'master_karyawan.nik');
-        $query->join('hrd_jabatan', 'master_karyawan.id_jabatan', '=', 'hrd_jabatan.id');
-        $query->join('hrd_departemen', 'master_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
+        $query->select('keuangan_pjp.*', 'nama_karyawan', 'nama_jabatan', 'nama_dept', 'totalpembayaran');
+        $query->join('hrd_karyawan', 'keuangan_pjp.nik', '=', 'hrd_karyawan.nik');
+        $query->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan');
+        $query->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept');
         $query->leftJoin(
             DB::raw("(
-            SELECT no_pinjaman,SUM(jumlah) as totalpembayaran FROM pinjaman_historibayar GROUP BY no_pinjaman
+            SELECT no_pinjaman,SUM(jumlah) as totalpembayaran FROM keuangan_pjp_historibayar GROUP BY no_pinjaman
         ) hb"),
             function ($join) {
-                $join->on('pinjaman.no_pinjaman', '=', 'hb.no_pinjaman');
+                $join->on('keuangan_pjp.no_pinjaman', '=', 'hb.no_pinjaman');
             }
         );
-        $query->where('pinjaman.nik', $nik);
+        $query->where('keuangan_pjp.nik', $nik);
         $query->whereRaw('IFNULL(jumlah_pinjaman,0) - IFNULL(totalpembayaran,0) != 0');
         $cekpinjaman = $query->first();
 
-        $kontrak = DB::table('hrd_kontrak')->where('nik', $nik)->orderBy('dari', 'desc')->first();
+        $kontrak = DB::table('hrd_kontrak')->where('nik', $nik)->orderBy('tanggal', 'desc')->first();
 
         $start = date_create($karyawan->tgl_masuk);
         $end = date_create($hariini);
@@ -135,7 +148,7 @@ class PinjamanController extends Controller
         $cekmasakerja =  $this->diffInMonths($start, $end);
 
         $jenis_sp = $sp != null ? $sp->ket : '';
-        $id_kantor = $karyawan->id_kantor;
+        $kode_cabang = $karyawan->kode_cabang;
         return view('pinjaman.simulasi', compact('karyawan', 'gaji', 'jmk', 'kontrak'));
         //echo $jenis_sp . "-" . $id_kantor;
         // if (

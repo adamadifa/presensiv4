@@ -64,21 +64,19 @@
                 <div class="row mb-1">
                     <div class="col">
                         <a href="/pinjaman/{{ Crypt::encrypt($d->no_pinjaman) }}/show">
-                            <div class="card historiborderred listizin" data-toggle="modal"
-                                data-target="#actionSheetIconed">
+                            <div class="card historiborderred listizin" data-toggle="modal" data-target="#actionSheetIconed">
                                 <div class="card-body">
                                     <div class="historicontent">
                                         <div class="historidetail1">
                                             <div class="iconpresence">
-                                                <ion-icon name="cash-outline" style="font-size: 64px;"
-                                                    class="text-warning"></ion-icon>
+                                                <ion-icon name="cash-outline" style="font-size: 64px;" class="text-warning"></ion-icon>
                                             </div>
                                             <div class="datepresence">
                                                 <h4 class="">
                                                     {{ $d->no_pinjaman }}
                                                 </h4>
                                                 <small class="text-muted">
-                                                    {{ DateToIndo2($d->tgl_pinjaman) }}<br>
+                                                    {{ DateToIndo2($d->tanggal) }}<br>
                                                     {{ $d->angsuran }} x Angsuran
                                                 </small>
 

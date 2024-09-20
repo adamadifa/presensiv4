@@ -333,6 +333,9 @@ function selisih($jam_masuk, $jam_keluar)
 
 function hitungjamterlambat($jam_in, $jam_mulai)
 {
+
+    // $jam_in = date('Y-m-d H:i', strtotime($jam_in));
+    // $jam_mulai = date('Y-m-d H:i', strtotime($jam_mulai));
     if (!empty($jam_in)) {
         if ($jam_in > $jam_mulai) {
             $j1 = strtotime($jam_mulai);
@@ -349,20 +352,120 @@ function hitungjamterlambat($jam_in, $jam_mulai)
             $keterangan_terlambat = 'Telat ' . $jterlambat . ':' . $mterlambat;
             $desimal_terlambat = ROUND(($menitterlambat * 100) / 60);
             $color_terlambat = 'red';
+            return [
+                'keterangan_terlambat' => $keterangan_terlambat,
+                'jamterlambat' => $jamterlambat,
+                'menitterlambat' => $menitterlambat,
+                'desimal_terlambat' => $desimal_terlambat,
+                'color_terlambat' => $color_terlambat
+            ];
         } else {
-            $keterangan_terlambat = 'Tepat waktu';
-            $jamterlambat = 0;
-            $desimal_terlambat = 0;
-            $color_terlambat = 'green';
+            return [];
         }
-
-        return [
-            'keterangan_terlambat' => $keterangan_terlambat,
-            'jamterlambat' => $jamterlambat,
-            'desimal_terlambat' => $desimal_terlambat,
-            'color_terlambat' => $color_terlambat
-        ];
     } else {
         return [];
     }
+}
+
+
+function hitungdenda($jamterlambat, $menitterlambat, $kode_izin_terlambat, $kode_dept)
+{
+
+    //
+    //Jika Terlambat
+    if (!empty($jamterlambat) || !empty($menitterlambat)) {
+
+        //Jika Terlambat Kurang Dari 1 Jam
+        if ($jamterlambat < 1 || $jamterlambat == 1 && $menitterlambat == 0) {
+            //Jika Departemen Marketing
+            if ($kode_dept == "MKT") {
+                $denda = 0;
+                $keterangan = "";
+                $cek = 1;
+            } else {
+                //JIka Sudah Izin
+                if (!empty($kode_izin_terlambat)) {
+                    $denda = 0;
+                    $keterangan = "Sudah Izin";
+                    $cek = 2;
+                } else {
+                    if ($menitterlambat >= 5 and $menitterlambat < 10) {
+                        $denda = 5000;
+                        $keterangan = "";
+                        $cek = 3;
+                    } elseif ($menitterlambat >= 10 and $menitterlambat < 15) {
+                        $denda = 10000;
+                        $keterangan = "";
+                        $cek = 4;
+                    } elseif ($menitterlambat >= 15 and $menitterlambat <= 59) {
+                        $denda = 15000;
+                        $keterangan = "";
+                        $cek = 5;
+                    } else {
+                        $denda = 0;
+                        $keterangan = "";
+                        $cek = 6;
+                    }
+                }
+            }
+        } else {
+            $denda = 0;
+            $keterangan = "Potong JK";
+            $cek = 7;
+        }
+    } else {
+        $denda = 0;
+        $keterangan = "";
+        $cek = 8;
+    }
+
+    return [
+        'denda' => $denda,
+        'keterangan' => $keterangan,
+        'cek' => $cek
+    ];
+}
+
+
+
+function hitungjamkeluarkantor($jam_keluar, $j_kembali, $jam_selesai, $total_jam, $istirahat, $jam_awal_istirahat, $jam_akhir_istirahat)
+{
+
+    $jam_kembali = !empty($j_kembali) ? $j_kembali : $jam_selesai;
+    $jk1 = strtotime($jam_keluar);
+    $jk2 = strtotime($jam_kembali);
+    $difkeluarkantor = $jk2 - $jk1;
+
+    $jamkeluarkantor = floor($difkeluarkantor / (60 * 60));
+    $menitkeluarkantor = floor(($difkeluarkantor - $jamkeluarkantor * (60 * 60)) / 60);
+
+    $jkeluarkantor = $jamkeluarkantor <= 9 ? '0' . $jamkeluarkantor : $jamkeluarkantor;
+    $mkeluarkantor = $menitkeluarkantor <= 9 ? '0' . $menitkeluarkantor : $menitkeluarkantor;
+
+    if (empty($j_kembali)) {
+        if ($total_jam == 7) {
+            $totaljamkeluar = $jkeluarkantor - 1 . ':' . $mkeluarkantor;
+        } else {
+            $totaljamkeluar = $jkeluarkantor . ':' . $mkeluarkantor;
+        }
+    } else {
+        //Jika Ada istirahat
+        if ($istirahat == '1') {
+            //Jika Jam Keluar Kantor Sebelum Jam Istirahat
+            if ($jam_keluar < $jam_awal_istirahat && $jam_kembali > $jam_akhir_istirahat) {
+                $totaljamkeluar = $jkeluarkantor - 1 . ':' . $mkeluarkantor;
+            } else {
+                $totaljamkeluar = $jkeluarkantor . ':' . $mkeluarkantor;
+            }
+        } else {
+            $totaljamkeluar = $jkeluarkantor . ':' . $mkeluarkantor;
+        }
+    }
+    // $desimaljamkeluar = ROUND(($menitkeluarkantor * 100) / 60);
+
+    return [
+        'totaljamkeluar' => $totaljamkeluar,
+        'jamkeluarkantor' => $jamkeluarkantor,
+        'color' => $jamkeluarkantor > 0 ? 'danger' : 'primary'
+    ];
 }

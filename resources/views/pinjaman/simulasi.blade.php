@@ -114,7 +114,7 @@
                                 <th>Masa Kerja</th>
                                 <td>
                                     @php
-                                        $awal = date_create($karyawan->tgl_masuk);
+                                        $awal = date_create($karyawan->tanggal_masuk);
                                         $akhir = date_create(date('Y-m-d')); // waktu sekarang
                                         $diff = date_diff($awal, $akhir);
                                         echo $diff->y . ' tahun, ' . $diff->m . ' bulan, ' . $diff->d . ' Hari';
@@ -124,8 +124,7 @@
                             <tr>
                                 <th>Status</th>
                                 <td>
-                                    <input type="hidden" name="status_karyawan" id="status_karyawan"
-                                        value="{{ $karyawan->status_karyawan }}">
+                                    <input type="hidden" name="status_karyawan" id="status_karyawan" value="{{ $karyawan->status_karyawan }}">
                                     {{ $karyawan->status_karyawan == 'T' ? 'Karyawan Tetap' : 'Karyawan Kontrak' }}
                                 </td>
                             </tr>
@@ -133,8 +132,7 @@
                                 <tr>
                                     <th>Akhir Kontrak</th>
                                     <td>
-                                        <input type="hidden" name="akhir_kontrak" id="akhir_kontrak"
-                                            value="{{ $kontrak->sampai }}">
+                                        <input type="hidden" name="akhir_kontrak" id="akhir_kontrak" value="{{ $kontrak->sampai }}">
                                         {{ $kontrak != null ? DateToIndo2($kontrak->sampai) : '' }}
                                     </td>
                                 </tr>
@@ -142,8 +140,7 @@
                             <tr>
                                 <th>Gaji</th>
                                 <td style="text-align: right">
-                                    <input type="hidden" name="gapok_tunjangan" id="gapok_tunjangan"
-                                        value="{{ $gaji->gajitunjangan }}">
+                                    <input type="hidden" name="gapok_tunjangan" id="gapok_tunjangan" value="{{ $gaji->gajitunjangan }}">
                                     {{ rupiah($gaji->gajitunjangan) }}
                                 </td>
                             </tr>
@@ -172,8 +169,7 @@
                                         $angsuranmax = (40 / 100) * $gaji->gajitunjangan;
                                     @endphp
                                     {{ rupiah($angsuranmax) }}
-                                    <input type="hidden" name="angsuran_max" id="angsuran_max"
-                                        value="{{ $angsuranmax }}">
+                                    <input type="hidden" name="angsuran_max" id="angsuran_max" value="{{ $angsuranmax }}">
                                 </td>
                             </tr>
                             <tr>
@@ -182,8 +178,7 @@
                                     @php
                                         $plafon = $angsuranmax * $tenormax;
                                     @endphp
-                                    <input type="hidden" name="plafon" id="plafon"
-                                        value="{{ $angsuranmax * $tenormax }}">
+                                    <input type="hidden" name="plafon" id="plafon" value="{{ $angsuranmax * $tenormax }}">
                                     {{ rupiah($angsuranmax * $tenormax) }}
                                 </td>
                             </tr>
@@ -227,8 +222,7 @@
                                 <th>JMK Sudah Dibayar</th>
                                 <td style="text-align: right">
                                     {{ rupiah($jmk != null ? $jmk->jml_jmk : 0) }}
-                                    <input type="hidden" name="jmk_sudahbayar" id="jmk_sudahbayar"
-                                        value="{{ $jmk != null ? $jmk->jml_jmk : 0 }}">
+                                    <input type="hidden" name="jmk_sudahbayar" id="jmk_sudahbayar" value="{{ $jmk != null ? $jmk->jml_jmk : 0 }}">
                                 </td>
                             </tr>
                             <tr>
@@ -238,8 +232,8 @@
                                         // $plafonmax = ((40/100) * $gaji->gajitunjangan )* 20;
                                         $jmksudahdibayar = $jmk != null ? $jmk->jml_jmk : 0;
                                         $plafonjmk = $totaljmk - $jmksudahdibayar;
-                                    $plafonmax = $plafonjmk < $plafon ? $plafonjmk : $plafon; @endphp {{ rupiah($plafonmax) }} <input type="hidden" name="plafon_max"
-                                        id="plafon_max" value="{{ $plafonmax }}">
+                                    $plafonmax = $plafonjmk < $plafon ? $plafonjmk : $plafon; @endphp {{ rupiah($plafonmax) }} <input type="hidden" name="plafon_max" id="plafon_max"
+                                        value="{{ $plafonmax }}">
                                 </td>
                             </tr>
 
@@ -250,9 +244,8 @@
                     <div class="col">
                         <div class="input-icons">
                             <ion-icon name="calendar-outline" class="icon"></ion-icon>
-                            <input type="text" id="tgl_pinjaman" name="tgl_pinjaman"
-                                class="form-control datepicker input-field" placeholder="Tanggal Pinjaman"
-                                autocomplete="off">
+                            <input type="text" id="tgl_pinjaman" name="tgl_pinjaman" class="form-control datepicker input-field"
+                                placeholder="Tanggal Pinjaman" autocomplete="off">
                         </div>
                     </div>
                 </div>
@@ -260,8 +253,8 @@
                     <div class="col">
                         <div class="input-icons">
                             <ion-icon name="document-outline" class="icon"></ion-icon>
-                            <input type="text" id="jml_pinjaman" style="text-align: right" name="jml_pinjaman"
-                                class="form-control  input-field" placeholder="Jumlah Pinjaman" autocomplete="off">
+                            <input type="text" id="jml_pinjaman" style="text-align: right" name="jml_pinjaman" class="form-control  input-field"
+                                placeholder="Jumlah Pinjaman" autocomplete="off">
                         </div>
                     </div>
                 </div>
@@ -270,17 +263,7 @@
                     <div class="col">
                         <div class="input-icons">
                             <ion-icon name="document-outline" class="icon"></ion-icon>
-                            <input type="text" id="angsuran" name="angsuran" class="form-control  input-field"
-                                placeholder="Angsuran" autocomplete="off">
-                        </div>
-                    </div>
-                </div>
-                <div class="row" style="margin-bottom: 0">
-                    <div class="col">
-                        <div class="input-icons">
-                            <ion-icon name="document-outline" class="icon"></ion-icon>
-                            <input type="text" id="jml_angsuran" name="jml_angsuran"
-                                class="form-control  input-field" placeholder="Jumlah Angsuran / Bulan"
+                            <input type="text" id="angsuran" name="angsuran" class="form-control  input-field" placeholder="Angsuran"
                                 autocomplete="off">
                         </div>
                     </div>
@@ -288,9 +271,18 @@
                 <div class="row" style="margin-bottom: 0">
                     <div class="col">
                         <div class="input-icons">
+                            <ion-icon name="document-outline" class="icon"></ion-icon>
+                            <input type="text" id="jml_angsuran" name="jml_angsuran" class="form-control  input-field"
+                                placeholder="Jumlah Angsuran / Bulan" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom: 0">
+                    <div class="col">
+                        <div class="input-icons">
                             <ion-icon name="calendar-outline" class="icon"></ion-icon>
-                            <input type="text" id="mulai_cicilan" style="text-align: right" name="mulai_cicilan"
-                                class="form-control  input-field" placeholder="Mulai Cicilan" autocomplete="off">
+                            <input type="text" id="mulai_cicilan" style="text-align: right" name="mulai_cicilan" class="form-control  input-field"
+                                placeholder="Mulai Cicilan" autocomplete="off">
                         </div>
                     </div>
                 </div>

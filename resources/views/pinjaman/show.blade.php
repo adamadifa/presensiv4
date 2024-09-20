@@ -22,7 +22,7 @@
                 </tr>
                 <tr>
                     <th>Tanggal</th>
-                    <td>{{ DateToIndo2($pinjaman->tgl_pinjaman) }}</td>
+                    <td>{{ DateToIndo2($pinjaman->tanggal) }}</td>
                 </tr>
                 <tr>
                     <th>Angsuran</th>
@@ -75,7 +75,7 @@
                     @foreach ($historibayar as $d)
                         <tr>
                             <td>{{ $d->no_bukti }}</td>
-                            <td>{{ date('d-m-Y', strtotime($d->tgl_bayar)) }}</td>
+                            <td>{{ date('d-m-Y', strtotime($d->tanggal)) }}</td>
                             <td style="text-align: right">{{ number_format($d->jumlah, '0', '', '.') }}</td>
                         </tr>
                     @endforeach

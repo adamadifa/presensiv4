@@ -40,80 +40,52 @@ class DashboardController extends Controller
                 'hrd_jamkerja.jam_pulang as jam_selesai',
                 'hrd_jamkerja.lintashari',
                 'hrd_karyawan.kode_jabatan',
+                'hrd_karyawan.kode_dept',
+                'hrd_presensi_izinterlambat.kode_izin_terlambat',
+                'hrd_presensi_izinkeluar.kode_izin_keluar',
+                'hrd_izinkeluar.jam_keluar',
+                'hrd_izinkeluar.jam_kembali',
+                'hrd_jamkerja.total_jam',
+                'hrd_jamkerja.istirahat',
+                'hrd_jamkerja.jam_awal_istirahat',
+                'hrd_jamkerja.jam_akhir_istirahat',
+                'hrd_presensi_izinpulang.kode_izin_pulang',
+                'hrd_jadwalkerja.nama_jadwal',
+                'hrd_karyawan.kode_cabang',
+                'hrd_presensi.status',
+                'nama_cuti',
+                'nama_cuti_khusus',
+                'doc_sid'
             )
             ->join('hrd_karyawan', 'hrd_presensi.nik', '=', 'hrd_karyawan.nik')
             ->leftJoin('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja')
             ->leftJoin('hrd_jadwalkerja', 'hrd_presensi.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal')
-            ->leftJoin('hrd_izinterlambat', 'hrd_presensi.kode_izin', '=', 'hrd_izinterlambat.kode_izin')
+
+            ->leftJoin('hrd_presensi_izinterlambat', 'hrd_presensi.id', '=', 'hrd_presensi_izinterlambat.id_presensi')
+            ->leftJoin('hrd_izinterlambat', 'hrd_presensi_izinterlambat.kode_izin_terlambat', '=', 'hrd_izinterlambat.kode_izin_terlambat')
+
+            ->leftJoin('hrd_presensi_izinkeluar', 'hrd_presensi.id', '=', 'hrd_presensi_izinkeluar.id_presensi')
+            ->leftJoin('hrd_izinkeluar', 'hrd_presensi_izinkeluar.kode_izin_keluar', '=', 'hrd_izinkeluar.kode_izin_keluar')
+
+            ->leftJoin('hrd_presensi_izinpulang', 'hrd_presensi.id', '=', 'hrd_presensi_izinpulang.id_presensi')
+            ->leftJoin('hrd_izinpulang', 'hrd_presensi_izinpulang.kode_izin_pulang', '=', 'hrd_izinpulang.kode_izin_pulang')
+
+            ->leftJoin('hrd_presensi_izincuti', 'hrd_presensi.id', '=', 'hrd_presensi_izincuti.id_presensi')
+            ->leftJoin('hrd_izincuti', 'hrd_presensi_izincuti.kode_izin_cuti', '=', 'hrd_izincuti.kode_izin_cuti')
+            ->leftJoin('hrd_jeniscuti', 'hrd_izincuti.kode_cuti', '=', 'hrd_jeniscuti.kode_cuti')
+            ->leftJoin('hrd_jeniscuti_khusus', 'hrd_izincuti.kode_cuti_khusus', '=', 'hrd_jeniscuti_khusus.kode_cuti_khusus')
+
+            ->leftJoin('hrd_presensi_izinsakit', 'hrd_presensi.id', '=', 'hrd_presensi_izinsakit.id_presensi')
+            ->leftJoin('hrd_izinsakit', 'hrd_presensi_izinsakit.kode_izin_sakit', '=', 'hrd_izinsakit.kode_izin_sakit')
+
             ->where('hrd_presensi.nik', $nik)
             ->where('hrd_presensi.tanggal', '<=', $hariini)
             ->orderBy('hrd_presensi.tanggal', 'desc')
             ->limit(7)
             ->get();
-        // $historibulanini = DB::table('hrd_presensi')
-        //     ->select(
-        //         'hrd_presensi.*',
-        //         'nama_jadwal',
-        //         'hrd_jadwalkerja.kode_cabang',
-        //         'hrd_jam_kerja.jam_masuk',
-        //         'nama_cuti',
-        //         'doc_sid',
-        //         'hrd_izinkeluar.jam_keluar',
-        //         'hrd_izinkeluar.jam_kembali',
-        //         'hrd_jam_kerja.jam_pulang',
-        //         'hrd_jam_kerja.lintashari',
-        //         'hrd_jam_kerja.total_jam',
-        //         'hrd_karyawan.kode_dept',
-        //         'hrd_karyawan.kode_jabatan',
-        //     )
-        //     ->join('hrd_karyawan', 'hrd_presensi.nik', '=', 'hrd_karyawan.nik')
-        //     ->leftJoin(
-        //         DB::raw("(
-        //         SELECT
-        //             hrd_jadwalkerja_detail.kode_jadwal,nama_jadwal,kode_jam_kerja,kode_cabang
-        //         FROM
-        //             hrd_jadwalkerja_detail
-        //         INNER JOIN hrd_jadwalkerja ON hrd_jadwalkerja_detail.kode_jadwal = hrd_jadwalkerja.kode_jadwal
-        //         GROUP BY
-        //         hrd_jadwalkerja_detail.kode_jadwal,nama_jadwal,kode_jam_kerja,kode_cabang
-        //         ) jadwal"),
-        //         function ($join) {
-        //             $join->on('hrd_presensi.kode_jadwal', '=', 'jadwal.kode_jadwal');
-        //             $join->on('hrd_presensi.kode_jam_kerja', '=', 'jadwal.kode_jam_kerja');
-        //         }
-        //     )
-        //     ->leftjoin('hrd_jam_kerja', 'hrd_presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-        //     ->leftjoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
-        //     ->leftjoin('hrd_mastercuti', 'pengajuan_izin.jenis_cuti', '=', 'hrd_mastercuti.kode_cuti')
-        //     ->where('presensi.nik', $nik)
-        //     ->where('tgl_presensi', '<=', $hariini)
-        //     ->orderBy('tgl_presensi', 'desc')
-        //     ->limit(7)
-        //     ->get();
 
-
-
-
-
-
-        // $leaderboard = DB::table('presensi')
-        //     ->leftjoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-        //     ->join('master_karyawan', 'presensi.nik', '=', 'master_karyawan.nik')
-        //     ->leftjoin('hrd_jabatan', 'master_karyawan.id_jabatan', '=', 'hrd_jabatan.id')
-        //     ->where('tgl_presensi', $hariini)
-        //     ->where('id_kantor', Auth::guard('karyawan')->user()->id_kantor)
-        //     ->where('presensi.status', 'h')
-        //     ->orderBy('jam_in')
-        //     ->get();
         $data['namabulan'] = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
 
-        // $rekapizin = DB::table('pengajuan_izin')
-        //     ->selectRaw('SUM(IF(status="i",1,0)) as jmlizin,SUM(IF(status="s",1,0)) as jmlsakit')
-        //     ->where('nik', $nik)
-        //     ->whereRaw('MONTH(tgl_izin)="' . $bulanini . '"')
-        //     ->whereRaw('YEAR(tgl_izin)="' . $tahunini . '"')
-        //     ->where('status_approved', 1)
-        //     ->first();
 
         $jabatan = DB::table('hrd_jabatan')->where('kode_jabatan', Auth::guard('karyawan')->user()->kode_jabatan)->first();
         $kode_dept = Auth::guard('karyawan')->user()->kode_dept;
@@ -124,7 +96,7 @@ class DashboardController extends Controller
         $data['bulanini'] = $bulanini;
         $data['tahunini'] = $tahunini;
         if ($kode_dept == "MKT" || $kode_cabang != "PST") {
-            return view('dashboard.dashboardwithcamera', compact('presensihariini', 'historibulanini', 'namabulan', 'bulanini', 'tahunini', 'rekappresensi', 'leaderboard', 'jabatan'));
+            return view('dashboard.dashboardwithcamera', $data);
         } else {
             return view('dashboard.dashboard', $data);
         }
