@@ -8,10 +8,6 @@
         .card .card-body {
             padding: 15px 10px 10px 5px !important;
         }
-
-        /* .historicontent {
-                                                justify-content: left !important;
-                                            } */
     </style>
     <!-- App Header -->
     <div class="appHeader bg-primary text-light">
@@ -26,167 +22,280 @@
     <!-- * App Header -->
 @endsection
 @section('content')
-    <div class="row" style="margin-top: 70px">
-        <div class="col">
-            <form action="/presensi/izin" method="GET">
-                <div class="row">
-                    <div class="col-6">
-                        <div class="form-group">
-                            <select name="bulan" id="bulan" class="selectmaterialize">
-                                <option value="">Bulan</option>
-                                @for ($i = 1; $i <= 12; $i++)
-                                    <option value="{{ $i }}" {{ Request('bulan') == $i ? 'selected' : '' }}>
-                                        {{ $namabulan[$i] }}</option>
-                                @endfor
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="form-group">
-                            <select name="tahun" id="tahun" class="selectmaterialize">
-                                <option value="">Tahun</option>
-                                @php
-                                    $tahunmulai = 2022;
-                                    $tahunskrg = date('Y');
-                                @endphp
-                                @for ($tahun = $tahunmulai; $tahun <= $tahunskrg; $tahun++)
-                                    <option value="{{ $tahun }}" {{ Request('tahun') == $tahun ? 'selected' : '' }}>
-                                        {{ $tahun }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
-                    </div>
-                </div>
+    <div class="row" style="margin-top: 50px;">
+        <div class="col-12" style="background-color: #cb1f0e; padding: 0px; margin: 0px">
+            <div class="horizontal-scroll" style="padding: 0 !important">
+                <nav class="navbar navbar-expand">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link text-white {{ request()->is('pengajuanizin/createizinterlambat') ? 'active' : '' }}"
+                                href="javascript:void(0);" onclick="showContent('izin_terlambat')">Izin
+                                Terlambat</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white {{ request()->is('pengajuanizin/createizinabsen') ? 'active' : '' }}" href="javascript:void(0);"
+                                onclick="showContent('izin_absen')">Izin
+                                Absen</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white {{ request()->is('pengajuanizin/createizinkeluar') ? 'active' : '' }}"
+                                href="javascript:void(0);" onclick="showContent('izin_keluar')">Izin
+                                Keluar Kantor</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white {{ request()->is('pengajuanizin/createizinpulang') ? 'active' : '' }}"
+                                href="javascript:void(0);" onclick="showContent('izin_pulang')">Izin
+                                Pulang</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white {{ request()->is('pengajuanizin/createsakit') ? 'active' : '' }}" href="javascript:void(0);"
+                                onclick="showContent('sakit')">Sakit</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white {{ request()->is('pengajuanizin/createcuti') ? 'active' : '' }}" href="javascript:void(0);"
+                                onclick="showContent('cuti')">Cuti</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <style>
+                .horizontal-scroll {
+                    overflow-x: auto;
+                    white-space: nowrap;
+                }
 
-                <div class="row">
-                    <div class="col-12">
-                        <div class="form-group">
-                            <button class="btn btn-danger btn-block" id="getdata">
-                                <ion-icon name="search-outline"></ion-icon> Search
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </form>
+                .navbar-nav {
+                    display: inline-flex;
+                }
+
+                .nav-item {
+                    margin-right: 10px;
+                    margin-bottom: 3px;
+                }
+
+                .nav-link.active {
+                    font-weight: bold;
+                    background-color: #c74d41;
+                    border-radius: 30px;
+                    padding: 3px;
+                    margin-top: 8px;
+                }
+            </style>
         </div>
     </div>
-    <div class="row" style="overflow:scroll; height:100%; position:relative; bottom:10%">
+    <div class="row">
         <div class="col">
-            @foreach ($dataizin as $d)
-                <div class="row mb-1">
-                    <div class="col">
-                        <div class="card historiborderred listizin" data-id="{{ $d->kode_izin }}" data-toggle="modal"
-                            data-target="#actionSheetIconed">
-                            <div class="card-body">
-                                <div class="historicontent">
-                                    <div class="historidetail1">
-                                        <div class="iconpresence">
-                                            <ion-icon name="document-text-outline" style="font-size: 64px;"
-                                                class="text-danger"></ion-icon>
-                                        </div>
-                                        <div class="datepresence">
-                                            <h4 class="">{{ DateToIndo2($d->dari) }}
-                                                @if ($d->status == 'i')
-                                                    (Izin)
-                                                @elseif($d->status == 's')
-                                                    (Sakit)
-                                                @elseif($d->status == 'c')
-                                                    (Cuti)
-                                                @endif
-                                            </h4>
+            <div id="content-area" style="margin-top: 20px;">
+                <div id="izin_terlambat" class="content" style="display: none;">
+                    @foreach ($izinterlambat as $d)
+                        <div class="row mb-1">
+                            <div class="col">
+                                <div class="card historiborderred listizin" data-id="{{ $d->kode_izin_terlambat }}" data-toggle="modal"
+                                    data-target="#actionSheetIconed">
+                                    <div class="card-body">
+                                        <div class="historicontent">
+                                            <div class="historidetail1">
+                                                <div class="iconpresence">
+                                                    <ion-icon name="document-text-outline" style="font-size: 64px;" class="text-danger"></ion-icon>
+                                                </div>
+                                                <div class="datepresence">
+                                                    <h4 class="">{{ DateToIndo2($d->tanggal) }} <br> Izin Terlambat</h4>
+                                                    <span>Terlambat Pukul : {{ date('H:i', strtotime($d->jam_terlambat)) }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="historidetail2" style="margin-left:20px">
 
-
-                                            <small class="text-muted">
-                                                {{ date('d-m-Y', strtotime($d->dari)) }}
-                                                @if ($d->jenis_izin != 'PL' && $d->jenis_izin != 'KL' && $d->jenis_izin != 'TL')
-                                                    s/d {{ date('d-m-Y', strtotime($d->sampai)) }}
-                                                @else
-                                                    @if ($d->jenis_izin == 'PL')
-                                                        {{ $d->jam_pulang }}
-                                                    @elseif($d->jenis_izin == 'KL')
-                                                        {{ $d->jam_keluar }}
-                                                    @endif
-                                                @endif
-                                            </small>
-                                            <br>
-                                            @if ($d->status == 'i')
-                                                <small>
+                                                @if ($d->status == 0)
+                                                    <span class="badge bg-warning">
+                                                        <ion-icon name="refresh-outline"></ion-icon>
+                                                    </span>
+                                                @elseif($d->status == 1)
+                                                    <span class="badge bg-success">
+                                                        Disetujui
+                                                    </span>
+                                                @elseif($d->status == 2)
                                                     <span class="badge bg-danger">
-                                                        @if ($d->jenis_izin == 'PL')
-                                                            Pulang
-                                                        @elseif($d->jenis_izin == 'KL')
-                                                            Keluar Kantor
-                                                        @elseif($d->jenis_izin == 'TM')
-                                                            Tidak Masuk Kantor
-                                                        @elseif($d->jenis_izin == 'TL')
-                                                            Terlambat
-                                                        @endif
-                                                    </span><br>
-                                                </small>
-                                            @endif
-                                            @if ($d->status == 'c')
-                                                <small>
-                                                    <span class="badge bg-danger">
-                                                        {{ $d->nama_cuti }}
-                                                    </span><br>
-                                                </small>
-                                            @endif
-                                            {{-- <small class="text-muted">{{ $d->keterangan }}</small> --}}
+                                                        Ditolak
+                                                    </span>
+                                                @endif
+                                                <span class="timepresence">
 
-                                            @if (!empty($d->sid))
-                                                <a href="#">
-                                                    <ion-icon name="document-attach-outline"></ion-icon> SID
-                                                </a>
-                                            @endif
-
+                                                </span>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="historidetail2" style="margin-left:20px">
 
-                                        @if ($d->status_approved == 0)
-                                            <span class="badge bg-warning">
-                                                <ion-icon name="refresh-outline"></ion-icon>
-                                            </span>
-                                        @elseif($d->status_approved == 1)
-                                            <span class="badge bg-success">
-                                                Disetujui
-                                            </span>
-                                        @elseif($d->status_approved == 2)
-                                            <span class="badge bg-danger">
-                                                Ditolak
-                                            </span>
-                                        @endif
-                                        <span class="timepresence">
-
-                                        </span>
-                                        @if ($d->jenis_izin != 'PL' && $d->jenis_izin != 'KL' && $d->jenis_izin != 'TL')
-                                            <h4 class="mt-1">{{ $d->jmlhari }} Hari</h4>
-                                        @endif
                                     </div>
                                 </div>
-
                             </div>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
-            @endforeach
+                <div id="izin_absen" class="content" style="display: none;">
+                    @foreach ($izinabsen as $d)
+                        <div class="row mb-1">
+                            <div class="col">
+                                <div class="card historiborderred listizin" data-id="{{ $d->kode_izin }}" data-toggle="modal"
+                                    data-target="#actionSheetIconed">
+                                    <div class="card-body">
+                                        <div class="historicontent">
+                                            <div class="historidetail1">
+                                                <div class="iconpresence">
+                                                    <ion-icon name="document-text-outline" style="font-size: 64px;" class="text-danger"></ion-icon>
+                                                </div>
+                                                <div class="datepresence">
+                                                    <h4 class="">{{ DateToIndo2($d->tanggal) }}
+                                                        <br>
+                                                        Izin Tidak Masuk Kantor
+                                                    </h4>
+                                                    <small class="text-muted">
+                                                        {{ date('d-m-Y', strtotime($d->dari)) }} s/d {{ date('d-m-Y', strtotime($d->sampai)) }}
+                                                    </small>
+
+                                                </div>
+                                            </div>
+                                            <div class="historidetail2" style="margin-left:20px">
+
+                                                @if ($d->status == 0)
+                                                    <span class="badge bg-warning">
+                                                        <ion-icon name="refresh-outline"></ion-icon>
+                                                    </span>
+                                                @elseif($d->status == 1)
+                                                    <span class="badge bg-success">
+                                                        Disetujui
+                                                    </span>
+                                                @elseif($d->status == 2)
+                                                    <span class="badge bg-danger">
+                                                        Ditolak
+                                                    </span>
+                                                @endif
+                                                <span class="timepresence">
+
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div id="izin_keluar" class="content" style="display: none;">
+                    @foreach ($izinkeluar as $d)
+                        <div class="row mb-1">
+                            <div class="col">
+                                <div class="card historiborderred listizin" data-id="{{ $d->kode_izin_keluar }}" data-toggle="modal"
+                                    data-target="#actionSheetIconed">
+                                    <div class="card-body">
+                                        <div class="historicontent">
+                                            <div class="historidetail1">
+                                                <div class="iconpresence">
+                                                    <ion-icon name="document-text-outline" style="font-size: 64px;" class="text-danger"></ion-icon>
+                                                </div>
+                                                <div class="datepresence">
+                                                    <h4 class="">{{ DateToIndo2($d->tanggal) }}
+                                                        <br>
+                                                        Izin Keluar Kantor
+                                                    </h4>
+                                                    <span>Keluar Pukul : {{ date('H:i', strtotime($d->jam_keluar)) }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="historidetail2" style="margin-left:20px">
+
+                                                @if ($d->status == 0)
+                                                    <span class="badge bg-warning">
+                                                        <ion-icon name="refresh-outline"></ion-icon>
+                                                    </span>
+                                                @elseif($d->status == 1)
+                                                    <span class="badge bg-success">
+                                                        Disetujui
+                                                    </span>
+                                                @elseif($d->status == 2)
+                                                    <span class="badge bg-danger">
+                                                        Ditolak
+                                                    </span>
+                                                @endif
+                                                <span class="timepresence">
+
+                                                </span>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div id="izin_pulang" class="content" style="display: none;">
+                    @foreach ($izinpulang as $d)
+                        <div class="row mb-1">
+                            <div class="col">
+                                <div class="card historiborderred listizin" data-id="{{ $d->kode_izin_pulang }}" data-toggle="modal"
+                                    data-target="#actionSheetIconed">
+                                    <div class="card-body">
+                                        <div class="historicontent">
+                                            <div class="historidetail1">
+                                                <div class="iconpresence">
+                                                    <ion-icon name="document-text-outline" style="font-size: 64px;" class="text-danger"></ion-icon>
+                                                </div>
+                                                <div class="datepresence">
+                                                    <h4 class="">{{ DateToIndo2($d->tanggal) }}
+                                                        <br>
+                                                        Izin Pulang
+                                                    </h4>
+                                                    <span>Pulang Pukul : {{ date('H:i', strtotime($d->jam_pulang)) }}</span>
+
+
+
+
+                                                </div>
+                                            </div>
+                                            <div class="historidetail2" style="margin-left:20px">
+
+                                                @if ($d->status_approved == 0)
+                                                    <span class="badge bg-warning">
+                                                        <ion-icon name="refresh-outline"></ion-icon>
+                                                    </span>
+                                                @elseif($d->status_approved == 1)
+                                                    <span class="badge bg-success">
+                                                        Disetujui
+                                                    </span>
+                                                @elseif($d->status_approved == 2)
+                                                    <span class="badge bg-danger">
+                                                        Ditolak
+                                                    </span>
+                                                @endif
+                                                <span class="timepresence">
+
+                                                </span>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <div id="sakit" class="content" style="display: none;">
+                    <p>Ini adalah konten untuk Sakit.</p>
+                </div>
+                <div id="cuti" class="content" style="display: none;">
+                    <p>Ini adalah konten untuk Cuti.</p>
+                </div>
+            </div>
         </div>
     </div>
-    {{-- <div class="fab-button bottom-right" style="margin-bottom:70px">
-    <a href="/presensi/buatizin" class="fab bg-danger">
-        <ion-icon name="add-outline"></ion-icon>
-    </a>
-</div> --}}
-
     <div class="fab-button animate bottom-right dropdown" style="margin-bottom:70px">
         <a href="#" class="fab bg-danger" data-toggle="dropdown">
             <ion-icon name="add-outline" role="img" class="md hydrated" aria-label="add outline"></ion-icon>
         </a>
         <div class="dropdown-menu">
             <a class="dropdown-item bg-danger" href="/pengajuanizin/createizinterlambat">
-                <ion-icon name="document-outline" role="img" class="md hydrated"
-                    aria-label="musical notes outline"></ion-icon>
+                <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="musical notes outline"></ion-icon>
                 <p>Izin Terlambat</p>
             </a>
             <a class="dropdown-item bg-danger" href="/pengajuanizin/createizinabsen">
@@ -194,23 +303,19 @@
                 <p>Izin Absen</p>
             </a>
             <a class="dropdown-item bg-danger" href="/pengajuanizin/createizinkeluar">
-                <ion-icon name="document-outline" role="img" class="md hydrated"
-                    aria-label="videocam outline"></ion-icon>
+                <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="videocam outline"></ion-icon>
                 <p>Izin Keluar Kantor</p>
             </a>
             <a class="dropdown-item bg-danger" href="/pengajuanizin/createizinpulang">
-                <ion-icon name="document-outline" role="img" class="md hydrated"
-                    aria-label="videocam outline"></ion-icon>
+                <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="videocam outline"></ion-icon>
                 <p>Izin Pulang</p>
             </a>
             <a class="dropdown-item bg-danger" href="/pengajuanizin/createsakit">
-                <ion-icon name="document-outline" role="img" class="md hydrated"
-                    aria-label="videocam outline"></ion-icon>
+                <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="videocam outline"></ion-icon>
                 <p>Sakit</p>
             </a>
             <a class="dropdown-item bg-danger" href="/pengajuanizin/createcuti">
-                <ion-icon name="document-outline" role="img" class="md hydrated"
-                    aria-label="videocam outline"></ion-icon>
+                <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="videocam outline"></ion-icon>
                 <p>Cuti</p>
             </a>
         </div>
@@ -222,9 +327,7 @@
                 <div class="modal-header">
                     <h5 class="modal-title">Aksi</h5>
                 </div>
-                <div class="modal-body" id="showact">
-
-                </div>
+                <div class="modal-body" id="showact"></div>
             </div>
         </div>
     </div>
@@ -268,13 +371,14 @@
 @endsection
 @push('myscript')
     <script>
-        $(function() {
-            $(".listizin").click(function(e) {
-                var id = $(this).attr("data-id");
-                $("#showact").load('/izin/' + id + "/showact");
+        function showContent(content) {
+            // Sembunyikan semua konten
+            const contents = document.querySelectorAll('.content');
+            contents.forEach((item) => {
+                item.style.display = 'none';
             });
-
-            //toastbox('toast-3');
-        });
+            // Tampilkan konten yang dipilih
+            document.getElementById(content).style.display = 'block';
+        }
     </script>
 @endpush
