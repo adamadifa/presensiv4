@@ -109,8 +109,8 @@ class PresensiController extends Controller
 
 
         $tgl_presensi   = date("Y-m-d", strtotime($scan));
-        $karyawan       = DB::table('master_karyawan')->where('pin', $pin)->first();
-        $jabatan        = DB::table('hrd_jabatan')->where('id', $karyawan->id_jabatan)->first();
+        $karyawan       = DB::table('hrd_karyawan')->where('pin', $pin)->first();
+        $jabatan        = DB::table('hrd_jabatan')->where('kode_jabatan', $karyawan->kode_jabatan)->first();
 
         if ($karyawan == null) {
             echo "PIN Tidak Ditemukan";
@@ -118,8 +118,7 @@ class PresensiController extends Controller
         } else {
             $nik = $karyawan->nik;
         }
-        $cekperjalanandinas = DB::table('pengajuan_izin')
-            ->where('status', 'p')
+        $cekperjalanandinas = DB::table('hrd_izindinas')
             ->whereRaw('"' . $tgl_presensi . '" >= dari')
             ->whereRaw('"' . $tgl_presensi . '" <= sampai')
             ->where('nik', $nik)
@@ -127,27 +126,27 @@ class PresensiController extends Controller
         if ($cekperjalanandinas != null) {
             $kode_cabang = $cekperjalanandinas->kode_cabang;
         } else {
-            $kode_cabang = $karyawan->id_kantor;
+            $kode_cabang = $karyawan->kode_cabang;
         }
         $lastday = date('Y-m-d', strtotime('-1 day', strtotime($tgl_presensi)));
 
         $jam = $scan;
 
-        $cekjadwalshift = DB::table('konfigurasi_jadwalkerja_detail')
-            ->join('konfigurasi_jadwalkerja', 'konfigurasi_jadwalkerja_detail.kode_setjadwal', '=', 'konfigurasi_jadwalkerja.kode_setjadwal')
+        $cekjadwalshift = DB::table('hrd_jadwalshift_detail')
+            ->join('hrd_jadwalshift', 'hrd_jadwalshift_detail.kode_jadwalshift', '=', 'hrd_jadwalshift.kode_jadwalshift')
             ->whereRaw('"' . $tgl_presensi . '" >= dari')
             ->whereRaw('"' . $tgl_presensi . '" <= sampai')
             ->where('nik', $nik)
             ->first();
 
-        $cekgantishift = DB::table('konfigurasi_gantishift')->where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
+        $cekgantishift = DB::table('hrd_gantishift')->where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
 
         if ($cekgantishift != null) {
             $kode_jadwal = $cekgantishift->kode_jadwal;
         } else if ($cekjadwalshift != null) {
             $kode_jadwal = $cekjadwalshift->kode_jadwal;
         } else if ($cekperjalanandinas != null) {
-            $cekjadwaldinas = DB::table('jadwal_kerja')
+            $cekjadwaldinas = DB::table('hrd_jadwalkerja')
                 ->where('nama_jadwal', 'NON SHIFT')
                 ->where('kode_cabang', $cekperjalanandinas->kode_cabang)->first();
             $kode_jadwal = $cekjadwaldinas->kode_jadwal;
@@ -155,18 +154,18 @@ class PresensiController extends Controller
             $kode_jadwal = $karyawan->kode_jadwal;
         }
 
-        $libur = DB::table('harilibur_karyawan')
-            ->leftJoin('harilibur', 'harilibur_karyawan.kode_libur', '=', 'harilibur.kode_libur')
+        $libur = DB::table('hrd_harilibur_detail')
+            ->leftJoin('hrd_harilibur', 'hrd_harilibur_detail.kode_libur', '=', 'hrd_harilibur.kode_libur')
             ->where('nik', $nik)
-            ->where('id_kantor', $kode_cabang)
+            ->where('kode_cabang', $kode_cabang)
             ->where('tanggal_limajam', $tgl_presensi)
             ->where('kategori', 1);
         $ceklibur = $libur->count();
         $datalibur = $libur->first();
         $tanggal_libur = $datalibur != null ? $datalibur->tanggal_libur : '';
 
-        $ceklembur = DB::table('lembur_karyawan')
-            ->join('lembur', 'lembur_karyawan.kode_lembur', '=', 'lembur.kode_lembur')
+        $ceklembur = DB::table('hrd_lembur_detail')
+            ->join('hrd_lembur', 'hrd_lembur_detail.kode_lembur', '=', 'hrd_lembur.kode_lembur')
             ->where('nik', $nik)
             ->where('tanggal', $tgl_presensi)->count();
 
@@ -185,7 +184,7 @@ class PresensiController extends Controller
             $hariini = "Jumat";
         }
 
-        $id_group = $karyawan->grup;
+        $id_group = $karyawan->kode_group;
         $group_saus =  [29, 26, 27];
         if (date('Y-m-d') == '2024-02-10') {
             if (in_array($id_group, $group_saus)) {
@@ -193,16 +192,16 @@ class PresensiController extends Controller
             }
         }
 
-        $jadwal = DB::table('jadwal_kerja_detail')
-            ->join('jadwal_kerja', 'jadwal_kerja_detail.kode_jadwal', '=', 'jadwal_kerja.kode_jadwal')
-            ->where('hari', $hariini)->where('jadwal_kerja_detail.kode_jadwal', $kode_jadwal)
+        $jadwal = DB::table('hrd_jadwalkerja_detail')
+            ->join('hrd_jadwalkerja', 'hrd_jadwalkerja_detail.kode_jadwal', '=', 'hrd_jadwalkerja.kode_jadwal')
+            ->where('hari', $hariini)->where('hrd_jadwalkerja_detail.kode_jadwal', $kode_jadwal)
             ->first();
 
 
-        $jam_kerja = DB::table('jam_kerja')->where('kode_jam_kerja', $jadwal->kode_jam_kerja)->first();
+        $jam_kerja = DB::table('hrd_jamkerja')->where('kode_jam_kerja', $jadwal->kode_jam_kerja)->first();
         $lintashari  = $jam_kerja->lintashari;
 
-        $cek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->first();
+        $cek = DB::table('hrd_presensi')->where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
 
         $jam_sekarang = date("H:i:s");
 
@@ -219,7 +218,7 @@ class PresensiController extends Controller
                     $data_masuk = [
                         'jam_in' => $jam
                     ];
-                    $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->update($data_masuk);
+                    $update = DB::table('hrd_presensi')->where('tanggal', $tgl_presensi)->where('nik', $nik)->update($data_masuk);
                     if ($update) {
                         echo "success|Terimkasih, Selamat Bekerja|in";
                     } else {
@@ -228,14 +227,14 @@ class PresensiController extends Controller
                 } else if ($cek == null) {
                     $data = [
                         'nik' => $nik,
-                        'tgl_presensi' => $tgl_presensi,
+                        'tanggal' => $tgl_presensi,
                         'jam_in' => $jam,
                         'kode_jadwal' => $kode_jadwal,
                         'kode_jam_kerja' => $jadwal->kode_jam_kerja,
                         'status' => 'h',
                     ];
 
-                    $simpan = DB::table('presensi')->insert($data);
+                    $simpan = DB::table('hrd_presensi')->insert($data);
                     if ($simpan) {
                         echo "success|Terimkasih, Selamat Bekerja|in";
                     } else {
@@ -245,17 +244,17 @@ class PresensiController extends Controller
             }
         } else if ($status_scan == 1) {
 
-            $ceklastpresensi = DB::table('presensi')
-                ->join('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-                ->where('nik', $nik)->where('tgl_presensi', $lastday)->first();
+            $ceklastpresensi = DB::table('hrd_presensi')
+                ->join('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja')
+                ->where('nik', $nik)->where('tanggal', $lastday)->first();
             // $last_kode_jadwal = $ceklastpresensi->kode_jadwal;
             // $last_kode_jam_kerja = $ceklastpresensi->kode_jam_kerja;
 
             $last_lintashari = $ceklastpresensi != null  ? $ceklastpresensi->lintashari : "";
             $tgl_pulang_shift_3 = date("H:i", strtotime(($jam)));
 
-            $cekjadwalshiftlast = DB::table('konfigurasi_jadwalkerja_detail')
-                ->join('konfigurasi_jadwalkerja', 'konfigurasi_jadwalkerja_detail.kode_setjadwal', '=', 'konfigurasi_jadwalkerja.kode_setjadwal')
+            $cekjadwalshiftlast = DB::table('hrd_jadwalshift_detail')
+                ->join('hrd_jadwalshift', 'hrd_jadwalshift_detail.kode_jadwalshift', '=', 'hrd_jadwalshift.kode_jadwalshift')
                 ->whereRaw('"' . $lastday . '" >= dari')
                 ->whereRaw('"' . $lastday . '" <= sampai')
                 ->where('nik', $nik)
@@ -320,18 +319,18 @@ class PresensiController extends Controller
             if ($jamabsen < $jam_pulang) {
                 echo "error|Maaf Belum Waktunya Absen Pulang, Absen Pulang di Mulai Pada Pukul "  . " " . $jam_pulang . " |out";
             } else {
-                $cek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->first();
+                $cek = DB::table('hrd_presensi')->where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
                 if ($cek == null) {
                     $data = [
                         'nik' => $nik,
-                        'tgl_presensi' => $tgl_presensi,
+                        'tanggal' => $tgl_presensi,
                         'jam_out' => $jam,
                         'kode_jadwal' => $kode_jadwal,
                         'kode_jam_kerja' => $kode_jam_kerja,
                         'status' => 'h',
                     ];
 
-                    $simpan = DB::table('presensi')->insert($data);
+                    $simpan = DB::table('hrd_presensi')->insert($data);
                     if ($simpan) {
                         echo "success|Terimkasih, Hati Hati Di Jalan|out";
                     } else {
@@ -343,7 +342,7 @@ class PresensiController extends Controller
                     $data_masuk = [
                         'jam_out' => $jam
                     ];
-                    $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('nik', $nik)->update($data_masuk);
+                    $update = DB::table('hrd_presensi')->where('tanggal', $tgl_presensi)->where('nik', $nik)->update($data_masuk);
                     if ($update) {
                         echo "success|Terimkasih, Hati Hati Di Jalan|out";
                     } else {
