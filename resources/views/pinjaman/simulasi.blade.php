@@ -221,8 +221,8 @@
                             <tr>
                                 <th>JMK Sudah Dibayar</th>
                                 <td style="text-align: right">
-                                    {{ rupiah($jmk != null ? $jmk->jml_jmk : 0) }}
-                                    <input type="hidden" name="jmk_sudahbayar" id="jmk_sudahbayar" value="{{ $jmk != null ? $jmk->jml_jmk : 0 }}">
+                                    {{ rupiah($jmk != null ? $jmk->jumlah : 0) }}
+                                    <input type="hidden" name="jmk_sudahbayar" id="jmk_sudahbayar" value="{{ $jmk != null ? $jmk->jumlah : 0 }}">
                                 </td>
                             </tr>
                             <tr>
@@ -230,7 +230,7 @@
                                 <td style="text-align:right">
                                     @php
                                         // $plafonmax = ((40/100) * $gaji->gajitunjangan )* 20;
-                                        $jmksudahdibayar = $jmk != null ? $jmk->jml_jmk : 0;
+                                        $jmksudahdibayar = $jmk != null ? $jmk->jumlah : 0;
                                         $plafonjmk = $totaljmk - $jmksudahdibayar;
                                     $plafonmax = $plafonjmk < $plafon ? $plafonjmk : $plafon; @endphp {{ rupiah($plafonmax) }} <input type="hidden" name="plafon_max" id="plafon_max"
                                         value="{{ $plafonmax }}">
