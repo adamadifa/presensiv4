@@ -1179,7 +1179,7 @@ class PresensiController extends Controller
             ->where('nik', $nik)
             ->first();
 
-        $cekgantishift = DB::table('konfigurasi_gantishift')->where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
+        $cekgantishift = DB::table('hrd_gantishift')->where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
 
         if ($cekgantishift != null) {
             $kode_jadwal = $cekgantishift->kode_jadwal;
