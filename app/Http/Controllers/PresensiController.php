@@ -430,7 +430,7 @@ class PresensiController extends Controller
             ->join('hrd_izinterlambat', 'hrd_presensi_izinterlambat.kode_izin_terlambat', '=', 'hrd_izinterlambat.kode_izin_terlambat')
             ->where('nik', $nik)->where('tanggal', $tgl_presensi)->first();
 
-        $kode_izin = $cekizinterlambat != null  ? $cekizinterlambat->kode_izin : NULL;
+        $kode_izin = $cekizinterlambat != null  ? $cekizinterlambat->kode_izin_terlambat : NULL;
 
         $kode_dept = Auth::guard('karyawan')->user()->kode_dept;
 
