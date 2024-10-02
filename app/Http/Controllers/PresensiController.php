@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Izinabsen;
+use App\Models\Izinkeluarkantor;
+use App\Models\Izinpulang;
+use App\Models\Izinterlambat;
 use App\Models\Pengajuanizin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -762,27 +766,64 @@ class PresensiController extends Controller
     {
         $nik = Auth::guard('karyawan')->user()->nik;
 
-        $query = Pengajuanizin::query();
-        $query->where('nik', $nik);
+        //Izin terlmabat
+        $qizinterlambat = Izinterlambat::query();
+        $qizinterlambat->where('nik', $nik);
         if (!empty($request->bulan)) {
-            $query->whereRaw('MONTH(dari)="' . $request->bulan . '"');
+            $qizinterlambat->whereRaw('MONTH(tanggal)="' . $request->bulan . '"');
         }
 
         if (!empty($request->tahun)) {
-            $query->whereRaw('YEAR(dari)="' . $request->tahun . '"');
+            $qizinterlambat->whereRaw('YEAR(tanggal)="' . $request->tahun . '"');
         }
-        $query->orderBy('dari', 'desc');
+        $qizinterlambat->orderBy('tanggal', 'desc');
+        $qizinterlambat->limit(7);
+        $data['izinterlambat'] = $qizinterlambat->get();
 
-        $query->leftJoin('hrd_mastercuti', 'pengajuan_izin.jenis_cuti', '=', 'hrd_mastercuti.kode_cuti');
-        if (empty($request->tahun) && empty($request->bulan)) {
-            $query->limit(7);
-            $dataizin = $query->get();
-        } else {
-            $dataizin = $query->get();
+
+        $qizinabsen = Izinabsen::query();
+        $qizinabsen->where('nik', $nik);
+        if (!empty($request->bulan)) {
+            $qizinabsen->whereRaw('MONTH(tanggal)="' . $request->bulan . '"');
         }
 
-        $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-        return view('presensi.izin', compact('dataizin', 'namabulan'));
+        if (!empty($request->tahun)) {
+            $qizinabsen->whereRaw('YEAR(tanggal)="' . $request->tahun . '"');
+        }
+        $qizinabsen->orderBy('tanggal', 'desc');
+        $qizinabsen->limit(7);
+        $data['izinabsen'] = $qizinabsen->get();
+
+
+        $qizinkeluar = Izinkeluarkantor::query();
+        $qizinkeluar->where('nik', $nik);
+        if (!empty($request->bulan)) {
+            $qizinkeluar->whereRaw('MONTH(tanggal)="' . $request->bulan . '"');
+        }
+
+        if (!empty($request->tahun)) {
+            $qizinkeluar->whereRaw('YEAR(tanggal)="' . $request->tahun . '"');
+        }
+        $qizinkeluar->orderBy('tanggal', 'desc');
+        $qizinkeluar->limit(7);
+        $data['izinkeluar'] = $qizinkeluar->get();
+
+
+        $qizinpulang = Izinpulang::query();
+        $qizinpulang->where('nik', $nik);
+        if (!empty($request->bulan)) {
+            $qizinpulang->whereRaw('MONTH(tanggal)="' . $request->bulan . '"');
+        }
+
+        if (!empty($request->tahun)) {
+            $qizinpulang->whereRaw('YEAR(tanggal)="' . $request->tahun . '"');
+        }
+        $qizinpulang->orderBy('tanggal', 'desc');
+        $qizinpulang->limit(7);
+        $data['izinpulang'] = $qizinpulang->get();
+
+        $data['namabulan'] = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        return view('presensi.izin', $data);
     }
 
     public function buatizin()
@@ -1138,7 +1179,7 @@ class PresensiController extends Controller
             ->where('nik', $nik)
             ->first();
 
-        $cekgantishift = DB::table('konfigurasi_gantishift')->where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
+        $cekgantishift = DB::table('hrd_gantishift')->where('tanggal', $tgl_presensi)->where('nik', $nik)->first();
 
         if ($cekgantishift != null) {
             $kode_jadwal = $cekgantishift->kode_jadwal;
