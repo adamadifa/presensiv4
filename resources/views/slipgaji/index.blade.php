@@ -10,8 +10,8 @@
         }
 
         /* .historicontent {
-                                                                                                                                                                        justify-content: left !important;
-                                                                                                                                                                    } */
+                                                                                                                                                                            justify-content: left !important;
+                                                                                                                                                                        } */
     </style>
     <!-- App Header -->
     <div class="appHeader bg-primary text-light">
