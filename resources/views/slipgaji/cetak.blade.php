@@ -69,7 +69,7 @@
                     <td class="text-right">{{ rupiah($slip_gaji->t_makan) }}</td>
                 </tr>
 
-                @if ($slip_gaji->kategori == 'NM')
+                @if ($slip_gaji->kategori == 'MJ')
                     <tr>
                         <th>Tunj. Istri</th>
                         <td class="text-right">{{ rupiah($slip_gaji->t_istri) }}</td>
