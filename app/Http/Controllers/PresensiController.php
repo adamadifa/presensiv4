@@ -439,7 +439,7 @@ class PresensiController extends Controller
         $kode_dept = Auth::guard('karyawan')->user()->kode_dept;
 
 
-        if ($radius > $lok_kantor->radius_cabang && $lock_location == 1) {
+        if ($radius > $lok_kantor->radius_cabang && $lock_location == 0) {
             echo "error|Maaf Anda Berada Diluar Radius, Jarak Anda " . $radius . " meter dari Kantor|radius";
         } else {
             if ($statuspresensi == "masuk") {
