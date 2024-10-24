@@ -242,10 +242,34 @@ class PresensiController extends Controller
         $kode_jabatan = Auth::user()->kode_jabatan;
         $jabatan = DB::table('hrd_jabatan')->where('kode_jabatan', $kode_jabatan)->first();
 
+
+        $nik_normal = [
+            "17.07.302",
+            "10.01.114",
+            "17.07.280",
+            "12.02.061",
+            "12.11.094",
+            "23.02.214",
+            "11.11.146",
+            "16.03.089",
+            "97.01.026",
+            "18.01.256",
+            "20.04.110",
+            "23.11.277",
+            "24.01.035",
+            "08.07.092"
+        ];
+
+        // Tanggal 25102024
+        if (date('Y-m-d') == '2024-10-25' && $kode_cabang == 'PST' && !in_array($nik, $nik_normal)) {
+            $hariini = "Sabtu";
+        }
+
         //Jika Jabatan Security
         if ($jabatan->nama_jabatan == "SECURITY" && $hariini == "Sabtu") {
             $hariini = "Senin";
         }
+
 
 
         // $id_group = Auth::guard('karyawan')->user()->grup;
@@ -394,6 +418,27 @@ class PresensiController extends Controller
         $kode_jabatan = Auth::user()->kode_jabatan;
         $jabatan = DB::table('hrd_jabatan')->where('kode_jabatan', $kode_jabatan)->first();
 
+        $nik_normal = [
+            "17.07.302",
+            "10.01.114",
+            "17.07.280",
+            "12.02.061",
+            "12.11.094",
+            "23.02.214",
+            "11.11.146",
+            "16.03.089",
+            "97.01.026",
+            "18.01.256",
+            "20.04.110",
+            "23.11.277",
+            "24.01.035",
+            "08.07.092"
+        ];
+
+        // Tanggal 25102024
+        if (date('Y-m-d') == '2024-10-25' && $kode_cabang == 'PST' && !in_array($nik, $nik_normal)) {
+            $hariini = "Sabtu";
+        }
 
         if ($jabatan->nama_jabatan == "SECURITY" && $hariini == "Sabtu") {
             $hariini = "Senin";
