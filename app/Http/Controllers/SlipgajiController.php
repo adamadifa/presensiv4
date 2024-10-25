@@ -26,6 +26,8 @@ class SlipgajiController extends Controller
             ->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang')
             ->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan')
             ->where('slip_gaji.nik', Auth::guard('karyawan')->user()->nik)->where('bulan', $bulan)->where('tahun', $tahun)->first();
+
+        dd($slip_gaji);
         return view('slipgaji.cetak', compact('slip_gaji', 'bulan', 'tahun', 'namabulan'));
     }
 
