@@ -176,7 +176,7 @@
                     </tr>
                     <tr>
                         <th>SPIP</th>
-                        <td class="text-right">{{ rupiah($slip_gaji->spip) }}</td>
+                        <td class="text-right">TEST</td>
                     </tr>
                     <tr>
                         <th>Pengurang</th>
