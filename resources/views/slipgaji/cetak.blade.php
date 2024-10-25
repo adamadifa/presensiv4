@@ -171,6 +171,7 @@
                     </tr>
                     <tr>
                         <th>BPJS TENAGA KERJA</th>
+                        <th>BPJS TENAGA KERJA</th>
                         <td class="text-right">{{ rupiah($slip_gaji->bpjs_tenagakerja) }}</td>
                     </tr>
                     <tr>
