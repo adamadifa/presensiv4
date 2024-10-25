@@ -176,7 +176,7 @@
                     </tr>
                     <tr>
                         <th>SPIP</th>
-                        <td class="text-right">TEST</td>
+                        <td class="text-right">TESTTTT</td>
                     </tr>
                     <tr>
                         <th>Pengurang</th>
