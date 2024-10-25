@@ -21,13 +21,14 @@ class SlipgajiController extends Controller
     {
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         $slip_gaji = DB::table('slip_gaji')
+            ->select('slip_gaji.*', 'hrd_karyawan.nama_lengkap', 'hrd_departemen.nama_dept', 'cabang.nama_cabang', 'hrd_jabatan.nama_jabatan')
             ->join('hrd_karyawan', 'slip_gaji.nik', '=', 'hrd_karyawan.nik')
             ->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
             ->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang')
             ->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan')
             ->where('slip_gaji.nik', Auth::guard('karyawan')->user()->nik)->where('bulan', $bulan)->where('tahun', $tahun)->first();
 
-        dd($slip_gaji);
+
         return view('slipgaji.cetak', compact('slip_gaji', 'bulan', 'tahun', 'namabulan'));
     }
 
