@@ -6,6 +6,7 @@ use App\Models\Karyawan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class SlipgajiController extends Controller
 {
@@ -13,7 +14,11 @@ class SlipgajiController extends Controller
     {
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         $slipgaji = DB::table('slip_gaji')->where('nik', Auth::guard('karyawan')->user()->nik)->get();
-        return view('slipgaji.index', compact('slipgaji', 'namabulan'));
+        $slip_gaji_auto = DB::table('hrd_slipgaji')
+            ->orderBy('tahun', 'desc')
+            ->orderBy('bulan', 'desc')
+            ->get();
+        return view('slipgaji.index', compact('slipgaji', 'slip_gaji_auto', 'namabulan'));
     }
 
 
@@ -31,6 +36,29 @@ class SlipgajiController extends Controller
 
         return view('slipgaji.cetak', compact('slip_gaji', 'bulan', 'tahun', 'namabulan'));
     }
+
+    public function cetakslipgaji()
+    {
+        $response = Http::get('http://localhost:8000/api/slipgaji/8/2024/21.02.232');
+        $data = $response->json(); // Mengubah response ke array
+        $data['start_date'] = $data['start_date'];
+        $data['end_date'] = $data['end_date'];
+
+        $data['dataliburnasional'] = $data['dataliburnasional'];
+        $data['datadirumahkan'] = $data['datadirumahkan'];
+        $data['dataliburpengganti'] = $data['dataliburpengganti'];
+        $data['dataminggumasuk'] = $data['dataminggumasuk'];
+        $data['datatanggallimajam'] = $data['datatanggallimajam'];
+        $data['datalembur'] = $data['datalembur'];
+        $data['datalemburharilibur'] = $data['datalemburharilibur'];
+        $data['jmlhari'] = $data['jmlhari'] + 1;
+
+
+        return view('slipgaji.cetakslipgaji', $data);
+    }
+
+
+
 
 
     public function cetakthr($bulan, $tahun)

@@ -246,28 +246,31 @@
                                                                     $jam_awal_istirahat = null;
                                                                     $jam_akhir_istirahat = null;
                                                                 }
-                                                                $terlambat = hitungjamterlambat($jam_in, $jam_mulai);
+                                                                $terlambat = hitungjamterlambat($jam_in, $jam_mulai, $d->kode_izin_terlambat);
                                                             @endphp
                                                             <br>
 
                                                             <!-- Cek Apakah Terlambat-->
-                                                            @if (!empty($terlambat))
-                                                                @php
-                                                                    $denda = hitungdenda(
-                                                                        $terlambat['jamterlambat'],
-                                                                        $terlambat['menitterlambat'],
-                                                                        $d->kode_izin_terlambat,
-                                                                        $d->kode_dept,
-                                                                    );
+                                                            {{-- @if (!empty($terlambat))
 
-                                                                @endphp
-                                                                {{-- {{ $denda['cek'] }} --}}
-                                                                <span style="color:red">{{ $terlambat['keterangan_terlambat'] }}
-                                                                    - {{ !empty($denda['denda']) ? $denda['denda'] : $denda['keterangan'] }}
-                                                                </span>
                                                             @else
                                                                 <span style="color:green">Tepat Waktu</span>
-                                                            @endif
+                                                            @endif --}}
+
+                                                            @php
+                                                                $denda = hitungdenda(
+                                                                    $terlambat['jamterlambat'],
+                                                                    $terlambat['menitterlambat'],
+                                                                    $d->kode_izin_terlambat,
+                                                                    $d->kode_dept,
+                                                                    $d->kode_jabatan,
+                                                                );
+
+                                                            @endphp
+                                                            {{-- {{ $denda['cek'] }} --}}
+                                                            <span style="color:{{ $terlambat['color'] }}">{{ $terlambat['keterangan'] }}
+                                                                {{ !empty($denda['denda']) ? ' - ' . $denda['denda'] : $denda['keterangan'] }}
+                                                            </span>
 
                                                             {{-- {{ $jam_out }} {{ $jam_selesai }} --}}
                                                             <!-- Cek Pulang Cepat -->

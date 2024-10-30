@@ -27,9 +27,11 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/myHelper.php"
+            "app/Helpers/myHelper.php",
+            "app/Helpers/hrdHelper.php",
+            "app/Helpers/presensiHelper.php"
         ]
-        
+
     },
     "autoload-dev": {
         "psr-4": {
