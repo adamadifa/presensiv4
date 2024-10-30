@@ -83,7 +83,8 @@ Route::middleware(['auth:karyawan'])->group(function () {
 
     //Slip Gaji
     Route::get('/slipgaji', [SlipgajiController::class, 'index']);
-    Route::get('/slipgaji/{bulan}/{tahun}/cetak', [SlipgajiController::class, 'cetakslipgaji']);
+    Route::get('/slipgaji/{bulan}/{tahun}/cetak', [SlipgajiController::class, 'cetak']);
+    Route::get('/slipgaji/{bulan}/{tahun}/cetakslipgaji', [SlipgajiController::class, 'cetakslipgaji']);
     Route::get('/slipgaji/{bulan}/{tahun}/cetakthr', [SlipgajiController::class, 'cetakthr']);
 
     Route::get('/pengajuanizin/createizinterlambat', [PengajuanizinController::class, 'createizinterlambat']);

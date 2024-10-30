@@ -10,8 +10,8 @@
         }
 
         /* .historicontent {
-                                                                                                                                                                                                    justify-content: left !important;
-                                                                                                                                                                                                } */
+                                                                                                                                                                                                        justify-content: left !important;
+                                                                                                                                                                                                    } */
     </style>
     <!-- App Header -->
     <div class="appHeader bg-primary text-light">
@@ -97,7 +97,7 @@
                 @endif
             @endforeach
             @foreach ($slip_gaji_auto as $d)
-                <a href="/slipgaji/{{ $d->bulan }}/{{ $d->tahun }}/cetak">
+                <a href="/slipgaji/{{ $d->bulan }}/{{ $d->tahun }}/cetakslipgaji">
                     <div class="row mb-1">
                         <div class="col">
                             <div class="card historiborderred">
