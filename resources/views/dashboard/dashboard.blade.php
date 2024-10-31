@@ -289,6 +289,7 @@
                                                                         $jam_keluar,
                                                                         $jam_kembali,
                                                                         $jam_selesai,
+                                                                        $jam_out,
                                                                         $d->total_jam,
                                                                         $d->istirahat,
                                                                         $jam_awal_istirahat,
