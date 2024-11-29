@@ -318,6 +318,11 @@
                             $keterangan = '';
                         @endphp
                     @endif
+                    @if ($d['kode_jabatan'] == 'J19' && $tanggal_presensi >= '2024-10-21')
+                        @php
+                            $potongan_jam_sakit = 0;
+                        @endphp
+                    @endif
                     @php
                         $total_potongan_jam =
                             $potongan_jam_sakit +
@@ -375,6 +380,11 @@
                             $total_jam = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
                             $potongan_jam_izin = !empty($cekdirumahkan) ? $total_jam_jadwal / 2 : $total_jam_jadwal;
                         }
+
+                        //Jika Jabatan Salesman
+                        if ($d['kode_jabatan'] == 'J19' && $tanggal_presensi >= '2024-10-21') {
+                            $potongan_jam_izin = 0;
+                        }
                         $total_potongan_jam =
                             $potongan_jam_sakit +
                             $potongan_jam_pulangcepat +
@@ -409,7 +419,11 @@
                         $color = 'rgb(69, 2, 140)';
                         $keterangan = 'Dirumahkan';
                         if (getNamahari($tanggal_presensi) == 'Sabtu') {
-                            $total_jam = 2.5;
+                            if ($tanggal_presensi == '2024-10-26') {
+                                $total_jam = 3.5;
+                            } else {
+                                $total_jam = 2.5;
+                            }
                         } else {
                             if (!empty($cektanggallimajam)) {
                                 $total_jam = 2.5;
@@ -445,8 +459,13 @@
                         $potongan_jam_dirumahkan = 0;
                         if (!empty($cekdirumahkan)) {
                             if (getNamahari($tanggal_presensi) == 'Sabtu') {
-                                $potongan_jam_tidakhadir = 2.5;
-                                $total_jam = 2.5;
+                                if ($tanggal_presensi == '2024-10-26') {
+                                    $total_jam = 3.5;
+                                    $potongan_jam_tidakhadir = 3.5;
+                                } else {
+                                    $total_jam = 2.5;
+                                    $potongan_jam_tidakhadir = 2.5;
+                                }
                             } else {
                                 $potongan_jam_tidakhadir = 3.5;
                                 $total_jam = 3.5;
