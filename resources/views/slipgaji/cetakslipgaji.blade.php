@@ -431,7 +431,29 @@
                                 $total_jam = 3.5;
                             }
                         }
-                        $potongan_jam_dirumahkan = $total_jam;
+                        //Mulai Berlaku Dari Tanggal 2024-11-21 --> Step 1
+                        if ($tanggal_presensi >= '2024-11-21') {
+                            if (getNamahari($tanggal_presensi) == 'Sabtu') {
+                                $total_jam = 3.75;
+                                $potongan_jam_dirumahkan = 1.25;
+                            } else {
+                                if (!empty($cektanggallimajam)) {
+                                    $total_jam = 3.75;
+                                    $potongan_jam_dirumahkan = 1.25;
+                                } else {
+                                    $total_jam = 5.25;
+                                    $potongan_jam_dirumahkan = 1.75;
+                                }
+                            }
+                        } else {
+                            $total_jam = $total_jam;
+                            $potongan_jam_dirumahkan = $total_jam;
+                        }
+
+                        if (in_array($d['nik'], $privillage_karyawan) && $tanggal_presensi >= '2024-11-21') {
+                            $potongan_jam_dirumahkan = 0;
+                        }
+                        $potongan_jam_dirumahkan = $potongan_jam_dirumahkan;
                     @endphp
                 @elseif(!empty($cekliburnasional))
                     @php
