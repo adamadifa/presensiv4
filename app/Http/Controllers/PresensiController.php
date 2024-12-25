@@ -208,13 +208,17 @@ class PresensiController extends Controller
             ->first();
 
         //Cek Hari Minggu Masuk
-        $cekminggumasuk = DB::table('hrd_harilibur_detail') // Mengganti 'harilibur_karyawan' dengan 'hrd_harilibur_karyawan'
-            ->leftJoin('hrd_harilibur', 'hrd_harilibur_detail.kode_libur', '=', 'hrd_harilibur.kode_libur')
-            ->where('nik', $nik)
-            ->where('kode_cabang', $kode_cabang)
-            ->where('tanggal_diganti', $hariini)
-            ->where('kategori', 2)
-            ->first();
+        if ($this->hari_tanggal(date('Y-m-d')) == "Minggu") {
+            $cekminggumasuk = DB::table('hrd_harilibur_detail') // Mengganti 'harilibur_karyawan' dengan 'hrd_harilibur_karyawan'
+                ->leftJoin('hrd_harilibur', 'hrd_harilibur_detail.kode_libur', '=', 'hrd_harilibur.kode_libur')
+                ->where('nik', $nik)
+                ->where('kode_cabang', $kode_cabang)
+                ->where('tanggal_diganti', $hariini)
+                ->where('kategori', 2)
+                ->first();
+        } else {
+            $cekminggumasuk = null;
+        }
 
         //Cek Lembur
         $ceklembur = DB::table('hrd_lembur_detail')
