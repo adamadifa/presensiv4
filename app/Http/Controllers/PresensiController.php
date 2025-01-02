@@ -330,6 +330,7 @@ class PresensiController extends Controller
             ->first();
         if ($cekperjalanandinas != null) {
             $kode_cabang = $cekperjalanandinas->kode_cabang;
+            $lock_location = 0;
         } else {
             $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
         }
