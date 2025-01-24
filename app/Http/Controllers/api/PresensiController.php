@@ -158,8 +158,7 @@ class PresensiController extends Controller
             ->leftJoin('hrd_harilibur', 'hrd_harilibur_detail.kode_libur', '=', 'hrd_harilibur.kode_libur')
             ->where('nik', $nik)
             ->where('kode_cabang', $kode_cabang)
-            ->where('tanggal_limajam', $tgl_presensi)
-            ->where('kategori', 1);
+            ->where('tanggal_limajam', $tgl_presensi);
         $ceklibur = $libur->count();
         $datalibur = $libur->first();
         $tanggal_libur = $datalibur != null ? $datalibur->tanggal_libur : '';
