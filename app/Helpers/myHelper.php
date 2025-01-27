@@ -536,3 +536,10 @@ function formatAngkaDesimal5($nilai)
         return number_format($nilai, '5', ',', '.');
     }
 }
+
+
+function formatIndo($date)
+{
+    $tanggal = !empty($date) ? date('d-m-Y', strtotime($date)) : '';
+    return $tanggal;
+}
