@@ -205,7 +205,7 @@ class PresensiController extends Controller
         $jam_sekarang = date("H:i:s");
 
 
-        if ($status_scan == 0) {
+        if (in_array($status_scan, [0, 2, 4, 6, 8])) {
             $jam_masuk = $tgl_presensi . " " . "10:00";
             $jamabsen = $jam;
             if ($kode_jadwal == "JD004" && $jamabsen <= $jam_masuk  || $kode_jadwal == "JD003" && $jamabsen <= $jam_masuk) {
@@ -241,7 +241,7 @@ class PresensiController extends Controller
                     }
                 }
             }
-        } else if ($status_scan == 1) {
+        } else {
 
             $ceklastpresensi = DB::table('hrd_presensi')
                 ->join('hrd_jamkerja', 'hrd_presensi.kode_jam_kerja', '=', 'hrd_jamkerja.kode_jam_kerja')
