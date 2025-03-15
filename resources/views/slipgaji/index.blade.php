@@ -10,8 +10,8 @@
         }
 
         /* .historicontent {
-                                                                                                                                                                                                        justify-content: left !important;
-                                                                                                                                                                                                    } */
+                                                                                                                                                                                                            justify-content: left !important;
+                                                                                                                                                                                                        } */
     </style>
     <!-- App Header -->
     <div class="appHeader bg-primary text-light">
@@ -28,7 +28,7 @@
 @section('content')
     <div class="row" style="margin-top: 70px; overflow:scroll; height:100%; position:relative; bottom:10%">
         <div class="col">
-            @foreach ($slipgaji as $d)
+            {{-- @foreach ($slipgaji as $d)
                 <a href="/slipgaji/{{ $d->bulan }}/{{ $d->tahun }}/cetak">
                     <div class="row mb-1">
                         <div class="col">
@@ -95,7 +95,7 @@
                         </div>
                     </a>
                 @endif
-            @endforeach
+            @endforeach --}}
             @foreach ($slip_gaji_auto as $d)
                 <a href="/slipgaji/{{ $d->bulan }}/{{ $d->tahun }}/cetakslipgaji">
                     <div class="row mb-1">
