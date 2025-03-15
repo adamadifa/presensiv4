@@ -8,10 +8,6 @@
         .card .card-body {
             padding: 15px 10px 10px 5px !important;
         }
-
-        /* .historicontent {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    justify-content: left !important;
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
     </style>
     <!-- App Header -->
     <div class="appHeader bg-primary text-light">
@@ -37,7 +33,7 @@
             $karyawan->t_skill;
         //Masa Kerja THR
         $sampaithr = '2024-03-23';
-        $awal = date_create($karyawan->tgl_masuk);
+        $awal = date_create($karyawan->tanggal_masuk);
         $akhir = date_create($sampaithr); // waktu sekarang
         $diff = date_diff($awal, $akhir);
         // echo $diff->y . ' tahun, '.$diff->m.' bulan, '.$diff->d.' Hari'
