@@ -15,6 +15,7 @@ class SlipgajiController extends Controller
         $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         $slipgaji = DB::table('slip_gaji')->where('nik', Auth::guard('karyawan')->user()->nik)->get();
         $slip_gaji_auto = DB::table('hrd_slipgaji')
+            ->orderBy('tahun', 'desc')
             ->get();
         return view('slipgaji.index', compact('slipgaji', 'slip_gaji_auto', 'namabulan'));
     }
