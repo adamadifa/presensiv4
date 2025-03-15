@@ -109,12 +109,12 @@ class SlipgajiController extends Controller
         $daribulangaji = $dari;
         $berlakugaji = $sampai;
         $akhir_periode = $tahun . "-" . $bulan . "-01";
-        $karyawan = DB::table('master_karyawan')
-            ->selectRaw('master_karyawan.*,gaji_pokok,t_jabatan,t_masakerja,t_tanggungjawab,
+        $karyawan = DB::table('hrd_karyawan')
+            ->selectRaw('hrd_karyawan.*,gaji_pokok,t_jabatan,t_masakerja,t_tanggungjawab,
              t_makan,t_istri,t_skill,nama_dept,nama_jabatan,nama_cabang')
-            ->join('cabang', 'master_karyawan.id_kantor', '=', 'cabang.kode_cabang')
-            ->join('hrd_departemen', 'master_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
-            ->join('hrd_jabatan', 'master_karyawan.id_jabatan', '=', 'hrd_jabatan.id')
+            ->join('cabang', 'hrd_karyawan.id_kantor', '=', 'cabang.kode_cabang')
+            ->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
+            ->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan')
             ->leftJoin(
                 DB::raw("(
                         SELECT nik,gaji_pokok,t_jabatan,t_masakerja,t_tanggungjawab,
@@ -124,10 +124,10 @@ class SlipgajiController extends Controller
                         WHERE tgl_berlaku <= '$berlakugaji'  GROUP BY nik)
                     ) hrdgaji"),
                 function ($join) {
-                    $join->on('master_karyawan.nik', '=', 'hrdgaji.nik');
+                    $join->on('hrd_karyawan.nik', '=', 'hrdgaji.nik');
                 }
             )
-            ->where('master_karyawan.nik', Auth::guard('karyawan')->user()->nik)->first();
+            ->where('hrd_karyawan.nik', Auth::guard('karyawan')->user()->nik)->first();
         return view('slipgaji.cetak_thr', compact('tahun', 'karyawan'));
     }
 }
