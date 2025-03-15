@@ -121,7 +121,7 @@ class SlipgajiController extends Controller
                         t_makan,t_istri,t_skill
                         FROM hrd_gaji
                         WHERE kode_gaji IN (SELECT MAX(kode_gaji) as kode_gaji FROM hrd_gaji
-                        WHERE tgl_berlaku <= '$berlakugaji'  GROUP BY nik)
+                        WHERE tanggal_berlaku <= '$berlakugaji'  GROUP BY nik)
                     ) hrdgaji"),
                 function ($join) {
                     $join->on('hrd_karyawan.nik', '=', 'hrdgaji.nik');
