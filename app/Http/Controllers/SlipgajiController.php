@@ -112,7 +112,7 @@ class SlipgajiController extends Controller
         $karyawan = DB::table('hrd_karyawan')
             ->selectRaw('hrd_karyawan.*,gaji_pokok,t_jabatan,t_masakerja,t_tanggungjawab,
              t_makan,t_istri,t_skill,nama_dept,nama_jabatan,nama_cabang')
-            ->join('cabang', 'hrd_karyawan.id_kantor', '=', 'cabang.kode_cabang')
+            ->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang')
             ->join('hrd_departemen', 'hrd_karyawan.kode_dept', '=', 'hrd_departemen.kode_dept')
             ->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan')
             ->leftJoin(
