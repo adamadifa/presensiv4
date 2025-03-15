@@ -119,8 +119,8 @@ class SlipgajiController extends Controller
                 DB::raw("(
                         SELECT nik,gaji_pokok,t_jabatan,t_masakerja,t_tanggungjawab,
                         t_makan,t_istri,t_skill
-                        FROM hrd_mastergaji
-                        WHERE kode_gaji IN (SELECT MAX(kode_gaji) as kode_gaji FROM hrd_mastergaji
+                        FROM hard_gaji
+                        WHERE kode_gaji IN (SELECT MAX(kode_gaji) as kode_gaji FROM hard_gaji
                         WHERE tgl_berlaku <= '$berlakugaji'  GROUP BY nik)
                     ) hrdgaji"),
                 function ($join) {
