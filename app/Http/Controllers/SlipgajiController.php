@@ -16,6 +16,7 @@ class SlipgajiController extends Controller
         $slipgaji = DB::table('slip_gaji')->where('nik', Auth::guard('karyawan')->user()->nik)->get();
         $slip_gaji_auto = DB::table('hrd_slipgaji')
             ->orderBy('tahun', 'desc')
+            ->orderBy('bulan', 'desc')
             ->get();
         return view('slipgaji.index', compact('slipgaji', 'slip_gaji_auto', 'namabulan'));
     }
