@@ -107,7 +107,7 @@ class SlipgajiController extends Controller
 
 
         $daribulangaji = $dari;
-        $berlakugaji = $sampai;
+        $berlakugaji = date('Y-m-t', strtotime(date('Y-m', strtotime($dari))));
         $akhir_periode = $tahun . "-" . $bulan . "-01";
         $karyawan = DB::table('hrd_karyawan')
             ->selectRaw('hrd_karyawan.*,gaji_pokok,t_jabatan,t_masakerja,t_tanggungjawab,
