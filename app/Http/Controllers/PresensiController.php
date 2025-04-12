@@ -233,7 +233,7 @@ class PresensiController extends Controller
         if ($ceklibur > 0 && $this->hari_tanggal($tanggal_libur) == "Sabtu") {
             $hariini = "Sabtu";
         } elseif ($cekminggumasuk != null) {
-            $hariini = $this->hari_tanggal($cekminggumasuk->tanggal_libur);
+            $hariini = $this->hari_tanggal($cekminggumasuk->tanggal);
         } else {
             $hariini = $this->hari_ini();
         }
