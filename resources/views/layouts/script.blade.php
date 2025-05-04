@@ -17,10 +17,61 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
-<script src="{{asset('assets/js/maskMoney.js')}}"></script>
+<script src="{{ asset('assets/js/maskMoney.js') }}"></script>
+<script src="{{ asset('assets/vendor/js/toastr.min.js') }}"></script>
 <!-- Base Js File -->
 <script src="{{ asset('assets/js/base.js') }}"></script>
 
+@if ($message = Session::get('success'))
+    <script>
+        toastr.options.showEasing = 'swing';
+        toastr.options.hideEasing = 'linear';
+        toastr.options.progressBar = true;
+        toastr.success("Berhasil", "{{ $message }}", {
+            timeOut: 3000
+        });
+    </script>
+@endif
 
+@if ($message = Session::get('error'))
+    <script>
+        toastr.options.showEasing = 'swing';
+        toastr.options.hideEasing = 'linear';
+        toastr.options.progressBar = true;
+        toastr.error("Gagal", "{{ $message }}", {
+            timeOut: 3000
+        });
+    </script>
+@endif
+
+@if ($message = Session::get('warning'))
+    <script>
+        toastr.options.showEasing = 'swing';
+        toastr.options.hideEasing = 'linear';
+        toastr.options.progressBar = true;
+        toastr.warning("Warning", "{{ $message }}", {
+            timeOut: 3000
+        });
+    </script>
+@endif
+
+@if ($errors->any())
+    @php
+        $err = '';
+    @endphp
+    @foreach ($errors->all() as $error)
+        @php
+            $err .= $error;
+        @endphp
+    @endforeach
+    <script>
+        toastr.options.showEasing = 'swing';
+        toastr.options.hideEasing = 'linear';
+        toastr.options.progressBar = true;
+        toastr.error(" Gagal", "{{ $err }}", {
+            timeOut: 3000
+        });
+    </script>
+@endif
 
 @stack('myscript')

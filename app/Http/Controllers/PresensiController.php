@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Izinabsen;
+use App\Models\Izincuti;
 use App\Models\Izinkeluarkantor;
 use App\Models\Izinpulang;
+use App\Models\Izinsakit;
 use App\Models\Izinterlambat;
 use App\Models\Pengajuanizin;
 use Illuminate\Http\Request;
@@ -844,6 +846,33 @@ class PresensiController extends Controller
         $qizinabsen->limit(7);
         $data['izinabsen'] = $qizinabsen->get();
 
+
+        $qizinsakit = Izinsakit::query();
+        $qizinsakit->where('nik', $nik);
+        if (!empty($request->bulan)) {
+            $qizinsakit->whereRaw('MONTH(tanggal)="' . $request->bulan . '"');
+        }
+
+        if (!empty($request->tahun)) {
+            $qizinsakit->whereRaw('YEAR(tanggal)="' . $request->tahun . '"');
+        }
+        $qizinsakit->orderBy('tanggal', 'desc');
+        $qizinsakit->limit(7);
+        $data['izinsakit'] = $qizinsakit->get();
+
+
+        $qizincuti = Izincuti::query();
+        $qizincuti->where('nik', $nik);
+        if (!empty($request->bulan)) {
+            $qizincuti->whereRaw('MONTH(tanggal)="' . $request->bulan . '"');
+        }
+
+        if (!empty($request->tahun)) {
+            $qizincuti->whereRaw('YEAR(tanggal)="' . $request->tahun . '"');
+        }
+        $qizincuti->orderBy('tanggal', 'desc');
+        $qizincuti->limit(7);
+        $data['izincuti'] = $qizincuti->get();
 
         $qizinkeluar = Izinkeluarkantor::query();
         $qizinkeluar->where('nik', $nik);

@@ -147,6 +147,7 @@
                                                         <br>
                                                         Izin Tidak Masuk Kantor
                                                     </h4>
+                                                    <span>{{ $d->keterangan }}</span><br>
                                                     <small class="text-muted">
                                                         {{ date('d-m-Y', strtotime($d->dari)) }} s/d {{ date('d-m-Y', strtotime($d->sampai)) }}
                                                     </small>
@@ -281,10 +282,106 @@
                     @endforeach
                 </div>
                 <div id="sakit" class="content" style="display: none;">
-                    <p>Ini adalah konten untuk Sakit.</p>
+                    @foreach ($izinsakit as $d)
+                        <div class="row mb-1">
+                            <div class="col">
+                                <div class="card historiborderred listizin" data-id="{{ $d->kode_izin_sakit }}" data-toggle="modal"
+                                    data-target="#actionSheetIconed">
+                                    <div class="card-body">
+                                        <div class="historicontent">
+                                            <div class="historidetail1">
+                                                <div class="iconpresence">
+                                                    <ion-icon name="document-text-outline" style="font-size: 64px;" class="text-danger"></ion-icon>
+                                                </div>
+                                                <div class="datepresence">
+                                                    <h4 class="">{{ DateToIndo2($d->tanggal) }}
+                                                        <br>
+                                                        Izin Sakit {{ !empty($d->doc_sid) ? '(SID)' : '' }}
+                                                    </h4>
+                                                    <span>{{ $d->keterangan }}</span><br>
+                                                    <small class="text-muted">
+                                                        {{ date('d-m-Y', strtotime($d->dari)) }} s/d {{ date('d-m-Y', strtotime($d->sampai)) }}
+                                                    </small>
+
+                                                </div>
+                                            </div>
+                                            <div class="historidetail2" style="margin-left:20px">
+
+                                                @if ($d->status == 0)
+                                                    <span class="badge bg-warning">
+                                                        <ion-icon name="refresh-outline"></ion-icon>
+                                                    </span>
+                                                @elseif($d->status == 1)
+                                                    <span class="badge bg-success">
+                                                        Disetujui
+                                                    </span>
+                                                @elseif($d->status == 2)
+                                                    <span class="badge bg-danger">
+                                                        Ditolak
+                                                    </span>
+                                                @endif
+                                                <span class="timepresence">
+
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
                 <div id="cuti" class="content" style="display: none;">
-                    <p>Ini adalah konten untuk Cuti.</p>
+                    @foreach ($izincuti as $d)
+                        <div class="row mb-1">
+                            <div class="col">
+                                <div class="card historiborderred listizin" data-id="{{ $d->kode_izin_cuti }}" data-toggle="modal"
+                                    data-target="#actionSheetIconed">
+                                    <div class="card-body">
+                                        <div class="historicontent">
+                                            <div class="historidetail1">
+                                                <div class="iconpresence">
+                                                    <ion-icon name="document-text-outline" style="font-size: 64px;" class="text-danger"></ion-icon>
+                                                </div>
+                                                <div class="datepresence">
+                                                    <h4 class="">{{ DateToIndo2($d->tanggal) }}
+                                                        <br>
+                                                        Izin Cuti
+                                                    </h4>
+                                                    <span>{{ $d->keterangan }}</span><br>
+                                                    <small class="text-muted">
+                                                        {{ date('d-m-Y', strtotime($d->dari)) }} s/d {{ date('d-m-Y', strtotime($d->sampai)) }}
+                                                    </small>
+
+                                                </div>
+                                            </div>
+                                            <div class="historidetail2" style="margin-left:20px">
+
+                                                @if ($d->status == 0)
+                                                    <span class="badge bg-warning">
+                                                        <ion-icon name="refresh-outline"></ion-icon>
+                                                    </span>
+                                                @elseif($d->status == 1)
+                                                    <span class="badge bg-success">
+                                                        Disetujui
+                                                    </span>
+                                                @elseif($d->status == 2)
+                                                    <span class="badge bg-danger">
+                                                        Ditolak
+                                                    </span>
+                                                @endif
+                                                <span class="timepresence">
+
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -379,6 +476,38 @@
             });
             // Tampilkan konten yang dipilih
             document.getElementById(content).style.display = 'block';
+
+            // Update active state pada navbar
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach((link) => {
+                link.classList.remove('active');
+            });
+
+            // Tambahkan class active pada link yang diklik
+            const activeLink = document.querySelector(`[onclick="showContent('${content}')"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
         }
+
+        // Set active state awal berdasarkan URL
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            let defaultContent = 'izin_terlambat';
+
+            if (currentPath.includes('createizinabsen')) {
+                defaultContent = 'izin_absen';
+            } else if (currentPath.includes('createizinkeluar')) {
+                defaultContent = 'izin_keluar';
+            } else if (currentPath.includes('createizinpulang')) {
+                defaultContent = 'izin_pulang';
+            } else if (currentPath.includes('createsakit')) {
+                defaultContent = 'sakit';
+            } else if (currentPath.includes('createcuti')) {
+                defaultContent = 'cuti';
+            }
+
+            showContent(defaultContent);
+        });
     </script>
 @endpush

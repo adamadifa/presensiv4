@@ -94,6 +94,8 @@ Route::middleware(['auth:karyawan'])->group(function () {
     Route::get('/pengajuanizin/createsakit', [PengajuanizinController::class, 'createsakit']);
     Route::get('/pengajuanizin/createcuti', [PengajuanizinController::class, 'createcuti']);
     Route::post('/pengajuanizin/store', [PengajuanizinController::class, 'store']);
+    Route::post('/pengajuanizin/storesakit', [PengajuanizinController::class, 'storesakit']);
+    Route::post('/pengajuanizin/storecuti', [PengajuanizinController::class, 'storecuti']);
 });
 
 
