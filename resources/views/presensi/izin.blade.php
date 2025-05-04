@@ -391,22 +391,22 @@
             <ion-icon name="add-outline" role="img" class="md hydrated" aria-label="add outline"></ion-icon>
         </a>
         <div class="dropdown-menu">
-            <a class="dropdown-item bg-danger" href="/pengajuanizin/createizinterlambat">
+            {{-- <a class="dropdown-item bg-danger" href="/pengajuanizin/createizinterlambat">
                 <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="musical notes outline"></ion-icon>
                 <p>Izin Terlambat</p>
-            </a>
+            </a> --}}
             <a class="dropdown-item bg-danger" href="/pengajuanizin/createizinabsen">
                 <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="image outline"></ion-icon>
                 <p>Izin Absen</p>
             </a>
-            <a class="dropdown-item bg-danger" href="/pengajuanizin/createizinkeluar">
+            {{-- <a class="dropdown-item bg-danger" href="/pengajuanizin/createizinkeluar">
                 <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="videocam outline"></ion-icon>
                 <p>Izin Keluar Kantor</p>
-            </a>
-            <a class="dropdown-item bg-danger" href="/pengajuanizin/createizinpulang">
+            </a> --}}
+            {{-- <a class="dropdown-item bg-danger" href="/pengajuanizin/createizinpulang">
                 <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="videocam outline"></ion-icon>
                 <p>Izin Pulang</p>
-            </a>
+            </a> --}}
             <a class="dropdown-item bg-danger" href="/pengajuanizin/createsakit">
                 <ion-icon name="document-outline" role="img" class="md hydrated" aria-label="videocam outline"></ion-icon>
                 <p>Sakit</p>
