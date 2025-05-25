@@ -53,6 +53,7 @@ Route::middleware(['auth:karyawan'])->group(function () {
     //Presensi
     Route::get('/presensi/create', [PresensiController::class, 'create']);
     Route::post('/presensi/store', [PresensiController::class, 'store']);
+    Route::get('/presensi/idcard', [PresensiController::class, 'idcard']);
     Route::post('/presensi/storewithcamera', [PresensiController::class, 'storewithcamera']);
 
     //Edit Profile
@@ -119,6 +120,7 @@ Route::middleware(['auth:user'])->group(function () {
 
     //Presensi
     Route::get('/presensi/monitoring', [PresensiController::class, 'monitoring']);
+
     Route::post('/getpresensi', [PresensiController::class, 'getpresensi']);
     Route::post('/tampilkanpeta', [PresensiController::class, 'tampilkanpeta']);
     Route::get('/presensi/laporan', [PresensiController::class, 'laporan']);
@@ -128,6 +130,7 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/presensi/izinsakit', [PresensiController::class, 'izinsakit']);
     Route::post('/presensi/approveizinsakit', [PresensiController::class, 'approveizinsakit']);
     Route::get('/presensi/{id}/batalkanizinsakit', [PresensiController::class, 'batalkanizinsakit']);
+
 
 
     //Cabang

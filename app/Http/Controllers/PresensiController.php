@@ -8,6 +8,7 @@ use App\Models\Izinkeluarkantor;
 use App\Models\Izinpulang;
 use App\Models\Izinsakit;
 use App\Models\Izinterlambat;
+use App\Models\Karyawan;
 use App\Models\Pengajuanizin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -1470,5 +1471,15 @@ class PresensiController extends Controller
                 }
             }
         }
+    }
+
+    public function idcard()
+    {
+        $nik = Auth::guard('karyawan')->user()->nik;
+        $karyawan = Karyawan::where('nik', $nik)
+            ->join('hrd_jabatan', 'hrd_karyawan.kode_jabatan', '=', 'hrd_jabatan.kode_jabatan')
+            ->join('cabang', 'hrd_karyawan.kode_cabang', '=', 'cabang.kode_cabang')
+            ->first();
+        return view('presensi.idcard', compact('karyawan'));
     }
 }

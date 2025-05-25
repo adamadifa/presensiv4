@@ -59,12 +59,12 @@
                     </div>
                     <div class="item-menu text-center">
                         <div class="menu-icon">
-                            <a href="/presensi/izin" class="danger" style="font-size: 40px;">
-                                <ion-icon name="calendar-number"></ion-icon>
+                            <a href="/presensi/idcard" class="danger" style="font-size: 40px;">
+                                <ion-icon name="card-outline"></ion-icon>
                             </a>
                         </div>
                         <div class="menu-name">
-                            <span class="text-center">Cuti</span>
+                            <span class="text-center">ID Card</span>
                         </div>
                     </div>
                     <div class="item-menu text-center">
