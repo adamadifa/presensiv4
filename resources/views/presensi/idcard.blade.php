@@ -147,9 +147,9 @@
             <div class="profile-image">
                 @if (!empty(Auth::guard('karyawan')->user()->foto))
                     @php
-                        $path = Storage::url('uploads/karyawan/' . Auth::guard('karyawan')->user()->foto);
+                        $path = 'https://app.portalmp.com/storage/uploads/karyawan/' . Auth::guard('karyawan')->user()->foto;
                     @endphp
-                    <img src="{{ url($path) }}" alt="Foto Karyawan">
+                    <img src="{{ $path }}" alt="Foto Karyawan">
                 @else
                     <div class="initials">{{ getInitials(Auth::guard('karyawan')->user()->nama_karyawan) }}</div>
                 @endif
