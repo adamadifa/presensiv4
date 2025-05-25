@@ -1,7 +1,7 @@
 @extends('layouts.presensi')
 @section('header')
     <!-- App Header -->
-    <div class="appHeader bg-primary text-light">
+    <div class="appHeader  text-light" style="background:#1e3c72 !important;">
         <div class="left">
             <a href="javascript:;" class="headerButton goBack">
                 <ion-icon name="chevron-back-outline"></ion-icon>
@@ -38,7 +38,7 @@
         }
 
         .id-card-header {
-            background: #dc3545;
+            background: #1e3c72;
             height: 137.5px;
             /* 1/4 dari tinggi card (550px) */
             padding: 20px;
@@ -89,7 +89,7 @@
         .profile-image .initials {
             font-size: 48px;
             font-weight: bold;
-            color: #dc3545;
+            color: #1e3c72;
         }
 
         .employee-info {
