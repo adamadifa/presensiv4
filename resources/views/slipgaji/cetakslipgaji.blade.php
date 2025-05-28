@@ -86,7 +86,14 @@
     @endphp
     @foreach ($presensi as $d)
         @php
-            $upah = $d['gaji_pokok'] + $d['t_jabatan'] + $d['t_masakerja'] + $d['t_tanggungjawab'] + $d['t_makan'] + $d['t_istri'] + $d['t_skill'];
+            $upah =
+                $d['gaji_pokok'] +
+                $d['t_jabatan'] +
+                $d['t_masakerja'] +
+                $d['t_tanggungjawab'] +
+                $d['t_makan'] +
+                $d['t_istri'] +
+                $d['t_skill'];
             $insentif = $d['iu_masakerja'] + $d['iu_lembur'] + $d['iu_penempatan'] + $d['iu_kpi'];
             $insentif_manager = $d['im_ruanglingkup'] + $d['im_penempatan'] + $d['im_kinerja'] + $d['im_kendaraan'];
             $jumlah_insentif = $insentif + $insentif_manager;
@@ -149,25 +156,38 @@
             @if (isset($d[$tanggal_presensi]))
                 @php
                     $lintashari = $d[$tanggal_presensi]['lintashari'];
-                    $tanggal_selesai = $lintashari == '1' ? date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi))) : $tanggal_presensi;
+                    $tanggal_selesai =
+                        $lintashari == '1'
+                            ? date('Y-m-d', strtotime('+1 day', strtotime($tanggal_presensi)))
+                            : $tanggal_presensi;
                     $total_jam_jadwal = $d[$tanggal_presensi]['total_jam'];
                     //Jadwal Jam Kerja
-                    $j_mulai = date('Y-m-d H:i', strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_mulai']));
-                    $j_selesai = date('Y-m-d H:i', strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_selesai']));
+                    $j_mulai = date(
+                        'Y-m-d H:i',
+                        strtotime($tanggal_presensi . ' ' . $d[$tanggal_presensi]['jam_mulai']),
+                    );
+                    $j_selesai = date(
+                        'Y-m-d H:i',
+                        strtotime($tanggal_selesai . ' ' . $d[$tanggal_presensi]['jam_selesai']),
+                    );
 
                     //Jam Absen Masuk dan Pulang
-                    $jam_in = !empty($d[$tanggal_presensi]['jam_in']) ? date('Y-m-d H:i', strtotime($d[$tanggal_presensi]['jam_in'])) : 'Belum Absen';
+                    $jam_in = !empty($d[$tanggal_presensi]['jam_in'])
+                        ? date('Y-m-d H:i', strtotime($d[$tanggal_presensi]['jam_in']))
+                        : 'Belum Absen';
                     $jam_out = !empty($d[$tanggal_presensi]['jam_out'])
                         ? date('Y-m-d H:i', strtotime($d[$tanggal_presensi]['jam_out']))
                         : 'Belum Absen';
                     //Jadwal SPG
                     //Jika SPG Jam Mulai Kerja nya adalah Saat Dia Absen  Jika Tidak Sesuai Jadwal atau Hari Minggu Absen
                     $jam_mulai =
-                        in_array($d['kode_jabatan'], ['J22', 'J23']) || (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk))
+                        in_array($d['kode_jabatan'], ['J22', 'J23']) ||
+                        (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk))
                             ? $jam_in
                             : $j_mulai;
                     $jam_selesai =
-                        in_array($d['kode_jabatan'], ['J22', 'J23']) || (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk))
+                        in_array($d['kode_jabatan'], ['J22', 'J23']) ||
+                        (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk))
                             ? $jam_out
                             : $j_selesai;
                 @endphp
@@ -230,7 +250,12 @@
                         );
 
                         //Cek Pulang Cepat
-                        $pulangcepat = presensiHitungPulangCepat($jam_out, $jam_selesai, $jam_awal_istirahat, $jam_akhir_istirahat);
+                        $pulangcepat = presensiHitungPulangCepat(
+                            $jam_out,
+                            $jam_selesai,
+                            $jam_awal_istirahat,
+                            $jam_akhir_istirahat,
+                        );
 
                         //Cek Izin Keluar
                         $izin_keluar = presensiHitungJamKeluarKantor(
@@ -249,12 +274,18 @@
                         $potongan_jam_sakit = 0;
                         $potongan_jam_dirumahkan = 0;
                         $potongan_jam_tidakhadir =
-                            empty($d[$tanggal_presensi]['jam_in']) || empty($d[$tanggal_presensi]['jam_out']) ? $total_jam_jadwal : 0;
+                            empty($d[$tanggal_presensi]['jam_in']) || empty($d[$tanggal_presensi]['jam_out'])
+                                ? $total_jam_jadwal
+                                : 0;
                         $potongan_jam_izin = 0;
-                        $potongan_jam_pulangcepat = $d[$tanggal_presensi]['izin_pulang_direktur'] == '1' ? 0 : $pulangcepat['desimal'];
+                        $potongan_jam_pulangcepat =
+                            $d[$tanggal_presensi]['izin_pulang_direktur'] == '1' ? 0 : $pulangcepat['desimal'];
                         $potongan_jam_izinkeluar =
-                            $d[$tanggal_presensi]['izin_keluar_direktur'] == '1' || $izin_keluar['desimal'] <= 1 ? 0 : $izin_keluar['desimal'];
-                        $potongan_jam_terlambat = $d[$tanggal_presensi]['izin_terlambat_direktur'] == '1' ? 0 : $terlambat['desimal'];
+                            $d[$tanggal_presensi]['izin_keluar_direktur'] == '1' || $izin_keluar['desimal'] <= 1
+                                ? 0
+                                : $izin_keluar['desimal'];
+                        $potongan_jam_terlambat =
+                            $d[$tanggal_presensi]['izin_terlambat_direktur'] == '1' ? 0 : $terlambat['desimal'];
 
                         //Total Potongan
                         $total_potongan_jam =
@@ -318,7 +349,7 @@
                             $keterangan = '';
                         @endphp
                     @endif
-                    @if ($d['kode_jabatan'] == 'J19' && $tanggal_presensi >= '2024-10-21')
+                    @if ($d['kode_jabatan'] == 'J19' && $tanggal_presensi >= '2024-10-21' && $tanggal_presensi < '2025-04-21')
                         @php
                             $potongan_jam_sakit = 0;
                         @endphp
@@ -382,7 +413,11 @@
                         }
 
                         //Jika Jabatan Salesman
-                        if ($d['kode_jabatan'] == 'J19' && $tanggal_presensi >= '2024-10-21') {
+                        if (
+                            $d['kode_jabatan'] == 'J19' &&
+                            $tanggal_presensi >= '2024-10-21' &&
+                            $tanggal_presensi < '2025-04-21'
+                        ) {
                             $potongan_jam_izin = 0;
                         }
                         $total_potongan_jam =
@@ -469,7 +504,10 @@
                 @elseif(!empty($cekliburpengganti))
                     @php
                         $color = 'rgba(243, 158, 0, 0.833)';
-                        $keterangan = 'Libur Pengganti Hari Minggu <br>(' . formatIndo($cekliburpengganti[0]['tanggal_diganti']) . ')';
+                        $keterangan =
+                            'Libur Pengganti Hari Minggu <br>(' .
+                            formatIndo($cekliburpengganti[0]['tanggal_diganti']) .
+                            ')';
                         $total_jam = 0;
                         $potongan_jam_dirumahkan = 0;
                     @endphp
