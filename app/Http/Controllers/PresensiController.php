@@ -413,7 +413,14 @@ class PresensiController extends Controller
             ->where('nik', $nik)
             ->where('tanggal', $tgl_presensi)->count();
 
-        if ($ceklibur > 0 && $this->hari_tanggal($tanggal_libur) == "Sabtu") {
+        // if ($ceklibur > 0 && $this->hari_tanggal($tanggal_libur) == "Sabtu") {
+        //     $hariini = "Sabtu";
+        // } else {
+        //     $hariini = $this->hari_ini();
+        // }
+
+
+        if ($ceklibur > 0) {
             $hariini = "Sabtu";
         } else {
             $hariini = $this->hari_ini();
