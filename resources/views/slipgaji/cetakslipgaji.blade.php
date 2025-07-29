@@ -140,7 +140,12 @@
                 $total_overtime_2 += $lembur['overtime_2'];
 
                 if (!empty($cekliburnasional)) {
-                    $overtime_libur = $lembur_libur['overtime_libur'] * 2;
+                    if($d['kode_jabatan'] == 'J20') {
+                        $overtime_libur = $lembur_libur['overtime_libur'] * 2;
+                    }else{
+                        $overtime_libur = $lembur_libur['overtime_libur'];
+                    }
+                   
                     $total_overtime_libur_nasional += $overtime_libur;
                     $total_overtime_libur_reguler += 0;
                 } else {
