@@ -476,10 +476,9 @@
                                      <div class="detail-item text-danger" style="font-size: 11px;">Izin Pulang</div>
                                  @endif
 
-                             @elseif($d->status != 'h')
                                  <div class="history-status" style="color:orange; font-size: 12px;">
-                                     @if($d->status == 'i') Izin : {{ $d->keterangan }}
-                                     @elseif($d->status == 's') Sakit : {{ $d->keterangan }}
+                                     @if($d->status == 'i') Izin : {{ $d->keterangan ?? '' }}
+                                     @elseif($d->status == 's') Sakit : {{ $d->keterangan ?? '' }}
                                      @elseif($d->status == 'c') Cuti : {{ $d->nama_cuti }}
                                      @endif
                                  </div>
