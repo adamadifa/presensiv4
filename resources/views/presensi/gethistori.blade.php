@@ -34,8 +34,10 @@
                                             $j_selesai = date('Y-m-d H:i', strtotime($tanggal_selesai . ' ' . $d->jam_selesai));
 
                                             //Jika SPG Jam Mulai Kerja nya adalah Saat Dia Absen  Jika Tidak Sesuai Jadwal
-                                            $jam_mulai = $d->kode_jabatan == 'J22' ? $d->jam_in : $j_mulai;
-                                            $jam_selesai = $d->kode_jabatan == 'J22' ? $d->jam_out : $j_selesai;
+                                            $is_j31_j32_effective = in_array($d->kode_jabatan, ['J31', 'J32']) && $d->tanggal >= '2026-02-21';
+                                            $is_spg = in_array($d->kode_jabatan, ['J22', 'J23']) || $is_j31_j32_effective;
+                                            $jam_mulai = $is_spg ? $d->jam_in : $j_mulai;
+                                            $jam_selesai = $is_spg ? $d->jam_out : $j_selesai;
 
                                             // Jam Istirahat
                                             if ($d->istirahat == '1') {

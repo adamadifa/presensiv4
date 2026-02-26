@@ -187,11 +187,13 @@
                     //Jika SPG Jam Mulai Kerja nya adalah Saat Dia Absen  Jika Tidak Sesuai Jadwal atau Hari Minggu Absen
                     $jam_mulai =
                         in_array($d['kode_jabatan'], ['J22', 'J23']) ||
+                        (in_array($d['kode_jabatan'], ['J31', 'J32']) && $tanggal_presensi >= '2026-02-21') ||
                         (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk))
                             ? $jam_in
                             : $j_mulai;
                     $jam_selesai =
                         in_array($d['kode_jabatan'], ['J22', 'J23']) ||
+                        (in_array($d['kode_jabatan'], ['J31', 'J32']) && $tanggal_presensi >= '2026-02-21') ||
                         (getNamahari($tanggal_presensi) == 'Minggu' && empty($cekminggumasuk))
                             ? $jam_out
                             : $j_selesai;
