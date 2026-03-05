@@ -32,7 +32,11 @@
             $karyawan->t_istri +
             $karyawan->t_skill;
         //Masa Kerja THR
-        $sampaithr = '2025-03-31';
+        if ($tahun == '2026') {
+            $sampaithr = '2026-03-21';
+        } else {
+            $sampaithr = $tahun . '-03-31';
+        }
         $awal = date_create($karyawan->tanggal_masuk);
         $akhir = date_create($sampaithr); // waktu sekarang
         $diff = date_diff($awal, $akhir);

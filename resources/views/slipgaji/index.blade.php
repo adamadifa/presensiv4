@@ -163,6 +163,32 @@
                         </div>
                     </a>
                 @endif
+                @if ($d->bulan == '2' && $tahun == '2026')
+                    <a href="/slipgaji/3/2026/cetakthr">
+                        <div class="row mb-1">
+                            <div class="col">
+                                <div class="card historiborderred">
+                                    <div class="card-body">
+                                        <div class="historicontent">
+                                            <div class="historidetail1">
+                                                <div class="iconpresence">
+                                                    <ion-icon name="document-text-outline" style="font-size: 64px;" class="text-danger"></ion-icon>
+                                                </div>
+                                                <div class="datepresence">
+                                                    <h4>THR {{ $d->tahun }}</h4>
+
+                                                    <small class="text-muted">
+                                                        THR 2026
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                @endif
             @endforeach
 
 
