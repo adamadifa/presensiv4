@@ -117,6 +117,8 @@
             $total_overtime_libur_nasional = 0;
             $total_premi_shift2_lembur = 0;
             $total_premi_shift3_lembur = 0;
+            $upah_premi_shift2_total = 0;
+            $upah_premi_shift3_total = 0;
             $masakerja = hitungMasakerja($d['tanggal_masuk'], $end_date);
         @endphp
         @while (strtotime($tanggal_presensi) <= strtotime($end_date))
@@ -155,8 +157,18 @@
                 }
 
                 $total_overtime_libur += $overtime_libur;
-                $total_premi_shift2_lembur += $lembur['jmlharilembur_shift_2'] + $lembur_libur['jmlharilembur_shift_2'];
-                $total_premi_shift3_lembur += $lembur['jmlharilembur_shift_3'] + $lembur_libur['jmlharilembur_shift_3'];
+
+                $premi_shift2_rate = $tanggal_presensi >= '2026-02-25' ? 7500 : 5000;
+                $premi_shift3_rate = $tanggal_presensi >= '2026-02-25' ? 10000 : 6000;
+
+                $jml_premi_shift2_lembur = $lembur['jmlharilembur_shift_2'] + $lembur_libur['jmlharilembur_shift_2'];
+                $jml_premi_shift3_lembur = $lembur['jmlharilembur_shift_3'] + $lembur_libur['jmlharilembur_shift_3'];
+
+                $total_premi_shift2_lembur += $jml_premi_shift2_lembur;
+                $total_premi_shift3_lembur += $jml_premi_shift3_lembur;
+
+                $upah_premi_shift2_total += $jml_premi_shift2_lembur * $premi_shift2_rate;
+                $upah_premi_shift3_total += $jml_premi_shift3_lembur * $premi_shift3_rate;
             @endphp
             @if (isset($d[$tanggal_presensi]))
                 @php
@@ -313,7 +325,6 @@
                         //Denda
                         $jumlah_denda = $denda['denda'];
 
-                        //Premi
                         if (
                             $d[$tanggal_presensi]['kode_jadwal'] == 'JD003' &&
                             $total_jam >= 5 &&
@@ -321,6 +332,7 @@
                             getNamahari($tanggal_presensi) != 'Minggu'
                         ) {
                             $total_premi_shift2 += 1;
+                            $upah_premi_shift2_total += $premi_shift2_rate;
                         }
 
                         if (
@@ -330,6 +342,7 @@
                             getNamahari($tanggal_presensi) != 'Minggu'
                         ) {
                             $total_premi_shift3 += 1;
+                            $upah_premi_shift3_total += $premi_shift3_rate;
                         }
                     @endphp
                 @elseif($d[$tanggal_presensi]['status'] == 's')
@@ -599,8 +612,8 @@
             $premis_shift2 = $total_premi_shift2 + $total_premi_shift2_lembur;
             $premis_shift3 = $total_premi_shift3 + $total_premi_shift3_lembur;
 
-            $upah_premi_shift2 = 5000 * $premis_shift2;
-            $upah_premi_shift3 = 6000 * $premis_shift3;
+            $upah_premi_shift2 = $upah_premi_shift2_total;
+            $upah_premi_shift3 = $upah_premi_shift3_total;
 
             $bruto = $upah_perjam * $total_jam_kerja + $total_upah_overtime + $upah_premi_shift2 + $upah_premi_shift3;
 
